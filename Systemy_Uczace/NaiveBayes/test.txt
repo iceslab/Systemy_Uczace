@@ -1,0 +1,6 @@
+category asd open,closed
+
+open
+closed
+open
+open
