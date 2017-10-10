@@ -29,10 +29,29 @@ namespace loader
         // Missing values are not oficially supported.
 
         // Read categories description
+        loadDescription(fileStream);
+        
+        // Read data
+        loadMatrix(fileStream);
+        
+    }
+
+    const DataDescription& DataLoader::getDataDescription() const
+    {
+        return description;
+    }
+
+    const DataMatrixT& DataLoader::getDataMatrix() const
+    {
+        return matrix;
+    }
+    
+    void DataLoader::loadDescription(std::ifstream &fileStream)
+    {
         while (true)
         {
             std::string s;
-            
+
             // Get non empty line
             if (!getline(fileStream, s) || s.empty())
                 break;
@@ -44,7 +63,7 @@ namespace loader
             for (auto i = 0; i < categoryCount && ss; i++)
             {
                 std::string s;
-                if (!getline(ss, s, ' ')) 
+                if (!getline(ss, s, ' '))
                     break;
                 record[i] = s;
             }
@@ -70,8 +89,10 @@ namespace loader
                 std::get<2>(description.back()).push_back(s);
             }
         }
+    }
 
-        // Read data
+    void DataLoader::loadMatrix(std::ifstream &fileStream)
+    {
         while (true)
         {
             std::string s;
@@ -80,7 +101,7 @@ namespace loader
             if (!getline(fileStream, s) || s.empty())
                 break;
 
-            std::vector<std::string> vec;
+            DataVector vec;
 
             size_t notPos = 0;
             size_t pos = 0;
@@ -105,22 +126,8 @@ namespace loader
                     break;
                 }
             }
-            
+
             matrix.emplace_back(vec);
         }
-    }
-
-    DataLoader::~DataLoader()
-    {
-    }
-
-    const dataDescriptionT& DataLoader::getDataDescription() const
-    {
-        return description;
-    }
-
-    const dataMatrixT& DataLoader::getDataMatrix() const
-    {
-        return matrix;
     }
 }

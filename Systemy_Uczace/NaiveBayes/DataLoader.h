@@ -6,16 +6,11 @@
 #include <sstream>
 #include <tuple>
 
+#include "DataDescription.h"
+#include "DataVector.h"
+
 namespace loader
 {
-    enum DataTypeE
-    {
-        CATEGORY,
-        INTEGER,
-        REAL,
-        UNDEFINED
-    };
-    
     const char* const categoryStr = "category";
     const char* const integerStr = "integer";
     const char* const realStr = "real";
@@ -33,13 +28,16 @@ namespace loader
     public:
         DataLoader(std::string filePath);
         DataLoader(std::ifstream fileStream);
-        ~DataLoader();
+        ~DataLoader() = default;
 
-        const dataDescriptionT& getDataDescription() const;
-        const dataMatrixT& getDataMatrix() const;
+        const DataDescription& getDataDescription() const;
+        const DataMatrixT& getDataMatrix() const;
 
     private:
-        dataDescriptionT description;
-        dataMatrixT matrix;
+        DataDescription description;
+        DataMatrixT matrix;
+
+        void loadDescription(std::ifstream &fileStream);
+        void loadMatrix(std::ifstream &fileStream);
     };
 }

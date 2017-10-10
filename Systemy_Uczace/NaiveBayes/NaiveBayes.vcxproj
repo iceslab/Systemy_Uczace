@@ -111,11 +111,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Algorithm.cpp" />
+    <ClCompile Include="DataDescription.cpp" />
     <ClCompile Include="DataLoader.cpp" />
+    <ClCompile Include="DataVector.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="NaiveBayesAlgorithm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithm.h" />
+    <ClInclude Include="DataDescription.h" />
     <ClInclude Include="DataLoader.h" />
+    <ClInclude Include="DataVector.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="NaiveBayesAlgorithm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

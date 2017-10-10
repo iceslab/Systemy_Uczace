@@ -1,0 +1,19 @@
+0. IRIS
+1. GLASS
+2. WINE
+3. DIAB
+
+Do testowania wybrać zbiory:
+* 0
+* Jeden z 1-3
+* Jakiś inny
+
+Unikać zbiorów z missing value
+
+ACCURACY
+PRECISION ]
+RECALL    ] = F-score
+
+https://archive.ics.uci.edu/ml/datasets.html?format=&task=cla&att=&area=&numAtt=&numIns=&type=&sort=dateUp&view=table
+https://en.wikipedia.org/wiki/F1_score
+https://www.statsoft.pl/textbook/stathome_stat.html?https%3A%2F%2Fwww.statsoft.pl%2Ftextbook%2Fstnaiveb.html
