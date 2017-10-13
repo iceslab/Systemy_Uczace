@@ -1,6 +1,7 @@
 #pragma once
 #include "DataLoader.h"
 #include "Model.h"
+#include <memory>
 
 namespace interfaces
 {
@@ -12,9 +13,9 @@ namespace interfaces
         Algorithm(const loader::DataLoader &loader);
         ~Algorithm();
 
-        virtual Model& produceModel();
+        virtual std::unique_ptr<Model> produceModel() = 0;
 
-    private:
+    protected:
         loader::DataLoader loader;
     };
 };
