@@ -17,5 +17,6 @@ namespace loader
 
     typedef std::vector<DataVector> dataMatrixT;
     typedef dataMatrixT trainingDataT;
+    typedef std::vector<std::reference_wrapper<const std::string>> trainingColumnT;
     typedef dataMatrixT testDataT;
 };

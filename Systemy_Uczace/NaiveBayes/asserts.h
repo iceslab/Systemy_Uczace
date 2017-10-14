@@ -62,6 +62,21 @@ do{ \
         abort(); \
     } \
 } while (false);
+
+#define FATAL_ERROR_VERBOSE(format, ...) \
+do \
+{ \
+    fprintf(stderr, "Fatal error occured: "); \
+    fprintf(stderr, format, __VA_ARGS__); \
+    fprintf(stderr, ", file %s, line %d\n", __FILE__, __LINE__); \
+} while (false);
+
+#define FATAL_ERROR() \
+do \
+{ \
+    fprintf(stderr, "Fatal error occured. File %s, line %d\n", __FILE__, __LINE__); \
+} while (false);
+
 #else
 #define DEBUG_PRINTLN_VERBOSE(format, ...)
 #define DEBUG_PRINT_VERBOSE(format, ...)
@@ -72,4 +87,7 @@ do{ \
 #define DEBUG_CALL(expr)
 #define ASSERT(expr)
 #define ASSERT_VERBOSE(expr, format, ...)
+
+#define FATAL_ERROR_VERBOSE(format, ...)
+#define FATAL_ERROR()
 #endif

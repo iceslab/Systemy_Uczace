@@ -16,7 +16,9 @@ namespace loader
         UNDEFINED
     };
 
-    class DataDescription : public std::vector<std::tuple<DataTypeE, std::string, std::vector<std::string>>>
+    typedef std::tuple<DataTypeE, std::string, std::vector<std::string>> dataDescriptionElementT;
+
+    class DataDescription : public std::vector<dataDescriptionElementT>
     {
     public:
         DataDescription() = default;
