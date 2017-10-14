@@ -5,18 +5,27 @@
 #include <exception>
 #include <sstream>
 #include <tuple>
+#include <variant>
+#include "asserts.h"
+#include "DataDescription.h"
 
 namespace loader
 {
-    class DataVector : public std::vector<std::string>
+    typedef std::variant<std::string, int, double, std::pair<int, int>, std::pair<double, double>> DataV;
+
+    class DataVector : public std::vector<DataV>
     {
     public:
         DataVector() = default;
+        DataVector(size_t size) : std::vector<DataV>(size) {};
         ~DataVector() = default;
     };
 
     typedef std::vector<DataVector> dataMatrixT;
+
     typedef dataMatrixT trainingDataT;
-    typedef std::vector<std::reference_wrapper<const std::string>> trainingColumnT;
+    typedef std::vector<std::reference_wrapper<const DataV>> dataColumnT;
+    typedef dataColumnT trainingColumnT;
+
     typedef dataMatrixT testDataT;
 };

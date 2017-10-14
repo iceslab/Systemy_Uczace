@@ -5,8 +5,6 @@
 
 namespace interfaces
 {
-    using loader::DataLoader;
-
     class Algorithm
     {
     public:

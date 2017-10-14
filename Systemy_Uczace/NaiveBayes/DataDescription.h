@@ -12,7 +12,9 @@ namespace loader
     {
         CATEGORY,
         INTEGER,
+        INTEGER_DISCRETE,
         REAL,
+        REAL_DISCRETE,
         UNDEFINED
     };
 

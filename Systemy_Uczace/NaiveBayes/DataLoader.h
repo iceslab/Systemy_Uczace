@@ -28,6 +28,7 @@ namespace loader
         const dataDescriptionT& getDataDescription() const;
         const dataMatrixT& getDataMatrix() const;
 
+        static DataV variantFromString(loader::DataTypeE type, std::string value);
     private:
         dataDescriptionT description;
         dataMatrixT matrix;

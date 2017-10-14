@@ -41,7 +41,7 @@ NaiveBayesAlgorithm::getClassProbability(const loader::dataDescriptionT &descrip
         for (auto& dataRow : trainingData)
         {
             // Class name in training data
-            const auto& classValue = dataRow.back();
+            const auto& classValue = std::get<std::string>(dataRow.back());
             if (classValue == processedClassName)
             {
                 ++processedClassCount;
@@ -129,9 +129,9 @@ NaiveBayesAlgorithm::categoryProbability(const loader::dataDescriptionElementT &
     // For every data in trainingData and ClassData
     for (size_t row = 0; row < allVectorsCount; row++)
     {
-        const auto& elementValue = trainingData[row].get();
-
-        auto it = std::find(classNames.begin(), classNames.end(), classData[row].get());
+        const auto& elementValue = std::get<std::string>(trainingData[row].get());
+        const auto desiredClassName = std::get<std::string>(classData[row].get());
+        auto it = std::find(classNames.begin(), classNames.end(), desiredClassName);
         ASSERT(it != classNames.end());
         const auto classIndex = it - classNames.begin();
 

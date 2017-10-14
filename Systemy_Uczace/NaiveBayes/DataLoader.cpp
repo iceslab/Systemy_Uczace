@@ -46,26 +46,51 @@ namespace loader
         return matrix;
     }
 
+    DataV DataLoader::variantFromString(loader::DataTypeE type, std::string value)
+    {
+        DataV var;
+        switch (type)
+        {
+            case CATEGORY:
+                var = value;
+                break;
+            case INTEGER:
+                var = std::stoi(value);
+                break;
+            case REAL:
+                var = std::stod(value);
+                break;
+            case INTEGER_DISCRETE:
+            case REAL_DISCRETE:
+            case UNDEFINED:
+            default:
+                FATAL_ERROR_VERBOSE("Illegal type in union costructor: %d", type);
+                break;
+        }
+
+        return var;
+    }
+
     void DataLoader::loadDescription(std::ifstream &fileStream)
     {
         while (true)
         {
-            std::string s;
+            std::string token;
 
             // Get non empty line
-            if (!getline(fileStream, s) || s.empty())
+            if (!getline(fileStream, token) || token.empty())
                 break;
 
-            std::istringstream ss(s);
+            std::istringstream ss(token);
             std::vector<std::string> record(categoryCount);
 
             // Read category description
             for (auto i = 0; i < categoryCount && ss; i++)
             {
-                std::string s;
-                if (!getline(ss, s, ' '))
+                std::string token;
+                if (!getline(ss, token, ' '))
                     break;
-                record[i] = s;
+                record[i] = token;
             }
 
             // Deduce data type
@@ -93,33 +118,39 @@ namespace loader
 
     void DataLoader::loadMatrix(std::ifstream &fileStream)
     {
+        ASSERT(!description.empty());
+        const auto attributesCount = description.size() - 1;
         while (true)
         {
-            std::string s;
+            std::string token;
 
             // Get non empty line
-            if (!getline(fileStream, s) || s.empty())
+            if (!getline(fileStream, token) || token.empty())
                 break;
 
-            DataVector vec;
+            DataVector vec(attributesCount);
 
             size_t notPos = 0;
             size_t pos = 0;
-            while (true)
+            for (size_t i = 0; i < attributesCount; i++)
             {
-                notPos = s.find_first_not_of(delimitersStr, pos);
-                pos = s.find_first_of(delimitersStr, notPos);
+                auto type = std::get<0>(description[i]);
+                notPos = token.find_first_not_of(delimitersStr, pos);
+                pos = token.find_first_of(delimitersStr, notPos);
 
                 if (notPos != std::string::npos)
                 {
+                    std::string substring;
                     if (pos != std::string::npos)
                     {
-                        vec.push_back(s.substr(notPos, pos));
+                        substring = token.substr(notPos, pos);
                     }
                     else
                     {
-                        vec.push_back(s.substr(notPos));
+                        substring = token.substr(notPos);
                     }
+
+                    vec[i] = variantFromString(type, substring);
                 }
                 else
                 {
