@@ -18,11 +18,6 @@ namespace loader
 
     const int categoryCount = 2;
 
-    // Array of tuples containing type, name and optional values
-    typedef std::vector<std::tuple<DataTypeE, std::string, std::vector<std::string>>> dataDescriptionT;
-    // Array of vectors
-    typedef std::vector<std::vector<std::string>> dataMatrixT;
-
     class DataLoader
     {
     public:
@@ -30,12 +25,12 @@ namespace loader
         DataLoader(std::ifstream fileStream);
         ~DataLoader() = default;
 
-        const DataDescription& getDataDescription() const;
-        const DataMatrixT& getDataMatrix() const;
+        const dataDescriptionT& getDataDescription() const;
+        const dataMatrixT& getDataMatrix() const;
 
     private:
-        DataDescription description;
-        DataMatrixT matrix;
+        dataDescriptionT description;
+        dataMatrixT matrix;
 
         void loadDescription(std::ifstream &fileStream);
         void loadMatrix(std::ifstream &fileStream);

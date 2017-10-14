@@ -15,7 +15,7 @@ namespace loader
         ~DataVector() = default;
     };
 
-    typedef std::vector<DataVector> DataMatrixT;
-    typedef DataMatrixT TrainingDataT;
-    typedef DataMatrixT TestDataT;
+    typedef std::vector<DataVector> dataMatrixT;
+    typedef dataMatrixT trainingDataT;
+    typedef dataMatrixT testDataT;
 };

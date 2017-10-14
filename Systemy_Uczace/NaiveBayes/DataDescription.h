@@ -22,4 +22,6 @@ namespace loader
         DataDescription() = default;
         ~DataDescription() = default;
     };
+
+    typedef DataDescription dataDescriptionT;
 };

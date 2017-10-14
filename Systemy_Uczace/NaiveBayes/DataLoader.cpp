@@ -30,10 +30,10 @@ namespace loader
 
         // Read categories description
         loadDescription(fileStream);
-        
+
         // Read data
         loadMatrix(fileStream);
-        
+
     }
 
     const DataDescription& DataLoader::getDataDescription() const
@@ -41,11 +41,11 @@ namespace loader
         return description;
     }
 
-    const DataMatrixT& DataLoader::getDataMatrix() const
+    const dataMatrixT& DataLoader::getDataMatrix() const
     {
         return matrix;
     }
-    
+
     void DataLoader::loadDescription(std::ifstream &fileStream)
     {
         while (true)

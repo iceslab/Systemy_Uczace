@@ -10,5 +10,11 @@ public:
     ~NaiveBayesAlgorithm();
 
     std::unique_ptr<interfaces::Model> produceModel() override;
+
+private:
+    typedef std::vector<double> classProbabilitiesT;
+
+    classProbabilitiesT getClassProbability(const loader::dataDescriptionT &descriptions,
+                                            const loader::trainingDataT &trainingData);
 };
 
