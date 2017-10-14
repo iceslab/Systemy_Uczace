@@ -125,6 +125,7 @@
     <ClInclude Include="DataDescription.h" />
     <ClInclude Include="DataLoader.h" />
     <ClInclude Include="DataVector.h" />
+    <ClInclude Include="asserts.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="NaiveBayesAlgorithm.h" />
     <ClInclude Include="NaiveBayesModel.h" />

@@ -1,6 +1,7 @@
 #include "NaiveBayesAlgorithm.h"
 
-NaiveBayesAlgorithm::NaiveBayesAlgorithm(const loader::DataLoader & loader) : interfaces::Algorithm(loader)
+NaiveBayesAlgorithm::NaiveBayesAlgorithm(const loader::DataLoader & loader) :
+    interfaces::Algorithm(loader)
 {
 }
 
@@ -51,4 +52,57 @@ NaiveBayesAlgorithm::getClassProbability(const loader::dataDescriptionT &descrip
     }
 
     return p_c;
+}
+
+NaiveBayesAlgorithm::elementProbabilitiesT
+NaiveBayesAlgorithm::getElementPorbability(const loader::dataDescriptionT & descriptions,
+                                           const loader::trainingDataT & trainingData)
+{
+    ASSERT(descriptions.size() > 1);
+    const auto attributesCount = descriptions.size() - 1;
+    elementProbabilitiesT p_xc(attributesCount);
+
+    const auto allVectorsCount = trainingData.size();
+
+    for (size_t i = 0; i < attributesCount; i++)
+    {
+        // Vector of names for all classifiers
+        const auto& attributeNames = descriptions[i];
+        const auto attributeType = std::get<0>(attributeNames);
+
+        // TODO: implement non-category probaility calculation
+        if (attributeType != loader::CATEGORY)
+            continue;
+
+        const auto elementCount = std::get<2>(attributeNames).size();
+
+        auto& elementsProbability = p_xc[i];
+        elementsProbability.resize(elementCount);
+
+        for (auto& dataRow : trainingData)
+        {
+            // For every value of attribute
+            for (size_t j = 0; j < elementCount; j++)
+            {
+                // Name of currently processed classifier
+                const auto& processedElementName = std::get<2>(attributeNames)[j];
+
+                // Class name in training data
+                const auto& elementValue = dataRow[i];
+                if (elementValue == processedElementName)
+                {
+                    elementsProbability[j]++;
+                    break;
+                }
+            }
+        }
+
+        // For every value of attribute
+        for (size_t j = 0; j < elementCount; j++)
+        {
+            elementsProbability[j] /= static_cast<double>(allVectorsCount);
+        }
+    }
+
+    return p_xc;
 }
