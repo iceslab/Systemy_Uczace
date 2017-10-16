@@ -2,6 +2,8 @@
 #include <cstdio>
 #include <climits>
 #include <cassert>
+
+#define NOMINMAX // Disable macros for min and max
 #include <Windows.h>
 
 #define QUOTE(x) #x

@@ -104,7 +104,7 @@ namespace loader
                 type = REAL;
 
             // Emplace description type (type, name, vector of allowed values)
-            description.emplace_back(std::make_tuple(type, record[1], std::vector<std::string>()));
+            description.emplace_back(std::make_tuple(type, record[1], std::vector<descriptionV>()));
 
             while (true)
             {

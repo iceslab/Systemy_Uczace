@@ -5,6 +5,7 @@
 #include <exception>
 #include <sstream>
 #include <tuple>
+#include <variant>
 
 namespace loader
 {
@@ -18,7 +19,8 @@ namespace loader
         UNDEFINED
     };
 
-    typedef std::tuple<DataTypeE, std::string, std::vector<std::string>> dataDescriptionElementT;
+    typedef std::variant<std::string, std::pair<int, int>, std::pair<double, double>> descriptionV;
+    typedef std::tuple<DataTypeE, std::string, std::vector<descriptionV>> dataDescriptionElementT;
 
     class DataDescription : public std::vector<dataDescriptionElementT>
     {

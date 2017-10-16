@@ -36,7 +36,7 @@ NaiveBayesAlgorithm::getClassProbability(const loader::dataDescriptionT &descrip
     for (size_t i = 0; i < classCount; i++)
     {
         // Name of currently processed classifier
-        const auto& processedClassName = std::get<2>(classNames)[i];
+        const auto& processedClassName = std::get<std::string>(std::get<2>(classNames)[i]);
         size_t processedClassCount = 0;
         for (auto& dataRow : trainingData)
         {
@@ -131,14 +131,14 @@ NaiveBayesAlgorithm::categoryProbability(const loader::dataDescriptionElementT &
     {
         const auto& elementValue = std::get<std::string>(trainingData[row].get());
         const auto desiredClassName = std::get<std::string>(classData[row].get());
-        auto it = std::find(classNames.begin(), classNames.end(), desiredClassName);
+        auto it = std::find(classNames.begin(), classNames.end(), loader::descriptionV(desiredClassName));
         ASSERT(it != classNames.end());
         const auto classIndex = it - classNames.begin();
 
         // For every value of attribute
         for (size_t i = 0; i < attributesCount; i++)
         {
-            const auto& processedElementName = std::get<2>(description)[i];
+            const auto& processedElementName = std::get<std::string>(std::get<2>(description)[i]);
 
             // Count which attribute it is
             if (elementValue == processedElementName)
