@@ -1,0 +1,16 @@
+zbiory do testowania, warto sprawdzić czy klasyfikator chodzi
+0. IRIS
+1. GLASS
+2. WINE
+3. DIAB
+
+Można wziąć 0, jeden z 1-3 i jakiś jeszcze inny, razem 3
+Nie brać missing values
+
+ACCURACY
+PRECISION ]
+RECALL    ] = FSC - F-score
+
+https://archive.ics.uci.edu/ml/datasets.html?format=&task=cla&att=&area=&numAtt=&numIns=&type=&sort=dateUp&view=table
+https://en.wikipedia.org/wiki/F1_score
+
