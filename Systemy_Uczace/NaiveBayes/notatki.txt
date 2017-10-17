@@ -17,3 +17,5 @@ RECALL    ] = F-score
 https://archive.ics.uci.edu/ml/datasets.html?format=&task=cla&att=&area=&numAtt=&numIns=&type=&sort=dateUp&view=table
 https://en.wikipedia.org/wiki/F1_score
 https://www.statsoft.pl/textbook/stathome_stat.html?https%3A%2F%2Fwww.statsoft.pl%2Ftextbook%2Fstnaiveb.html
+
+iris, wine, car, transfusion
