@@ -7,15 +7,17 @@ class NaiveBayesAlgorithm :
     public interfaces::Algorithm
 {
 public:
-    NaiveBayesAlgorithm(const loader::DataLoader & loader);
+    NaiveBayesAlgorithm(const loader::dataDescriptionT & description,
+                        const loader::trainingDataT & trainingData);
     ~NaiveBayesAlgorithm();
 
     std::unique_ptr<interfaces::Model> produceModel() override;
 
-private:
     typedef std::vector<double> classProbabilitiesT;
     typedef std::vector<classProbabilitiesT> elementProbabilitiesT;
     typedef std::vector<elementProbabilitiesT> attributesProbabilitiesT;
+private:
+    
 
     classProbabilitiesT getClassProbability(const loader::dataDescriptionT &descriptions,
                                             const loader::trainingDataT &trainingData);

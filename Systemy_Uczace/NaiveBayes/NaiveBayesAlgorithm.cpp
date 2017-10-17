@@ -1,7 +1,8 @@
 #include "NaiveBayesAlgorithm.h"
 
-NaiveBayesAlgorithm::NaiveBayesAlgorithm(const loader::DataLoader & loader) :
-    interfaces::Algorithm(loader)
+NaiveBayesAlgorithm::NaiveBayesAlgorithm(const loader::dataDescriptionT & description,
+                                         const loader::trainingDataT & trainingData) :
+    interfaces::Algorithm(description, trainingData)
 {
 }
 
@@ -11,13 +12,9 @@ NaiveBayesAlgorithm::~NaiveBayesAlgorithm()
 
 std::unique_ptr<interfaces::Model> NaiveBayesAlgorithm::produceModel()
 {
-    const auto descriptions = loader.getDataDescription();
-    const auto trainingData = loader.getDataMatrix();
-
-
     //P(C | X) = (P(X | C) * P(C)) / P(X)
 
-    auto retVal = std::make_unique<interfaces::Model>();
+    auto retVal = std::make_unique<NaiveBayesModel>(getClassProbability();
     return retVal;
 }
 

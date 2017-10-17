@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Algorithm.cpp" />
+    <ClCompile Include="Crossvalidator.cpp" />
     <ClCompile Include="DataDescription.cpp" />
     <ClCompile Include="DataLoader.cpp" />
     <ClCompile Include="DataVector.cpp" />
@@ -127,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithm.h" />
+    <ClInclude Include="Crossvalidator.h" />
     <ClInclude Include="DataDescription.h" />
     <ClInclude Include="DataLoader.h" />
     <ClInclude Include="DataVector.h" />

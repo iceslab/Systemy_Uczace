@@ -18,4 +18,7 @@ https://archive.ics.uci.edu/ml/datasets.html?format=&task=cla&att=&area=&numAtt=
 https://en.wikipedia.org/wiki/F1_score
 https://www.statsoft.pl/textbook/stathome_stat.html?https%3A%2F%2Fwww.statsoft.pl%2Ftextbook%2Fstnaiveb.html
 
+nie ograniczać się tylko do 2 klas
 iris, wine, car, transfusion
+
+sprawozdanie w PDF, nie drukować, pokazać na komputerze

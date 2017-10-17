@@ -8,13 +8,14 @@ namespace interfaces
     class Algorithm
     {
     public:
-        Algorithm(const loader::DataLoader &loader);
+        Algorithm(const loader::dataDescriptionT & description, 
+                  const loader::trainingDataT & trainingData);
         ~Algorithm();
 
         virtual std::unique_ptr<Model> produceModel() = 0;
 
     protected:
-        loader::DataLoader loader;
+        loader::trainingDataT trainingData;
     };
 };
 

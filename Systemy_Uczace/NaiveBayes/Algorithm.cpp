@@ -2,7 +2,8 @@
 
 namespace interfaces
 {
-    Algorithm::Algorithm(const loader::DataLoader & loader) : loader(loader)
+    Algorithm::Algorithm(const loader::dataDescriptionT & description,
+                         const loader::trainingDataT & trainingData) : trainingData(trainingData)
     {
     }
 
