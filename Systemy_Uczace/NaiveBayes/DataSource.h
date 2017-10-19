@@ -31,7 +31,7 @@ namespace source
         dataDescriptionT& getDataDescription();
         dataMatrixT& getDataMatrix();
 
-        static DataV variantFromString(source::DataTypeE type, std::string value);
+        static dataV variantFromString(source::DataTypeE type, std::string value);
     private:
         dataDescriptionT description;
         dataMatrixT matrix;

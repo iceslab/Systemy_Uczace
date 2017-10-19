@@ -56,9 +56,9 @@ namespace source
         return matrix;
     }
 
-    DataV DataSource::variantFromString(source::DataTypeE type, std::string value)
+    dataV DataSource::variantFromString(source::DataTypeE type, std::string value)
     {
-        DataV var;
+        dataV var;
         switch (type)
         {
             case CATEGORY:

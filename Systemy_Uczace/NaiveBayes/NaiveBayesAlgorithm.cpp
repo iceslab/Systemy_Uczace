@@ -127,8 +127,8 @@ namespace algorithm
     {
         static_assert(std::is_base_of<std::string, T>::value ||
                       std::is_base_of<std::pair<int, int>, T>::value ||
-                      std::is_base_of<std::pair<double, double>, T>::value
-                      , "");
+                      std::is_base_of<std::pair<double, double>, T>::value,
+                      "");
 
         const auto attributesCount = std::get<2>(description).size();
         const auto classNames = std::get<2>(classDescription);

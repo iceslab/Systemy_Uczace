@@ -11,6 +11,10 @@ namespace abstracts
     Algorithm::~Algorithm()
     {
     }
+    const source::dataDescriptionT & Algorithm::getDescriptions() const
+    {
+        return descriptions;
+    }
 };
 
 

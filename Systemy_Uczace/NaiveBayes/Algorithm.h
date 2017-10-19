@@ -15,6 +15,8 @@ namespace abstracts
 
         virtual void produceModel() = 0;
 
+        const source::dataDescriptionT& getDescriptions() const;
+
     protected:
         source::dataDescriptionT descriptions;
         source::trainingDataT trainingData;

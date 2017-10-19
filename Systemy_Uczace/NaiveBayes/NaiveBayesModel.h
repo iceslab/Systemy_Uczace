@@ -13,8 +13,9 @@ namespace model
                         const algorithm::NaiveBayesAlgorithm & algorithm);
         NaiveBayesModel(const source::testDataT & testData,
                         const algorithm::attributesProbabilitiesT & p_xc,
-                        const algorithm::classProbabilitiesT & p_c);
-        ~NaiveBayesModel();
+                        const algorithm::classProbabilitiesT & p_c,
+                        const source::dataDescriptionT & descriptions);
+        ~NaiveBayesModel() = default;
 
         source::testDataT classify();
 
@@ -23,5 +24,15 @@ namespace model
         const source::testDataT testData;
         const algorithm::attributesProbabilitiesT p_xc;
         const algorithm::classProbabilitiesT p_c;
+        const source::dataDescriptionT descriptions;
+
+        size_t getElementIndex(source::DataTypeE type,
+                               const source::dataV & data,
+                               const source::dataDescriptionElementT & description);
+
+        template<typename T>
+        size_t getElementIndex(const source::dataV & data,
+                               const source::dataDescriptionElementT & description);
     };
+
 }

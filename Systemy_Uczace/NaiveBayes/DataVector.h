@@ -11,13 +11,13 @@
 
 namespace source
 {
-    typedef std::variant<std::string, int, double, std::pair<int, int>, std::pair<double, double>> DataV;
+    typedef std::variant<std::string, int, double, std::pair<int, int>, std::pair<double, double>> dataV;
 
-    class DataVector : public std::vector<DataV>
+    class DataVector : public std::vector<dataV>
     {
     public:
         DataVector() = default;
-        DataVector(size_t size) : std::vector<DataV>(size) {};
+        DataVector(size_t size) : std::vector<dataV>(size) {};
         ~DataVector() = default;
     };
 
@@ -25,8 +25,8 @@ namespace source
     typedef std::vector<dataVectorT> dataMatrixT;
 
     typedef dataMatrixT trainingDataT;
-    typedef std::vector<std::reference_wrapper<const DataV>> constDataColumnT;
-    typedef std::vector<std::reference_wrapper<DataV>> dataColumnT;
+    typedef std::vector<std::reference_wrapper<const dataV>> constDataColumnT;
+    typedef std::vector<std::reference_wrapper<dataV>> dataColumnT;
     typedef constDataColumnT trainingColumnT;
 
     typedef dataMatrixT testDataT;
