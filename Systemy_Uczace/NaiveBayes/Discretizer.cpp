@@ -189,19 +189,12 @@ void Discretizer::discretizeIntegerData(source::dataDescriptionElementT & descri
             bool upperBoundResult = false;
             const auto& boundPair = std::get<std::pair<int, int>>(buckets[i]);
             const auto& lowerBound = boundPair.first;
-            const auto& upperBound = boundPair.first;
+            const auto& upperBound = boundPair.second;
 
-            // First bucket inclusive
-            if (i == 0)
-            {
-                lowerBoundResult = value >= lowerBound;
-            }
-            else
-            {
-                lowerBoundResult = value > lowerBound;
-            }
+            // Lower bound always inclusive
+            lowerBoundResult = value >= lowerBound;
 
-            // Last bucket inclusive
+            // Upper bound only on last bucket inclusive
             if (i == buckets.size() - 1)
             {
                 upperBoundResult = value <= upperBound;
@@ -220,7 +213,7 @@ void Discretizer::discretizeIntegerData(source::dataDescriptionElementT & descri
             }
         }
 
-        ASSERT_VERBOSE(anyFound, "Did not find any bucket to assign");
+        ASSERT_VERBOSE(anyFound, "INTEGER: Did not find any bucket to assign");
     }
 }
 
@@ -237,19 +230,12 @@ void Discretizer::discretizeRealData(source::dataDescriptionElementT & descripti
             bool upperBoundResult = false;
             const auto& boundPair = std::get<std::pair<double, double>>(buckets[i]);
             const auto& lowerBound = boundPair.first;
-            const auto& upperBound = boundPair.first;
+            const auto& upperBound = boundPair.second;
 
-            // First bucket inclusive
-            if (i == 0)
-            {
-                lowerBoundResult = value >= lowerBound;
-            }
-            else
-            {
-                lowerBoundResult = value > lowerBound;
-            }
+            // Lower bound always inclusive
+            lowerBoundResult = value >= lowerBound;
 
-            // Last bucket inclusive
+            // Upper bound only on last bucket inclusive
             if (i == buckets.size() - 1)
             {
                 upperBoundResult = value <= upperBound;
@@ -268,6 +254,6 @@ void Discretizer::discretizeRealData(source::dataDescriptionElementT & descripti
             }
         }
 
-        ASSERT_VERBOSE(anyFound, "Did not find any bucket to assign");
+        ASSERT_VERBOSE(anyFound, "REAL: Did not find any bucket to assign");
     }
 }
