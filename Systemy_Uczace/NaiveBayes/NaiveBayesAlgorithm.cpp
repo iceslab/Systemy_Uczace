@@ -42,7 +42,8 @@ namespace algorithm
                 }
             }
 
-            p_c[i] = static_cast<double>(processedClassCount) / static_cast<double>(allClassesCount);
+            p_c[i] = static_cast<double>(processedClassCount) /
+                static_cast<double>(allClassesCount);
         }
 
         return p_c;
@@ -77,25 +78,33 @@ namespace algorithm
     }
 
     elementProbabilitiesT
-        NaiveBayesAlgorithm::getElementProbability(const source::dataDescriptionElementT & description,
-                                                   const source::trainingColumnT & trainingData,
-                                                   const source::dataDescriptionElementT &classDescription,
-                                                   const source::trainingColumnT &classData)
+        NaiveBayesAlgorithm::getElementProbability(
+            const source::dataDescriptionElementT & description,
+            const source::trainingColumnT & trainingData,
+            const source::dataDescriptionElementT &classDescription,
+            const source::trainingColumnT &classData)
     {
         const auto attributeType = std::get<0>(description);
         switch (attributeType)
         {
             case source::CATEGORY:
-                return categoryProbability(description,
-                                           trainingData,
-                                           classDescription,
-                                           classData);
+                return categoryProbability<std::string>(
+                    description,
+                    trainingData,
+                    classDescription,
+                    classData);
             case source::INTEGER_DISCRETE:
+                return categoryProbability<std::pair<int, int>>(
+                    description,
+                    trainingData,
+                    classDescription,
+                    classData);
             case source::REAL_DISCRETE:
-                return numberProbability(description,
-                                         trainingData,
-                                         classDescription,
-                                         classData);
+                return categoryProbability<std::pair<double, double>>(
+                    description,
+                    trainingData,
+                    classDescription,
+                    classData);
             case source::INTEGER:
             case source::REAL:
                 DEBUG_PRINTLN("Normal distribution not implemented yet. "
@@ -109,12 +118,18 @@ namespace algorithm
         return elementProbabilitiesT();
     }
 
+    template <typename T>
     elementProbabilitiesT
         NaiveBayesAlgorithm::categoryProbability(const source::dataDescriptionElementT & description,
                                                  const source::trainingColumnT & trainingData,
                                                  const source::dataDescriptionElementT &classDescription,
                                                  const source::trainingColumnT &classData)
     {
+        static_assert(std::is_base_of<std::string, T>::value ||
+                      std::is_base_of<std::pair<int, int>, T>::value ||
+                      std::is_base_of<std::pair<double, double>, T>::value
+                      , "");
+
         const auto attributesCount = std::get<2>(description).size();
         const auto classNames = std::get<2>(classDescription);
         const auto classCount = classNames.size();
@@ -125,16 +140,23 @@ namespace algorithm
         // For every data in trainingData and ClassData
         for (size_t row = 0; row < allVectorsCount; row++)
         {
-            const auto& elementValue = std::get<std::string>(trainingData[row].get());
-            const auto desiredClassName = std::get<std::string>(classData[row].get());
-            auto it = std::find(classNames.begin(), classNames.end(), source::descriptionV(desiredClassName));
+            const auto& elementValue = std::get<T>(trainingData[row].get());
+            const auto desiredClassName = std::get<T>(classData[row].get());
+            auto it = std::find_if(
+                classNames.begin(),
+                classNames.end(),
+                [desiredClassName](source::descriptionV el)->bool
+            {
+                return std::get<T>(el) == desiredClassName;
+            });
+
             ASSERT(it != classNames.end());
             const auto classIndex = it - classNames.begin();
 
             // For every value of attribute
             for (size_t i = 0; i < attributesCount; i++)
             {
-                const auto& processedElementName = std::get<std::string>(std::get<2>(description)[i]);
+                const auto& processedElementName = std::get<T>(std::get<2>(description)[i]);
 
                 // Count which attribute it is
                 if (elementValue == processedElementName)
@@ -156,15 +178,4 @@ namespace algorithm
 
         return p_xc;
     }
-
-    elementProbabilitiesT
-        NaiveBayesAlgorithm::numberProbability(const source::dataDescriptionElementT & description,
-                                               const source::trainingColumnT & trainingData,
-                                               const source::dataDescriptionElementT & classDescription,
-                                               const source::trainingColumnT &classData)
-    {
-        FATAL_ERROR_VERBOSE("Not implemented yet");
-        return elementProbabilitiesT();
-    }
-
 }

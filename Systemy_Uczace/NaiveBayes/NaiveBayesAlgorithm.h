@@ -27,15 +27,11 @@ namespace algorithm
                                   const source::trainingColumnT &trainingData,
                                   const source::dataDescriptionElementT &classDescription,
                                   const source::trainingColumnT &classData);
+        template <typename T>
         elementProbabilitiesT
             categoryProbability(const source::dataDescriptionElementT &description,
                                 const source::trainingColumnT &trainingData,
                                 const source::dataDescriptionElementT &classDescription,
                                 const source::trainingColumnT &classData);
-        elementProbabilitiesT
-            numberProbability(const source::dataDescriptionElementT &description,
-                              const source::trainingColumnT &trainingData,
-                              const source::dataDescriptionElementT &classDescription,
-                              const source::trainingColumnT &classData);
     };
 }
