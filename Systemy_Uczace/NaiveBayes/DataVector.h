@@ -9,7 +9,7 @@
 #include "asserts.h"
 #include "DataDescription.h"
 
-namespace loader
+namespace source
 {
     typedef std::variant<std::string, int, double, std::pair<int, int>, std::pair<double, double>> DataV;
 

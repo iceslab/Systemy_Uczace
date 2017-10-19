@@ -1,18 +1,17 @@
 #pragma once
-//#include <tuple>
-#include "DataLoader.h"
+#include "DataSource.h"
 
-typedef std::pair<loader::testDataT, loader::trainingDataT> crossvalidatorPairT;
+typedef std::pair<source::testDataT, source::trainingDataT> crossvalidatorPairT;
 
 class Crossvalidator
 {
 public:
-    Crossvalidator(loader::DataLoader dl);
-    Crossvalidator(loader::dataMatrixT matrix);
+    Crossvalidator(source::DataSource dl);
+    Crossvalidator(source::dataMatrixT matrix);
     ~Crossvalidator();
 
     crossvalidatorPairT getData();
 private:
-    loader::dataMatrixT matrix;
+    source::dataMatrixT matrix;
 };
 

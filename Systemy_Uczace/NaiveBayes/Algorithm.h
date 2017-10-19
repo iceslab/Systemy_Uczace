@@ -1,5 +1,5 @@
 #pragma once
-#include "DataLoader.h"
+#include "DataSource.h"
 #include "Model.h"
 #include <memory>
 
@@ -8,15 +8,15 @@ namespace abstracts
     class Algorithm
     {
     public:
-        Algorithm(const loader::dataDescriptionT & description, 
-                  const loader::trainingDataT & trainingData);
+        Algorithm(const source::dataDescriptionT & description, 
+                  const source::trainingDataT & trainingData);
         ~Algorithm();
 
         virtual void produceModel() = 0;
 
     protected:
-        loader::dataDescriptionT descriptions;
-        loader::trainingDataT trainingData;
+        source::dataDescriptionT descriptions;
+        source::trainingDataT trainingData;
     };
 }
 

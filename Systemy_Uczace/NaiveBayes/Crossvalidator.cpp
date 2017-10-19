@@ -1,12 +1,12 @@
 #include "Crossvalidator.h"
 
 
-Crossvalidator::Crossvalidator(loader::DataLoader dl) : Crossvalidator(dl.getDataMatrix())
+Crossvalidator::Crossvalidator(source::DataSource dl) : Crossvalidator(dl.getDataMatrix())
 {
     // Nothing to do
 }
 
-Crossvalidator::Crossvalidator(loader::dataMatrixT matrix)
+Crossvalidator::Crossvalidator(source::dataMatrixT matrix)
 {
     this->matrix = matrix;
 }
@@ -19,6 +19,6 @@ crossvalidatorPairT Crossvalidator::getData()
 {
     // Simple implementaion to get things working
     const size_t testDataSize = matrix.size() / 10U;
-    return crossvalidatorPairT(loader::testDataT(matrix.begin(), matrix.begin() + testDataSize),
-                               loader::trainingDataT(matrix.begin() + testDataSize, matrix.end()));
+    return crossvalidatorPairT(source::testDataT(matrix.begin(), matrix.begin() + testDataSize),
+                               source::trainingDataT(matrix.begin() + testDataSize, matrix.end()));
 }

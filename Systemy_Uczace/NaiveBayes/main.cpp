@@ -1,13 +1,14 @@
-#include "DataLoader.h"
+#include "DataSource.h"
 #include "Crossvalidator.h"
 #include "NaiveBayesAlgorithm.h"
 
-using loader::DataLoader;
+using source::DataSource;
 using algorithm::NaiveBayesAlgorithm;
 
 int main(int argc, char** argv)
 {
-    DataLoader dl("test.txt");
+    DataSource dl("test.txt");
+
     Crossvalidator cv(dl);
     auto data = cv.getData();
     NaiveBayesAlgorithm nba(dl.getDataDescription(), data.second);

@@ -1,14 +1,14 @@
-#include "DataLoader.h"
+#include "DataSource.h"
 
-namespace loader
+namespace source
 {
 
-    DataLoader::DataLoader(std::string filePath) : DataLoader(std::ifstream(filePath))
+    DataSource::DataSource(std::string filePath) : DataSource(std::ifstream(filePath))
     {
         // Nothing to do
     }
 
-    DataLoader::DataLoader(std::ifstream fileStream)
+    DataSource::DataSource(std::ifstream fileStream)
     {
         // If file is not open throw an exception
         if (!fileStream.is_open())
@@ -36,17 +36,17 @@ namespace loader
 
     }
 
-    const DataDescription& DataLoader::getDataDescription() const
+    const DataDescription& DataSource::getDataDescription() const
     {
         return description;
     }
 
-    const dataMatrixT& DataLoader::getDataMatrix() const
+    const dataMatrixT& DataSource::getDataMatrix() const
     {
         return matrix;
     }
 
-    DataV DataLoader::variantFromString(loader::DataTypeE type, std::string value)
+    DataV DataSource::variantFromString(source::DataTypeE type, std::string value)
     {
         DataV var;
         switch (type)
@@ -71,7 +71,7 @@ namespace loader
         return var;
     }
 
-    void DataLoader::loadDescription(std::ifstream &fileStream)
+    void DataSource::loadDescription(std::ifstream &fileStream)
     {
         while (true)
         {
@@ -116,7 +116,7 @@ namespace loader
         }
     }
 
-    void DataLoader::loadMatrix(std::ifstream &fileStream)
+    void DataSource::loadMatrix(std::ifstream &fileStream)
     {
         ASSERT(!description.empty());
         const auto attributesCount = description.size() - 1;

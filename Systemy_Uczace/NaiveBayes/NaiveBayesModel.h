@@ -13,6 +13,6 @@ namespace model
                         algorithm::classProbabilitiesT p_c);
         ~NaiveBayesModel();
 
-        loader::testDataT classify(loader::testDataT testData);
+        source::testDataT classify(source::testDataT testData);
     };
 }

@@ -7,7 +7,7 @@
 #include <tuple>
 #include <variant>
 
-namespace loader
+namespace source
 {
     enum DataTypeE
     {

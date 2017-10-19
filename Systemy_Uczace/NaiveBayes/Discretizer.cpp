@@ -1,15 +1,49 @@
 #include "Discretizer.h"
 
-void Discretizer::discretize(loader::dataDescriptionElementT & description,
-                             loader::dataColumnT & data,
+void Discretizer::discretize(source::dataDescriptionT & descriptions,
+                             source::dataMatrixT & matrix,
+                             size_t buckets)
+{
+    const auto rowsCount = matrix.size();
+    const auto columnsCount = descriptions.size();
+    const auto classDescription = descriptions.back();
+    std::vector<source::dataColumnT> columnData(columnsCount);
+
+    // Create column references
+    for (size_t row = 0; row < rowsCount; row++)
+    {
+        for (size_t column = 0; column < columnsCount; column++)
+        {
+            columnData[column].emplace_back(matrix[row][column]);
+        }
+    }
+
+    // Discretization
+    for (size_t column = 0; column < columnsCount; column++)
+    {
+        discretize(descriptions[column], columnData[column], buckets);
+    }
+
+    // Copy back values
+    for (size_t row = 0; row < rowsCount; row++)
+    {
+        for (size_t column = 0; column < columnsCount; column++)
+        {
+            matrix[row][column] = columnData[column][row];
+        }
+    }
+}
+
+void Discretizer::discretize(source::dataDescriptionElementT & description,
+                             source::dataColumnT & data,
                              size_t buckets)
 {
     const auto type = std::get<0>(description);
     switch (type)
     {
-        case loader::INTEGER:
+        case source::INTEGER:
             break;
-        case loader::REAL:
+        case source::REAL:
             break;
         default:
             DEBUG_PRINTLN("Data types other than INTEGER or REAL are not discretizable");
@@ -17,11 +51,11 @@ void Discretizer::discretize(loader::dataDescriptionElementT & description,
     }
 }
 
-void Discretizer::discretizeInteger(loader::dataDescriptionElementT & description,
-                                    loader::dataColumnT & data,
+void Discretizer::discretizeInteger(source::dataDescriptionElementT & description,
+                                    source::dataColumnT & data,
                                     size_t buckets)
 {
-    std::get<0>(description) = loader::INTEGER_DISCRETE;
+    std::get<0>(description) = source::INTEGER_DISCRETE;
 
     auto minVal = std::numeric_limits<int>::max();
     auto maxVal = std::numeric_limits<int>::min();
@@ -56,8 +90,8 @@ void Discretizer::discretizeInteger(loader::dataDescriptionElementT & descriptio
     for (size_t i = 0; i < buckets; i++)
     {
         auto bounds = std::make_pair(lowerBound, upperBound);
-        const loader::DataV boundsV(bounds);
-        data[i] = std::reference_wrapper<const loader::DataV>(boundsV);
+        const source::DataV boundsV(bounds);
+        data[i] = std::reference_wrapper<const source::DataV>(boundsV);
         lowerBound = upperBound;
         upperBoundD += delta;
         upperBound = static_cast<int>(std::round(upperBoundD));
@@ -65,16 +99,16 @@ void Discretizer::discretizeInteger(loader::dataDescriptionElementT & descriptio
 
     upperBound = maxVal;
     auto bounds = std::make_pair(lowerBound, upperBound);
-    const loader::DataV boundsV(bounds);
+    const source::DataV boundsV(bounds);
 
-    data.back() = std::reference_wrapper<const loader::DataV>(boundsV);
+    data.back() = std::reference_wrapper<const source::DataV>(boundsV);
 }
 
-void Discretizer::discretizeReal(loader::dataDescriptionElementT & description,
-                                 loader::dataColumnT & data,
+void Discretizer::discretizeReal(source::dataDescriptionElementT & description,
+                                 source::dataColumnT & data,
                                  size_t buckets)
 {
-    std::get<0>(description) = loader::REAL_DISCRETE;
+    std::get<0>(description) = source::REAL_DISCRETE;
 
     auto minVal = std::numeric_limits<double>::max();
     auto maxVal = std::numeric_limits<double>::min();
@@ -101,15 +135,15 @@ void Discretizer::discretizeReal(loader::dataDescriptionElementT & description,
     for (size_t i = 0; i < buckets; i++)
     {
         auto bounds = std::make_pair(lowerBound, upperBound);
-        const loader::DataV boundsV(bounds);
-        data[i] = std::reference_wrapper<const loader::DataV>(boundsV);
+        const source::DataV boundsV(bounds);
+        data[i] = std::reference_wrapper<const source::DataV>(boundsV);
         lowerBound = upperBound;
         upperBound += delta;
     }
 
     upperBound = maxVal;
     auto bounds = std::make_pair(lowerBound, upperBound);
-    const loader::DataV boundsV(bounds);
+    const source::DataV boundsV(bounds);
 
-    data.back() = std::reference_wrapper<const loader::DataV>(boundsV);
+    data.back() = std::reference_wrapper<const source::DataV>(boundsV);
 }

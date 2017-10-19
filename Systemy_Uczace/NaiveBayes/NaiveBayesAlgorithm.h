@@ -12,32 +12,32 @@ namespace algorithm
         public abstracts::Algorithm
     {
     public:
-        NaiveBayesAlgorithm(const loader::dataDescriptionT & description,
-                            const loader::trainingDataT & trainingData);
+        NaiveBayesAlgorithm(const source::dataDescriptionT & description,
+                            const source::trainingDataT & trainingData);
         ~NaiveBayesAlgorithm();
 
         void produceModel() override;
     private:
 
 
-        classProbabilitiesT getClassProbability(const loader::dataDescriptionT &descriptions,
-                                                const loader::trainingDataT &trainingData);
-        attributesProbabilitiesT getAttributesProbability(const loader::dataDescriptionT &descriptions,
-                                                          const loader::trainingDataT &trainingData);
+        classProbabilitiesT getClassProbability(const source::dataDescriptionT &descriptions,
+                                                const source::trainingDataT &trainingData);
+        attributesProbabilitiesT getAttributesProbability(const source::dataDescriptionT &descriptions,
+                                                          const source::trainingDataT &trainingData);
 
-        elementProbabilitiesT getElementProbability(const loader::dataDescriptionElementT &description,
-                                                    const loader::trainingColumnT &trainingData,
-                                                    const loader::dataDescriptionElementT &classDescription,
-                                                    const loader::trainingColumnT &classData);
-        elementProbabilitiesT categoryProbability(const loader::dataDescriptionElementT &description,
-                                                  const loader::trainingColumnT &trainingData,
-                                                  const loader::dataDescriptionElementT &classDescription,
-                                                  const loader::trainingColumnT &classData);
-        elementProbabilitiesT numberProbability(const loader::dataDescriptionElementT &description,
-                                                const loader::trainingColumnT &trainingData,
-                                                const loader::dataDescriptionElementT &classDescription,
-                                                const loader::trainingColumnT &classData);
-        classProbabilitiesT classProbability(const loader::dataDescriptionElementT &description,
-                                             const loader::trainingColumnT &trainingData);
+        elementProbabilitiesT getElementProbability(const source::dataDescriptionElementT &description,
+                                                    const source::trainingColumnT &trainingData,
+                                                    const source::dataDescriptionElementT &classDescription,
+                                                    const source::trainingColumnT &classData);
+        elementProbabilitiesT categoryProbability(const source::dataDescriptionElementT &description,
+                                                  const source::trainingColumnT &trainingData,
+                                                  const source::dataDescriptionElementT &classDescription,
+                                                  const source::trainingColumnT &classData);
+        elementProbabilitiesT numberProbability(const source::dataDescriptionElementT &description,
+                                                const source::trainingColumnT &trainingData,
+                                                const source::dataDescriptionElementT &classDescription,
+                                                const source::trainingColumnT &classData);
+        classProbabilitiesT classProbability(const source::dataDescriptionElementT &description,
+                                             const source::trainingColumnT &trainingData);
     };
 }

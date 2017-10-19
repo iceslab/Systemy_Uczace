@@ -118,7 +118,7 @@
     <ClCompile Include="Algorithm.cpp" />
     <ClCompile Include="Crossvalidator.cpp" />
     <ClCompile Include="DataDescription.cpp" />
-    <ClCompile Include="DataLoader.cpp" />
+    <ClCompile Include="DataSource.cpp" />
     <ClCompile Include="DataVector.cpp" />
     <ClCompile Include="Discretizer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -130,7 +130,7 @@
     <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Crossvalidator.h" />
     <ClInclude Include="DataDescription.h" />
-    <ClInclude Include="DataLoader.h" />
+    <ClInclude Include="DataSource.h" />
     <ClInclude Include="DataVector.h" />
     <ClInclude Include="asserts.h" />
     <ClInclude Include="Discretizer.h" />

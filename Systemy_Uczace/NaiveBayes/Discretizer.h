@@ -1,5 +1,5 @@
 #pragma once
-#include "DataLoader.h"
+#include "DataSource.h"
 #include <algorithm>
 
 class Discretizer
@@ -8,16 +8,20 @@ public:
     Discretizer() = delete;
     ~Discretizer() = delete;
 
-    static void discretize(loader::dataDescriptionElementT &description,
-                           loader::dataColumnT &data,
+    static void discretize(source::dataDescriptionT &descriptions,
+                           source::dataMatrixT &matrix,
                            size_t buckets);
 
 private:
-    static void discretizeInteger(loader::dataDescriptionElementT &description,
-                                  loader::dataColumnT &data,
+    static void discretize(source::dataDescriptionElementT &description,
+                           source::dataColumnT &data,
+                           size_t buckets);
+
+    static void discretizeInteger(source::dataDescriptionElementT &description,
+                                  source::dataColumnT &data,
                                   size_t buckets);
-    static void discretizeReal(loader::dataDescriptionElementT &description,
-                               loader::dataColumnT &data,
+    static void discretizeReal(source::dataDescriptionElementT &description,
+                               source::dataColumnT &data,
                                size_t buckets);
 };
 

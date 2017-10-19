@@ -18,9 +18,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DataLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Algorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,11 +42,11 @@
     <ClCompile Include="Crossvalidator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DataSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Algorithm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -75,6 +72,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Crossvalidator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataSource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

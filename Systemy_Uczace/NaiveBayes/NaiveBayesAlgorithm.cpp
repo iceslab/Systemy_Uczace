@@ -2,8 +2,8 @@
 
 namespace algorithm
 {
-    NaiveBayesAlgorithm::NaiveBayesAlgorithm(const loader::dataDescriptionT & descriptions,
-                                             const loader::trainingDataT & trainingData) :
+    NaiveBayesAlgorithm::NaiveBayesAlgorithm(const source::dataDescriptionT & descriptions,
+                                             const source::trainingDataT & trainingData) :
         abstracts::Algorithm(descriptions, trainingData)
     {
     }
@@ -18,8 +18,8 @@ namespace algorithm
     }
 
     classProbabilitiesT
-        NaiveBayesAlgorithm::getClassProbability(const loader::dataDescriptionT &descriptions,
-                                                 const loader::trainingDataT &trainingData)
+        NaiveBayesAlgorithm::getClassProbability(const source::dataDescriptionT &descriptions,
+                                                 const source::trainingDataT &trainingData)
     {
         // Vector of names for all classifiers
         const auto& classNames = descriptions.back();
@@ -51,13 +51,13 @@ namespace algorithm
     }
 
     attributesProbabilitiesT
-        NaiveBayesAlgorithm::getAttributesProbability(const loader::dataDescriptionT & descriptions,
-                                                      const loader::trainingDataT & trainingData)
+        NaiveBayesAlgorithm::getAttributesProbability(const source::dataDescriptionT & descriptions,
+                                                      const source::trainingDataT & trainingData)
     {
         const auto rowsCount = trainingData.size();
         const auto columnsCount = descriptions.size();
         const auto classDescription = descriptions.back();
-        std::vector<loader::trainingColumnT> columnData(columnsCount);
+        std::vector<source::trainingColumnT> columnData(columnsCount);
 
         for (size_t row = 0; row < rowsCount; row++)
         {
@@ -81,22 +81,22 @@ namespace algorithm
     }
 
     elementProbabilitiesT
-        NaiveBayesAlgorithm::getElementProbability(const loader::dataDescriptionElementT & description,
-                                                   const loader::trainingColumnT & trainingData,
-                                                   const loader::dataDescriptionElementT &classDescription,
-                                                   const loader::trainingColumnT &classData)
+        NaiveBayesAlgorithm::getElementProbability(const source::dataDescriptionElementT & description,
+                                                   const source::trainingColumnT & trainingData,
+                                                   const source::dataDescriptionElementT &classDescription,
+                                                   const source::trainingColumnT &classData)
     {
         const auto attributeType = std::get<0>(description);
         switch (attributeType)
         {
-            case loader::CATEGORY:
+            case source::CATEGORY:
                 return categoryProbability(description,
                                            trainingData,
                                            classDescription,
                                            classData);
                 break;
-            case loader::INTEGER:
-            case loader::REAL:
+            case source::INTEGER:
+            case source::REAL:
                 return numberProbability(description,
                                          trainingData,
                                          classDescription,
@@ -110,10 +110,10 @@ namespace algorithm
     }
 
     elementProbabilitiesT
-        NaiveBayesAlgorithm::categoryProbability(const loader::dataDescriptionElementT & description,
-                                                 const loader::trainingColumnT & trainingData,
-                                                 const loader::dataDescriptionElementT &classDescription,
-                                                 const loader::trainingColumnT &classData)
+        NaiveBayesAlgorithm::categoryProbability(const source::dataDescriptionElementT & description,
+                                                 const source::trainingColumnT & trainingData,
+                                                 const source::dataDescriptionElementT &classDescription,
+                                                 const source::trainingColumnT &classData)
     {
         const auto attributesCount = std::get<2>(description).size();
         const auto classNames = std::get<2>(classDescription);
@@ -127,7 +127,7 @@ namespace algorithm
         {
             const auto& elementValue = std::get<std::string>(trainingData[row].get());
             const auto desiredClassName = std::get<std::string>(classData[row].get());
-            auto it = std::find(classNames.begin(), classNames.end(), loader::descriptionV(desiredClassName));
+            auto it = std::find(classNames.begin(), classNames.end(), source::descriptionV(desiredClassName));
             ASSERT(it != classNames.end());
             const auto classIndex = it - classNames.begin();
 
@@ -158,18 +158,18 @@ namespace algorithm
     }
 
     elementProbabilitiesT
-        NaiveBayesAlgorithm::numberProbability(const loader::dataDescriptionElementT & description,
-                                               const loader::trainingColumnT & trainingData,
-                                               const loader::dataDescriptionElementT & classDescription,
-                                               const loader::trainingColumnT &classData)
+        NaiveBayesAlgorithm::numberProbability(const source::dataDescriptionElementT & description,
+                                               const source::trainingColumnT & trainingData,
+                                               const source::dataDescriptionElementT & classDescription,
+                                               const source::trainingColumnT &classData)
     {
         FATAL_ERROR_VERBOSE("Not implemented yet");
         return elementProbabilitiesT();
     }
 
     classProbabilitiesT
-        NaiveBayesAlgorithm::classProbability(const loader::dataDescriptionElementT & description,
-                                              const loader::trainingColumnT & trainingData)
+        NaiveBayesAlgorithm::classProbability(const source::dataDescriptionElementT & description,
+                                              const source::trainingColumnT & trainingData)
     {
         return classProbabilitiesT();
     }

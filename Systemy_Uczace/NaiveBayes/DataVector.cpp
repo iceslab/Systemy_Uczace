@@ -1,5 +1,5 @@
 #include "DataVector.h"
 
-namespace loader
+namespace source
 {
 };

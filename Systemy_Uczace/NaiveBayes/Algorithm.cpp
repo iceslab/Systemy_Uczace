@@ -2,8 +2,8 @@
 
 namespace abstracts
 {
-    Algorithm::Algorithm(const loader::dataDescriptionT & description,
-                         const loader::trainingDataT & trainingData) :
+    Algorithm::Algorithm(const source::dataDescriptionT & description,
+                         const source::trainingDataT & trainingData) :
         descriptions(descriptions), trainingData(trainingData)
     {
     }

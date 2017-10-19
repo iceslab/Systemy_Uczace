@@ -9,7 +9,7 @@
 #include "DataDescription.h"
 #include "DataVector.h"
 
-namespace loader
+namespace source
 {
     const char* const categoryStr = "category";
     const char* const integerStr = "integer";
@@ -18,17 +18,17 @@ namespace loader
 
     const int categoryCount = 2;
 
-    class DataLoader
+    class DataSource
     {
     public:
-        DataLoader(std::string filePath);
-        DataLoader(std::ifstream fileStream);
-        ~DataLoader() = default;
+        DataSource(std::string filePath);
+        DataSource(std::ifstream fileStream);
+        ~DataSource() = default;
 
         const dataDescriptionT& getDataDescription() const;
         const dataMatrixT& getDataMatrix() const;
 
-        static DataV variantFromString(loader::DataTypeE type, std::string value);
+        static DataV variantFromString(source::DataTypeE type, std::string value);
     private:
         dataDescriptionT description;
         dataMatrixT matrix;
