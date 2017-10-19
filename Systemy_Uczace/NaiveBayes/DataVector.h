@@ -24,8 +24,9 @@ namespace source
     typedef std::vector<DataVector> dataMatrixT;
 
     typedef dataMatrixT trainingDataT;
-    typedef std::vector<std::reference_wrapper<const DataV>> dataColumnT;
-    typedef dataColumnT trainingColumnT;
+    typedef std::vector<std::reference_wrapper<const DataV>> constDataColumnT;
+    typedef std::vector<std::reference_wrapper<DataV>> dataColumnT;
+    typedef constDataColumnT trainingColumnT;
 
     typedef dataMatrixT testDataT;
 };

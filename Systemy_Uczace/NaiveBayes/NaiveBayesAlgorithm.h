@@ -17,14 +17,11 @@ namespace algorithm
         ~NaiveBayesAlgorithm();
 
         void produceModel() override;
+
+        classProbabilitiesT getClassProbability();
+        attributesProbabilitiesT getAttributesProbability();
+
     private:
-
-
-        classProbabilitiesT getClassProbability(const source::dataDescriptionT &descriptions,
-                                                const source::trainingDataT &trainingData);
-        attributesProbabilitiesT getAttributesProbability(const source::dataDescriptionT &descriptions,
-                                                          const source::trainingDataT &trainingData);
-
         elementProbabilitiesT getElementProbability(const source::dataDescriptionElementT &description,
                                                     const source::trainingColumnT &trainingData,
                                                     const source::dataDescriptionElementT &classDescription,

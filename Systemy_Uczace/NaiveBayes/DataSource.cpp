@@ -46,6 +46,16 @@ namespace source
         return matrix;
     }
 
+    DataDescription& DataSource::getDataDescription()
+    {
+        return description;
+    }
+
+    dataMatrixT& DataSource::getDataMatrix()
+    {
+        return matrix;
+    }
+
     DataV DataSource::variantFromString(source::DataTypeE type, std::string value)
     {
         DataV var;
@@ -119,7 +129,7 @@ namespace source
     void DataSource::loadMatrix(std::ifstream &fileStream)
     {
         ASSERT(!description.empty());
-        const auto attributesCount = description.size() - 1;
+        const auto attributesCount = description.size();
         while (true)
         {
             std::string token;

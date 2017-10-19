@@ -9,7 +9,10 @@ namespace model
         public abstracts::Model
     {
     public:
-        NaiveBayesModel(algorithm::attributesProbabilitiesT p_xc,
+        NaiveBayesModel(source::testDataT & testData,
+                        algorithm::NaiveBayesAlgorithm algorithm);
+        NaiveBayesModel(source::testDataT & testData,
+                        algorithm::attributesProbabilitiesT p_xc,
                         algorithm::classProbabilitiesT p_c);
         ~NaiveBayesModel();
 

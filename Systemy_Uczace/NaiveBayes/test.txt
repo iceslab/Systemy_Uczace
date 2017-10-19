@@ -1,6 +1,8 @@
-category asd open,closed
+integer foo
+real bar
+category baz open,closed
 
-open
-closed
-open
-open
+1,2.0,open
+2,4.0,closed
+3,6.0,open
+4,8.0,open

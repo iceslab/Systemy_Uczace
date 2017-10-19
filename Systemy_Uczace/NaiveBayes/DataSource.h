@@ -28,6 +28,9 @@ namespace source
         const dataDescriptionT& getDataDescription() const;
         const dataMatrixT& getDataMatrix() const;
 
+        dataDescriptionT& getDataDescription();
+        dataMatrixT& getDataMatrix();
+
         static DataV variantFromString(source::DataTypeE type, std::string value);
     private:
         dataDescriptionT description;

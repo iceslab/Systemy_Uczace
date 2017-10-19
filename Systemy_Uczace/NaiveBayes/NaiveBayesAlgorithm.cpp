@@ -17,9 +17,7 @@ namespace algorithm
         //P(C | X) = (P(X | C) * P(C)) / P(X)
     }
 
-    classProbabilitiesT
-        NaiveBayesAlgorithm::getClassProbability(const source::dataDescriptionT &descriptions,
-                                                 const source::trainingDataT &trainingData)
+    classProbabilitiesT NaiveBayesAlgorithm::getClassProbability()
     {
         // Vector of names for all classifiers
         const auto& classNames = descriptions.back();
@@ -50,9 +48,7 @@ namespace algorithm
         return p_c;
     }
 
-    attributesProbabilitiesT
-        NaiveBayesAlgorithm::getAttributesProbability(const source::dataDescriptionT & descriptions,
-                                                      const source::trainingDataT & trainingData)
+    attributesProbabilitiesT NaiveBayesAlgorithm::getAttributesProbability()
     {
         const auto rowsCount = trainingData.size();
         const auto columnsCount = descriptions.size();

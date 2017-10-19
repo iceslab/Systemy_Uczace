@@ -1,11 +1,16 @@
 #include "Discretizer.h"
 
+void Discretizer::discretize(source::DataSource & source, size_t buckets)
+{
+    discretize(source.getDataDescription(), source.getDataMatrix(), buckets);
+}
+
 void Discretizer::discretize(source::dataDescriptionT & descriptions,
                              source::dataMatrixT & matrix,
                              size_t buckets)
 {
     const auto rowsCount = matrix.size();
-    const auto columnsCount = descriptions.size();
+    const auto columnsCount = descriptions.size() - 1; // Last column ommited
     const auto classDescription = descriptions.back();
     std::vector<source::dataColumnT> columnData(columnsCount);
 
@@ -23,15 +28,6 @@ void Discretizer::discretize(source::dataDescriptionT & descriptions,
     {
         discretize(descriptions[column], columnData[column], buckets);
     }
-
-    // Copy back values
-    for (size_t row = 0; row < rowsCount; row++)
-    {
-        for (size_t column = 0; column < columnsCount; column++)
-        {
-            matrix[row][column] = columnData[column][row];
-        }
-    }
 }
 
 void Discretizer::discretize(source::dataDescriptionElementT & description,
@@ -42,8 +38,10 @@ void Discretizer::discretize(source::dataDescriptionElementT & description,
     switch (type)
     {
         case source::INTEGER:
+            discretizeInteger(description, data, buckets);
             break;
         case source::REAL:
+            discretizeReal(description, data, buckets);
             break;
         default:
             DEBUG_PRINTLN("Data types other than INTEGER or REAL are not discretizable");
@@ -87,11 +85,14 @@ void Discretizer::discretizeInteger(source::dataDescriptionElementT & descriptio
     auto upperBoundD = minVal + delta;
     auto upperBound = static_cast<int>(upperBoundD);
 
-    for (size_t i = 0; i < buckets; i++)
+    auto& bucketVector = std::get<2>(description);
+    bucketVector.clear();
+
+    for (size_t i = 0; i < buckets - 1; i++)
     {
         auto bounds = std::make_pair(lowerBound, upperBound);
-        const source::DataV boundsV(bounds);
-        data[i] = std::reference_wrapper<const source::DataV>(boundsV);
+        const source::descriptionV boundsV(bounds);
+        bucketVector.emplace_back(boundsV);
         lowerBound = upperBound;
         upperBoundD += delta;
         upperBound = static_cast<int>(std::round(upperBoundD));
@@ -99,9 +100,8 @@ void Discretizer::discretizeInteger(source::dataDescriptionElementT & descriptio
 
     upperBound = maxVal;
     auto bounds = std::make_pair(lowerBound, upperBound);
-    const source::DataV boundsV(bounds);
-
-    data.back() = std::reference_wrapper<const source::DataV>(boundsV);
+    const source::descriptionV boundsV(bounds);
+    bucketVector.emplace_back(boundsV);
 }
 
 void Discretizer::discretizeReal(source::dataDescriptionElementT & description,
@@ -132,18 +132,20 @@ void Discretizer::discretizeReal(source::dataDescriptionElementT & description,
     auto lowerBound = minVal;
     auto upperBound = minVal + delta;
 
-    for (size_t i = 0; i < buckets; i++)
+    auto& bucketVector = std::get<2>(description);
+    bucketVector.clear();
+
+    for (size_t i = 0; i < buckets - 1; i++)
     {
         auto bounds = std::make_pair(lowerBound, upperBound);
-        const source::DataV boundsV(bounds);
-        data[i] = std::reference_wrapper<const source::DataV>(boundsV);
+        const source::descriptionV boundsV(bounds);
+        bucketVector.emplace_back(boundsV);
         lowerBound = upperBound;
         upperBound += delta;
     }
 
     upperBound = maxVal;
     auto bounds = std::make_pair(lowerBound, upperBound);
-    const source::DataV boundsV(bounds);
-
-    data.back() = std::reference_wrapper<const source::DataV>(boundsV);
+    const source::descriptionV boundsV(bounds);
+    bucketVector.emplace_back(boundsV);
 }

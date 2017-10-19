@@ -8,6 +8,8 @@ public:
     Discretizer() = delete;
     ~Discretizer() = delete;
 
+    static void discretize(source::DataSource &source,
+                           size_t buckets);
     static void discretize(source::dataDescriptionT &descriptions,
                            source::dataMatrixT &matrix,
                            size_t buckets);
