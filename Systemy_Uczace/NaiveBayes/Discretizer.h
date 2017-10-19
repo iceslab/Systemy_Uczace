@@ -5,25 +5,27 @@
 class Discretizer
 {
 public:
-    Discretizer() = delete;
-    ~Discretizer() = delete;
+    Discretizer(source::DataSource &source,
+                size_t buckets);
+    Discretizer(source::dataDescriptionT &descriptions,
+                source::dataMatrixT &matrix,
+                size_t buckets);
+    ~Discretizer() = default;
 
-    static void discretize(source::DataSource &source,
-                           size_t buckets);
-    static void discretize(source::dataDescriptionT &descriptions,
-                           source::dataMatrixT &matrix,
-                           size_t buckets);
+    void discretize();
 
 private:
-    static void discretize(source::dataDescriptionElementT &description,
-                           source::dataColumnT &data,
-                           size_t buckets);
+    source::dataDescriptionT & descriptions;
+    source::dataMatrixT & matrix;
+    const size_t buckets;
 
-    static void discretizeInteger(source::dataDescriptionElementT &description,
-                                  source::dataColumnT &data,
-                                  size_t buckets);
-    static void discretizeReal(source::dataDescriptionElementT &description,
-                               source::dataColumnT &data,
-                               size_t buckets);
+    void discretize(source::dataDescriptionElementT &description,
+                    source::dataColumnT &data);
+
+    void discretizeInteger(source::dataDescriptionElementT &description,
+                           source::dataColumnT &data);
+    void discretizeReal(source::dataDescriptionElementT &description,
+                        source::dataColumnT &data);
+
 };
 

@@ -13,7 +13,8 @@ using model::NaiveBayesModel;
 int main(int argc, char** argv)
 {
     DataSource dl("test.txt");
-    Discretizer::discretize(dl, NUMBER_OF_BUCKETS);
+    Discretizer discretizer(dl, NUMBER_OF_BUCKETS);
+    discretizer.discretize();
     Crossvalidator cv(dl);
     auto data = cv.getData();
     NaiveBayesAlgorithm nba(dl.getDataDescription(), data.second);

@@ -1,13 +1,23 @@
 #include "Discretizer.h"
 
-void Discretizer::discretize(source::DataSource & source, size_t buckets)
+Discretizer::Discretizer(source::DataSource & source,
+                         size_t buckets) :
+    Discretizer(source.getDataDescription(),
+                source.getDataMatrix(),
+                buckets)
 {
-    discretize(source.getDataDescription(), source.getDataMatrix(), buckets);
+    // Nothing to do
 }
 
-void Discretizer::discretize(source::dataDescriptionT & descriptions,
-                             source::dataMatrixT & matrix,
-                             size_t buckets)
+Discretizer::Discretizer(source::dataDescriptionT & descriptions,
+                         source::dataMatrixT & matrix,
+                         size_t buckets) :
+    descriptions(descriptions), matrix(matrix), buckets(buckets)
+{
+    // Nothing to do
+}
+
+void Discretizer::discretize()
 {
     const auto rowsCount = matrix.size();
     const auto columnsCount = descriptions.size() - 1; // Last column ommited
@@ -26,22 +36,21 @@ void Discretizer::discretize(source::dataDescriptionT & descriptions,
     // Discretization
     for (size_t column = 0; column < columnsCount; column++)
     {
-        discretize(descriptions[column], columnData[column], buckets);
+        discretize(descriptions[column], columnData[column]);
     }
 }
 
 void Discretizer::discretize(source::dataDescriptionElementT & description,
-                             source::dataColumnT & data,
-                             size_t buckets)
+                             source::dataColumnT & data)
 {
     const auto type = std::get<0>(description);
     switch (type)
     {
         case source::INTEGER:
-            discretizeInteger(description, data, buckets);
+            discretizeInteger(description, data);
             break;
         case source::REAL:
-            discretizeReal(description, data, buckets);
+            discretizeReal(description, data);
             break;
         default:
             DEBUG_PRINTLN("Data types other than INTEGER or REAL are not discretizable");
@@ -50,8 +59,7 @@ void Discretizer::discretize(source::dataDescriptionElementT & description,
 }
 
 void Discretizer::discretizeInteger(source::dataDescriptionElementT & description,
-                                    source::dataColumnT & data,
-                                    size_t buckets)
+                                    source::dataColumnT & data)
 {
     std::get<0>(description) = source::INTEGER_DISCRETE;
 
@@ -72,14 +80,15 @@ void Discretizer::discretizeInteger(source::dataDescriptionElementT & descriptio
     }
 
     const auto diff = static_cast<size_t>(maxVal - minVal);
+    auto effectiveBuckets = buckets;
     // For integers make sure that buckets ranges are different
-    if (diff < buckets)
+    if (diff < effectiveBuckets)
     {
         DEBUG_PRINTLN("Changing bucket size form %zu to %zu", buckets, diff);
-        buckets = diff;
+        effectiveBuckets = diff;
     }
 
-    const auto delta = diff / static_cast<double>(buckets);
+    const auto delta = diff / static_cast<double>(effectiveBuckets);
 
     auto lowerBound = minVal;
     auto upperBoundD = minVal + delta;
@@ -88,7 +97,7 @@ void Discretizer::discretizeInteger(source::dataDescriptionElementT & descriptio
     auto& bucketVector = std::get<2>(description);
     bucketVector.clear();
 
-    for (size_t i = 0; i < buckets - 1; i++)
+    for (size_t i = 0; i < effectiveBuckets - 1; i++)
     {
         auto bounds = std::make_pair(lowerBound, upperBound);
         const source::descriptionV boundsV(bounds);
@@ -105,8 +114,7 @@ void Discretizer::discretizeInteger(source::dataDescriptionElementT & descriptio
 }
 
 void Discretizer::discretizeReal(source::dataDescriptionElementT & description,
-                                 source::dataColumnT & data,
-                                 size_t buckets)
+                                 source::dataColumnT & data)
 {
     std::get<0>(description) = source::REAL_DISCRETE;
 
