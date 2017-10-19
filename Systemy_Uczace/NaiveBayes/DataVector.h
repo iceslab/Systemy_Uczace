@@ -21,7 +21,8 @@ namespace source
         ~DataVector() = default;
     };
 
-    typedef std::vector<DataVector> dataMatrixT;
+    typedef DataVector dataVectorT;
+    typedef std::vector<dataVectorT> dataMatrixT;
 
     typedef dataMatrixT trainingDataT;
     typedef std::vector<std::reference_wrapper<const DataV>> constDataColumnT;

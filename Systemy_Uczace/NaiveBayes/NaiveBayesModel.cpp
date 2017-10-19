@@ -2,23 +2,44 @@
 
 namespace model
 {
-    NaiveBayesModel::NaiveBayesModel(source::testDataT & testData,
-                                     algorithm::NaiveBayesAlgorithm algorithm) :
-        NaiveBayesModel(testData,
-                        algorithm.getAttributesProbability(),
-                        algorithm.getClassProbability())
+    NaiveBayesModel::NaiveBayesModel(const source::testDataT & testData,
+                                     const algorithm::NaiveBayesAlgorithm & algorithm) :
+        p_xc(p_xc), p_c(p_c)
     {
-
+        // Nothing to do
     }
-    NaiveBayesModel::NaiveBayesModel(source::testDataT & testData,
-                                     algorithm::attributesProbabilitiesT p_xc,
-                                     algorithm::classProbabilitiesT p_c)
-    {
 
+    NaiveBayesModel::NaiveBayesModel(const source::testDataT & testData,
+                                     const algorithm::attributesProbabilitiesT & p_xc,
+                                     const algorithm::classProbabilitiesT & p_c) :
+        testData(testData), p_xc(p_xc), p_c(p_c)
+    {
+        // Nothing to do
     }
 
     NaiveBayesModel::~NaiveBayesModel()
     {
+        // Nothing to do
+    }
 
+    source::testDataT NaiveBayesModel::classify()
+    {
+        // P(C | X) = (P(X | C) * P(C)) / P(X)
+
+        source::testDataT retVal;
+
+        for (auto& row : testData)
+        {
+            retVal.emplace_back(classify(row));
+        }
+
+        return source::testDataT();
+    }
+
+    source::dataVectorT NaiveBayesModel::classify(const source::dataVectorT & data)
+    {
+        // P(C | X) = (P(X | C) * P(C)) / P(X)
+        // P(X | C) =
+        return source::dataVectorT();
     }
 }

@@ -22,19 +22,20 @@ namespace algorithm
         attributesProbabilitiesT getAttributesProbability();
 
     private:
-        elementProbabilitiesT getElementProbability(const source::dataDescriptionElementT &description,
-                                                    const source::trainingColumnT &trainingData,
-                                                    const source::dataDescriptionElementT &classDescription,
-                                                    const source::trainingColumnT &classData);
-        elementProbabilitiesT categoryProbability(const source::dataDescriptionElementT &description,
-                                                  const source::trainingColumnT &trainingData,
-                                                  const source::dataDescriptionElementT &classDescription,
-                                                  const source::trainingColumnT &classData);
-        elementProbabilitiesT numberProbability(const source::dataDescriptionElementT &description,
-                                                const source::trainingColumnT &trainingData,
-                                                const source::dataDescriptionElementT &classDescription,
-                                                const source::trainingColumnT &classData);
-        classProbabilitiesT classProbability(const source::dataDescriptionElementT &description,
-                                             const source::trainingColumnT &trainingData);
+        elementProbabilitiesT
+            getElementProbability(const source::dataDescriptionElementT &description,
+                                  const source::trainingColumnT &trainingData,
+                                  const source::dataDescriptionElementT &classDescription,
+                                  const source::trainingColumnT &classData);
+        elementProbabilitiesT
+            categoryProbability(const source::dataDescriptionElementT &description,
+                                const source::trainingColumnT &trainingData,
+                                const source::dataDescriptionElementT &classDescription,
+                                const source::trainingColumnT &classData);
+        elementProbabilitiesT
+            numberProbability(const source::dataDescriptionElementT &description,
+                              const source::trainingColumnT &trainingData,
+                              const source::dataDescriptionElementT &classDescription,
+                              const source::trainingColumnT &classData);
     };
 }

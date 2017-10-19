@@ -9,13 +9,19 @@ namespace model
         public abstracts::Model
     {
     public:
-        NaiveBayesModel(source::testDataT & testData,
-                        algorithm::NaiveBayesAlgorithm algorithm);
-        NaiveBayesModel(source::testDataT & testData,
-                        algorithm::attributesProbabilitiesT p_xc,
-                        algorithm::classProbabilitiesT p_c);
+        NaiveBayesModel(const source::testDataT & testData,
+                        const algorithm::NaiveBayesAlgorithm & algorithm);
+        NaiveBayesModel(const source::testDataT & testData,
+                        const algorithm::attributesProbabilitiesT & p_xc,
+                        const algorithm::classProbabilitiesT & p_c);
         ~NaiveBayesModel();
 
-        source::testDataT classify(source::testDataT testData);
+        source::testDataT classify();
+
+    private:
+        source::dataVectorT classify(const source::dataVectorT & data);
+        const source::testDataT testData;
+        const algorithm::attributesProbabilitiesT p_xc;
+        const algorithm::classProbabilitiesT p_c;
     };
 }

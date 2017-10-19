@@ -90,13 +90,17 @@ namespace algorithm
                                            trainingData,
                                            classDescription,
                                            classData);
-                break;
-            case source::INTEGER:
-            case source::REAL:
+            case source::INTEGER_DISCRETE:
+            case source::REAL_DISCRETE:
                 return numberProbability(description,
                                          trainingData,
                                          classDescription,
                                          classData);
+            case source::INTEGER:
+            case source::REAL:
+                DEBUG_PRINTLN("Normal distribution not implemented yet. "
+                              "Use discretized values. "
+                              "Returning empty array");
                 break;
             default:
                 FATAL_ERROR();
@@ -163,10 +167,4 @@ namespace algorithm
         return elementProbabilitiesT();
     }
 
-    classProbabilitiesT
-        NaiveBayesAlgorithm::classProbability(const source::dataDescriptionElementT & description,
-                                              const source::trainingColumnT & trainingData)
-    {
-        return classProbabilitiesT();
-    }
 }
