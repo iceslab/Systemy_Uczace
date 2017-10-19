@@ -37,6 +37,7 @@ void Discretizer::discretize()
     for (size_t column = 0; column < columnsCount; column++)
     {
         discretize(descriptions[column], columnData[column]);
+        discretizeData(descriptions[column], columnData[column]);
     }
 }
 
@@ -156,4 +157,117 @@ void Discretizer::discretizeReal(source::dataDescriptionElementT & description,
     auto bounds = std::make_pair(lowerBound, upperBound);
     const source::descriptionV boundsV(bounds);
     bucketVector.emplace_back(boundsV);
+}
+
+void Discretizer::discretizeData(source::dataDescriptionElementT & description, source::dataColumnT & data)
+{
+    const auto type = std::get<0>(description);
+    switch (type)
+    {
+        case source::INTEGER_DISCRETE:
+            discretizeIntegerData(description, data);
+            break;
+        case source::REAL_DISCRETE:
+            discretizeRealData(description, data);
+            break;
+        default:
+            DEBUG_PRINTLN("Data types other than INTEGER_DISCRETE or REAL_DISCRETE are not discretizable");
+            break;
+    }
+}
+
+void Discretizer::discretizeIntegerData(source::dataDescriptionElementT & description, source::dataColumnT & data)
+{
+    const auto& buckets = std::get<2>(description);
+    for (auto& el : data)
+    {
+        bool anyFound = false;
+        auto value = std::get<int>(el.get());
+        for (size_t i = 0; i < buckets.size(); i++)
+        {
+            bool lowerBoundResult = false;
+            bool upperBoundResult = false;
+            const auto& boundPair = std::get<std::pair<int, int>>(buckets[i]);
+            const auto& lowerBound = boundPair.first;
+            const auto& upperBound = boundPair.first;
+
+            // First bucket inclusive
+            if (i == 0)
+            {
+                lowerBoundResult = value >= lowerBound;
+            }
+            else
+            {
+                lowerBoundResult = value > lowerBound;
+            }
+
+            // Last bucket inclusive
+            if (i == buckets.size() - 1)
+            {
+                upperBoundResult = value <= upperBound;
+            }
+            else
+            {
+                upperBoundResult = value < upperBound;
+            }
+
+            // Found bucket
+            if (lowerBoundResult && upperBoundResult)
+            {
+                el.get() = boundPair;
+                anyFound = true;
+                break;
+            }
+        }
+
+        ASSERT_VERBOSE(anyFound, "Did not find any bucket to assign");
+    }
+}
+
+void Discretizer::discretizeRealData(source::dataDescriptionElementT & description, source::dataColumnT & data)
+{
+    const auto& buckets = std::get<2>(description);
+    for (auto& el : data)
+    {
+        bool anyFound = false;
+        auto value = std::get<double>(el.get());
+        for (size_t i = 0; i < buckets.size(); i++)
+        {
+            bool lowerBoundResult = false;
+            bool upperBoundResult = false;
+            const auto& boundPair = std::get<std::pair<double, double>>(buckets[i]);
+            const auto& lowerBound = boundPair.first;
+            const auto& upperBound = boundPair.first;
+
+            // First bucket inclusive
+            if (i == 0)
+            {
+                lowerBoundResult = value >= lowerBound;
+            }
+            else
+            {
+                lowerBoundResult = value > lowerBound;
+            }
+
+            // Last bucket inclusive
+            if (i == buckets.size() - 1)
+            {
+                upperBoundResult = value <= upperBound;
+            }
+            else
+            {
+                upperBoundResult = value < upperBound;
+            }
+
+            // Found bucket
+            if (lowerBoundResult && upperBoundResult)
+            {
+                el.get() = boundPair;
+                anyFound = true;
+                break;
+            }
+        }
+
+        ASSERT_VERBOSE(anyFound, "Did not find any bucket to assign");
+    }
 }
