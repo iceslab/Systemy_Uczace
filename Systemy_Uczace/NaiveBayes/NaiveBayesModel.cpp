@@ -1,9 +1,13 @@
 #include "NaiveBayesModel.h"
 
-NaiveBayesModel::NaiveBayesModel(NaiveBayesAlgorithm::attributesProbabilitiesT p_xc, NaiveBayesAlgorithm::classProbabilitiesT p_c)
+namespace model
 {
-}
+    NaiveBayesModel::NaiveBayesModel(algorithm::attributesProbabilitiesT p_xc,
+                                     algorithm::classProbabilitiesT p_c)
+    {
+    }
 
-NaiveBayesModel::~NaiveBayesModel()
-{
+    NaiveBayesModel::~NaiveBayesModel()
+    {
+    }
 }

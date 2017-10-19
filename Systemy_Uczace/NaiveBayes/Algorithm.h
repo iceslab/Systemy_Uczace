@@ -3,7 +3,7 @@
 #include "Model.h"
 #include <memory>
 
-namespace interfaces
+namespace abstracts
 {
     class Algorithm
     {
@@ -12,11 +12,12 @@ namespace interfaces
                   const loader::trainingDataT & trainingData);
         ~Algorithm();
 
-        virtual std::unique_ptr<Model> produceModel() = 0;
+        virtual void produceModel() = 0;
 
     protected:
+        loader::dataDescriptionT descriptions;
         loader::trainingDataT trainingData;
     };
-};
+}
 
 

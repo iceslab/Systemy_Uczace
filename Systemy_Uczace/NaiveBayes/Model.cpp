@@ -1,6 +1,6 @@
 #include "Model.h"
 
-namespace interfaces
+namespace abstracts
 {
     Model::Model()
     {

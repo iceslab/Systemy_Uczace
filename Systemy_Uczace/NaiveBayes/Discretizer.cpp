@@ -43,7 +43,7 @@ void Discretizer::discretizeInteger(loader::dataDescriptionElementT & descriptio
     // For integers make sure that buckets ranges are different
     if (diff < buckets)
     {
-        DEBUG_PRINTLN("Changing bucket size form %d to %d", buckets, diff);
+        DEBUG_PRINTLN("Changing bucket size form %zu to %zu", buckets, diff);
         buckets = diff;
     }
 

@@ -1,5 +1,5 @@
 #pragma once
-namespace interfaces
+namespace abstracts
 {
     class Model
     {

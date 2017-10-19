@@ -1,9 +1,10 @@
 #include "Algorithm.h"
 
-namespace interfaces
+namespace abstracts
 {
     Algorithm::Algorithm(const loader::dataDescriptionT & description,
-                         const loader::trainingDataT & trainingData) : trainingData(trainingData)
+                         const loader::trainingDataT & trainingData) :
+        descriptions(descriptions), trainingData(trainingData)
     {
     }
 

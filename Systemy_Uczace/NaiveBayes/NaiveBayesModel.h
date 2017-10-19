@@ -1,17 +1,18 @@
 #pragma once
 #include "Model.h"
-#include "NaiveBayesAlgorithm.h"
 #include "DataVector.h"
+#include "NaiveBayesAlgorithm.h"
 
-
-class NaiveBayesModel :
-    public interfaces::Model
+namespace model
 {
-public:
-    NaiveBayesModel(NaiveBayesAlgorithm::attributesProbabilitiesT p_xc,
-                    NaiveBayesAlgorithm::classProbabilitiesT p_c);
-    ~NaiveBayesModel();
+    class NaiveBayesModel :
+        public abstracts::Model
+    {
+    public:
+        NaiveBayesModel(algorithm::attributesProbabilitiesT p_xc,
+                        algorithm::classProbabilitiesT p_c);
+        ~NaiveBayesModel();
 
-    loader::testDataT classify(loader::testDataT testData);
-};
-
+        loader::testDataT classify(loader::testDataT testData);
+    };
+}
