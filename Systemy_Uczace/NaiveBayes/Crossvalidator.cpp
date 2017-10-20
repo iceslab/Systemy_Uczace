@@ -18,7 +18,8 @@ Crossvalidator::~Crossvalidator()
 crossvalidatorPairT Crossvalidator::getData()
 {
     // Simple implementaion to get things working
-    const size_t testDataSize = matrix.size() / 10U;
+    const size_t testDataSize = std::max(matrix.size() / 10LLU, 1LLU);
+
     return crossvalidatorPairT(source::testDataT(matrix.begin(), matrix.begin() + testDataSize),
                                source::trainingDataT(matrix.begin() + testDataSize, matrix.end()));
 }

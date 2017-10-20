@@ -17,8 +17,11 @@ int main(int argc, char** argv)
     discretizer.discretize();
     Crossvalidator cv(dl);
     auto data = cv.getData();
-    NaiveBayesAlgorithm nba(dl.getDataDescription(), data.second);
-    NaiveBayesModel nbm(data.first, nba);
+    auto testData = data.first;
+    auto trainingData = data.second;
+    NaiveBayesAlgorithm nba(dl.getDataDescription(), trainingData);
+    NaiveBayesModel nbm(testData, nba);
+    auto result = nbm.classify();
 
     return 0;
 }

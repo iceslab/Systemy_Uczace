@@ -4,7 +4,7 @@ namespace abstracts
 {
     Algorithm::Algorithm(const source::dataDescriptionT & description,
                          const source::trainingDataT & trainingData) :
-        descriptions(descriptions), trainingData(trainingData)
+        descriptions(description), trainingData(trainingData)
     {
     }
 

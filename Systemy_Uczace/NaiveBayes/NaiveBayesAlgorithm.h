@@ -14,24 +14,22 @@ namespace algorithm
     public:
         NaiveBayesAlgorithm(const source::dataDescriptionT & description,
                             const source::trainingDataT & trainingData);
-        ~NaiveBayesAlgorithm();
+        ~NaiveBayesAlgorithm() = default;
 
-        void produceModel() override;
-
-        classProbabilitiesT getClassProbability();
-        attributesProbabilitiesT getAttributesProbability();
+        classProbabilitiesT getClassProbability() const;
+        attributesProbabilitiesT getAttributesProbability() const;
 
     private:
         elementProbabilitiesT
             getElementProbability(const source::dataDescriptionElementT &description,
                                   const source::trainingColumnT &trainingData,
                                   const source::dataDescriptionElementT &classDescription,
-                                  const source::trainingColumnT &classData);
+                                  const source::trainingColumnT &classData) const;
         template <typename T>
         elementProbabilitiesT
             categoryProbability(const source::dataDescriptionElementT &description,
                                 const source::trainingColumnT &trainingData,
                                 const source::dataDescriptionElementT &classDescription,
-                                const source::trainingColumnT &classData);
+                                const source::trainingColumnT &classData) const;
     };
 }

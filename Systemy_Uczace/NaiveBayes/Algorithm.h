@@ -13,8 +13,6 @@ namespace abstracts
                   const source::trainingDataT & trainingData);
         ~Algorithm();
 
-        virtual void produceModel() = 0;
-
         const source::dataDescriptionT& getDescriptions() const;
 
     protected:

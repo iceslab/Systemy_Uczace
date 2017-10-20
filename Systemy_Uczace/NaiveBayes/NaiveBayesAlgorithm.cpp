@@ -6,18 +6,10 @@ namespace algorithm
                                              const source::trainingDataT & trainingData) :
         abstracts::Algorithm(descriptions, trainingData)
     {
+        // Nothing to do
     }
 
-    NaiveBayesAlgorithm::~NaiveBayesAlgorithm()
-    {
-    }
-
-    void NaiveBayesAlgorithm::produceModel()
-    {
-        //P(C | X) = (P(X | C) * P(C)) / P(X)
-    }
-
-    classProbabilitiesT NaiveBayesAlgorithm::getClassProbability()
+    classProbabilitiesT NaiveBayesAlgorithm::getClassProbability() const
     {
         // Vector of names for all classifiers
         const auto& classNames = descriptions.back();
@@ -49,7 +41,7 @@ namespace algorithm
         return p_c;
     }
 
-    attributesProbabilitiesT NaiveBayesAlgorithm::getAttributesProbability()
+    attributesProbabilitiesT NaiveBayesAlgorithm::getAttributesProbability() const
     {
         const auto rowsCount = trainingData.size();
         const auto columnsCount = descriptions.size();
@@ -82,7 +74,7 @@ namespace algorithm
             const source::dataDescriptionElementT & description,
             const source::trainingColumnT & trainingData,
             const source::dataDescriptionElementT &classDescription,
-            const source::trainingColumnT &classData)
+            const source::trainingColumnT &classData) const
     {
         const auto attributeType = std::get<0>(description);
         switch (attributeType)
@@ -123,7 +115,7 @@ namespace algorithm
         NaiveBayesAlgorithm::categoryProbability(const source::dataDescriptionElementT & description,
                                                  const source::trainingColumnT & trainingData,
                                                  const source::dataDescriptionElementT &classDescription,
-                                                 const source::trainingColumnT &classData)
+                                                 const source::trainingColumnT &classData) const
     {
         static_assert(std::is_base_of<std::string, T>::value ||
                       std::is_base_of<std::pair<int, int>, T>::value ||
@@ -133,7 +125,8 @@ namespace algorithm
         const auto attributesCount = std::get<2>(description).size();
         const auto classNames = std::get<2>(classDescription);
         const auto classCount = classNames.size();
-        elementProbabilitiesT p_xc(attributesCount, classProbabilitiesT(classCount));
+        // 1.0L added according to Laplace estimator
+        elementProbabilitiesT p_xc(attributesCount, classProbabilitiesT(classCount, 1.0L));
 
         const auto allVectorsCount = trainingData.size();
 
@@ -141,13 +134,13 @@ namespace algorithm
         for (size_t row = 0; row < allVectorsCount; row++)
         {
             const auto& elementValue = std::get<T>(trainingData[row].get());
-            const auto desiredClassName = std::get<T>(classData[row].get());
+            const auto desiredClassName = std::get<std::string>(classData[row].get());
             auto it = std::find_if(
                 classNames.begin(),
                 classNames.end(),
                 [desiredClassName](source::descriptionV el)->bool
             {
-                return std::get<T>(el) == desiredClassName;
+                return std::get<std::string>(el) == desiredClassName;
             });
 
             ASSERT(it != classNames.end());
