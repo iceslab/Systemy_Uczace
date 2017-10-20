@@ -124,9 +124,16 @@ namespace algorithm
 
         const auto attributesCount = std::get<2>(description).size();
         const auto classNames = std::get<2>(classDescription);
-        const auto classCount = classNames.size();
+        const auto allClassesCount = classNames.size();
+        std::unordered_map<std::string, size_t> classInstancesCount;
+
+        for (size_t i = 0; i < allClassesCount; i++)
+        {
+            classInstancesCount.emplace(std::get<std::string>(classNames[i]), 0);
+        }
+
         // 1.0L added according to Laplace estimator
-        elementProbabilitiesT p_xc(attributesCount, classProbabilitiesT(classCount, 1.0L));
+        elementProbabilitiesT p_xc(attributesCount, classProbabilitiesT(allClassesCount, 1.0L));
 
         const auto allVectorsCount = trainingData.size();
 
@@ -146,6 +153,11 @@ namespace algorithm
             ASSERT(it != classNames.end());
             const auto classIndex = it - classNames.begin();
 
+            // Count specific class instances
+            auto mapIt = classInstancesCount.find(std::get<std::string>(*it));
+            ASSERT(mapIt != classInstancesCount.end());
+            mapIt->second++;
+
             // For every value of attribute
             for (size_t i = 0; i < attributesCount; i++)
             {
@@ -161,11 +173,14 @@ namespace algorithm
         }
 
         // Calculate probability
-        for (auto& elements : p_xc)
+        for (size_t i = 0; i < p_xc.size(); i++)
         {
+            auto& elements = p_xc[i];
             for (auto& probability : elements)
             {
-                probability /= static_cast<double>(classCount);
+                auto mapIt = classInstancesCount.find(std::get<std::string>(classNames[i]));
+                ASSERT(mapIt != classInstancesCount.end());
+                probability /= static_cast<double>(mapIt->second);
             }
         }
 
