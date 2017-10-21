@@ -1,18 +1,24 @@
 #pragma once
 #include "DataSource.h"
 #include <algorithm>
+#include <random>
 
 typedef std::pair<source::testDataT, source::trainingDataT> crossvalidatorPairT;
-
-class Crossvalidator
+namespace crossvalidator
 {
-public:
-    Crossvalidator(source::DataSource dl);
-    Crossvalidator(source::dataMatrixT matrix);
-    ~Crossvalidator();
+    class Crossvalidator
+    {
+    public:
+        Crossvalidator(const source::DataSource & dl);
+        Crossvalidator(const source::dataMatrixT & matrix);
+        ~Crossvalidator() = default;
 
-    crossvalidatorPairT getData();
-private:
-    source::dataMatrixT matrix;
-};
+        crossvalidatorPairT getNextData();
+        bool hasNext();
+    private:
+        source::dataMatrixT matrix;
+        static const size_t parts;
 
+        size_t currentPart;
+    };
+}
