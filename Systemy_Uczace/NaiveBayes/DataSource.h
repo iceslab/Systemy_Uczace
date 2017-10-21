@@ -5,6 +5,7 @@
 #include <exception>
 #include <sstream>
 #include <tuple>
+#include <algorithm>
 
 #include "DataDescription.h"
 #include "DataVector.h"
@@ -32,6 +33,14 @@ namespace source
         dataMatrixT& getDataMatrix();
 
         static dataV variantFromString(source::DataTypeE type, std::string value);
+
+        static size_t getElementIndex(source::DataTypeE type,
+                                      const source::dataV & data,
+                                      const source::dataDescriptionElementT & description);
+        template<typename T>
+        static size_t getElementIndex(const source::dataV & data,
+                                      const source::dataDescriptionElementT & description);
+
     private:
         dataDescriptionT description;
         dataMatrixT matrix;

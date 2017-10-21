@@ -53,7 +53,7 @@ namespace model
         for (size_t attributeIndex = 0; attributeIndex < attributesCount; attributeIndex++)
         {
             auto type = std::get<0>(descriptions[attributeIndex]);
-            auto elementIndex = getElementIndex(type,
+            auto elementIndex = source::DataSource::getElementIndex(type,
                                                 data[attributeIndex],
                                                 descriptions[attributeIndex]);
 
@@ -78,49 +78,5 @@ namespace model
         retVal.back() = className;
         return retVal;
     }
-    size_t NaiveBayesModel::getElementIndex(source::DataTypeE type,
-                                            const source::dataV & data,
-                                            const source::dataDescriptionElementT & description)
-    {
-        switch (type)
-        {
-            case source::CATEGORY:
-                return getElementIndex<std::string>(data, description);
-            case source::INTEGER_DISCRETE:
-                return getElementIndex<std::pair<int, int>>(data, description);
-            case source::REAL_DISCRETE:
-                return getElementIndex<std::pair<double, double>>(data, description);
-            case source::INTEGER:
-            case source::REAL:
-                DEBUG_PRINTLN("Function %s() does not support values INTEGER or REAL. "
-                              "Returning max of size_t.",
-                              __FUNCTION__);
-                break;
-            default:
-                FATAL_ERROR_VERBOSE("Function %s() does not support value provided (%d)",
-                                    __FUNCTION__,
-                                    type);
-                break;
-        }
-        return std::numeric_limits<size_t>::max();
-    }
-
-    template<typename T>
-    size_t NaiveBayesModel::getElementIndex(const source::dataV & data,
-                                            const source::dataDescriptionElementT & description)
-    {
-        auto desiredClassName = std::get<T>(data);
-        auto classes = std::get<2>(description);
-        auto it = std::find_if(
-            classes.begin(),
-            classes.end(),
-            [desiredClassName](source::descriptionV el)->bool
-        {
-            return std::get<T>(el) == desiredClassName;
-        });
-
-        ASSERT(it != classes.end());
-        const auto classIndex = it - classes.begin();
-        return classIndex;
-    }
+    
 }
