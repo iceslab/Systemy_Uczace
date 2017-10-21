@@ -15,7 +15,7 @@ using stats::Statistics;
 
 int main(int argc, char** argv)
 {
-    DataSource dl("data/iris.txt");
+    DataSource dl("data/glass.txt");
     Discretizer discretizer(dl, NUMBER_OF_BUCKETS);
     discretizer.discretize();
     Crossvalidator cv(dl);

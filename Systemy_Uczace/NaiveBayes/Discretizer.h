@@ -37,11 +37,20 @@ private:
     // General data discretization method
     void discretizeData(source::dataDescriptionElementT &description,
                         source::dataColumnT &data);
-    // Integer data discretization
-    void discretizeIntegerData(source::dataDescriptionElementT &description,
+    // Template data discretization
+    template<typename T>
+    void discretizeDataTemplate(source::dataDescriptionElementT &description,
                                source::dataColumnT &data);
-    // Real data discretization
-    void discretizeRealData(source::dataDescriptionElementT &description,
-                            source::dataColumnT &data);
+
+
+    template<typename T>
+    struct is_int : std::false_type {};
+    template<>
+    struct is_int<int> : std::true_type {};
+
+    template<typename T>
+    struct is_double : std::false_type {};
+    template<>
+    struct is_double<double> : std::true_type {};
 };
 

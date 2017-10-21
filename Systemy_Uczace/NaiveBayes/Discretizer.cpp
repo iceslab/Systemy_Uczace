@@ -74,7 +74,8 @@ void Discretizer::discretizeInteger(source::dataDescriptionElementT & descriptio
         {
             minVal = el;
         }
-        else if (el > maxVal)
+
+        if (el > maxVal)
         {
             maxVal = el;
         }
@@ -120,7 +121,7 @@ void Discretizer::discretizeReal(source::dataDescriptionElementT & description,
     std::get<0>(description) = source::REAL_DISCRETE;
 
     auto minVal = std::numeric_limits<double>::max();
-    auto maxVal = std::numeric_limits<double>::min();
+    auto maxVal = std::numeric_limits<double>::lowest();
 
     for (const auto& elV : data)
     {
@@ -129,7 +130,8 @@ void Discretizer::discretizeReal(source::dataDescriptionElementT & description,
         {
             minVal = el;
         }
-        else if (el > maxVal)
+
+        if (el > maxVal)
         {
             maxVal = el;
         }
@@ -165,10 +167,10 @@ void Discretizer::discretizeData(source::dataDescriptionElementT & description, 
     switch (type)
     {
         case source::INTEGER_DISCRETE:
-            discretizeIntegerData(description, data);
+            discretizeDataTemplate<int>(description, data);
             break;
         case source::REAL_DISCRETE:
-            discretizeRealData(description, data);
+            discretizeDataTemplate<double>(description, data);
             break;
         default:
             DEBUG_PRINTLN("Data types other than INTEGER_DISCRETE or REAL_DISCRETE are not discretizable");
@@ -176,18 +178,25 @@ void Discretizer::discretizeData(source::dataDescriptionElementT & description, 
     }
 }
 
-void Discretizer::discretizeIntegerData(source::dataDescriptionElementT & description, source::dataColumnT & data)
+template<typename T>
+void Discretizer::discretizeDataTemplate(source::dataDescriptionElementT & description,
+                                         source::dataColumnT & data)
 {
+
+    static_assert(is_int<T>::value ||
+                  is_double<T>::value,
+                  "");
+
     const auto& buckets = std::get<2>(description);
     for (auto& el : data)
     {
         bool anyFound = false;
-        auto value = std::get<int>(el.get());
+        auto value = std::get<T>(el.get());
         for (size_t i = 0; i < buckets.size(); i++)
         {
             bool lowerBoundResult = false;
             bool upperBoundResult = false;
-            const auto& boundPair = std::get<std::pair<int, int>>(buckets[i]);
+            const auto& boundPair = std::get<std::pair<T, T>>(buckets[i]);
             const auto& lowerBound = boundPair.first;
             const auto& upperBound = boundPair.second;
 
@@ -213,47 +222,6 @@ void Discretizer::discretizeIntegerData(source::dataDescriptionElementT & descri
             }
         }
 
-        ASSERT_VERBOSE(anyFound, "INTEGER: Did not find any bucket to assign");
-    }
-}
-
-void Discretizer::discretizeRealData(source::dataDescriptionElementT & description, source::dataColumnT & data)
-{
-    const auto& buckets = std::get<2>(description);
-    for (auto& el : data)
-    {
-        bool anyFound = false;
-        auto value = std::get<double>(el.get());
-        for (size_t i = 0; i < buckets.size(); i++)
-        {
-            bool lowerBoundResult = false;
-            bool upperBoundResult = false;
-            const auto& boundPair = std::get<std::pair<double, double>>(buckets[i]);
-            const auto& lowerBound = boundPair.first;
-            const auto& upperBound = boundPair.second;
-
-            // Lower bound always inclusive
-            lowerBoundResult = value >= lowerBound;
-
-            // Upper bound only on last bucket inclusive
-            if (i == buckets.size() - 1)
-            {
-                upperBoundResult = value <= upperBound;
-            }
-            else
-            {
-                upperBoundResult = value < upperBound;
-            }
-
-            // Found bucket
-            if (lowerBoundResult && upperBoundResult)
-            {
-                el.get() = boundPair;
-                anyFound = true;
-                break;
-            }
-        }
-
-        ASSERT_VERBOSE(anyFound, "REAL: Did not find any bucket to assign");
+        ASSERT_VERBOSE(anyFound, "Did not find any bucket to assign");
     }
 }
