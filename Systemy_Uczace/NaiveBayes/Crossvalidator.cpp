@@ -24,7 +24,7 @@ namespace crossvalidator
         if (currentPart >= parts)
             return crossvalidatorPairT();
 
-        const size_t testDataSize = std::max(matrix.size() / parts, 1U);
+        const size_t testDataSize = std::max(matrix.size() / parts, static_cast<size_t>(1));
 
         auto testDataStart = matrix.begin() + testDataSize * currentPart;
         auto testDataEnd = testDataStart + testDataSize;
