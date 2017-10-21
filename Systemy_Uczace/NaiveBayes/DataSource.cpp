@@ -82,8 +82,8 @@ namespace source
     }
 
     size_t DataSource::getElementIndex(source::DataTypeE type,
-                                            const source::dataV & data,
-                                            const source::dataDescriptionElementT & description)
+                                       const source::dataV & data,
+                                       const source::dataDescriptionElementT & description)
     {
         switch (type)
         {
@@ -110,7 +110,7 @@ namespace source
 
     template<typename T>
     size_t DataSource::getElementIndex(const source::dataV & data,
-                                            const source::dataDescriptionElementT & description)
+                                       const source::dataDescriptionElementT & description)
     {
         auto desiredClassName = std::get<T>(data);
         auto classes = std::get<2>(description);
@@ -199,7 +199,7 @@ namespace source
                     std::string substring;
                     if (pos != std::string::npos)
                     {
-                        substring = token.substr(notPos, pos);
+                        substring = token.substr(notPos, pos - notPos);
                     }
                     else
                     {

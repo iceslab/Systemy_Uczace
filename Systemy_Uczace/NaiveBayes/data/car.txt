@@ -4,6 +4,7 @@ category doors 2,3,4,5more
 category persons 2,4,more
 category lug_boot small,med,big
 category safety low,med,high
+category class acc,good,unacc,vgood
 
 vhigh,vhigh,2,2,small,low,unacc
 vhigh,vhigh,2,2,small,med,unacc
