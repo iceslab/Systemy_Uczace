@@ -176,9 +176,10 @@ namespace algorithm
         for (size_t i = 0; i < p_xc.size(); i++)
         {
             auto& elements = p_xc[i];
-            for (auto& probability : elements)
+            for (size_t j = 0; j < elements.size(); j++)
             {
-                auto mapIt = classInstancesCount.find(std::get<std::string>(classNames[i]));
+                auto& probability = elements[j];
+                auto mapIt = classInstancesCount.find(std::get<std::string>(classData[j].get()));
                 ASSERT(mapIt != classInstancesCount.end());
                 probability /= static_cast<double>(mapIt->second);
             }

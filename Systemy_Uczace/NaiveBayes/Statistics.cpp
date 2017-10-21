@@ -73,8 +73,13 @@ namespace stats
         const auto& fp = measures.falsePositive;
         const auto& fn = measures.falseNegative;
         
+        if (tp + fp + fn + tn == 0)
+        {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+
         // Accuracy = TP+TN/TP+FP+FN+TN
-        return static_cast<double>(tp + tn) / static_cast<double>(tp + fp + fn + tn);
+        return static_cast<double>(tp + tn) / static_cast<double>(tp + fp + fn + tn) * 100.0L;
     }
 
     double Statistics::getPrecision(source::descriptionV des) const
@@ -102,8 +107,13 @@ namespace stats
         const auto& fp = measures.falsePositive;
         const auto& fn = measures.falseNegative;
 
+        if (tp + fp == 0)
+        {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+
         // Precision = TP/TP+FP
-        return static_cast<double>(tp) / static_cast<double>(tp + fp);
+        return static_cast<double>(tp) / static_cast<double>(tp + fp) * 100.0L;
     }
 
     double Statistics::getRecall(source::descriptionV des) const
@@ -131,8 +141,13 @@ namespace stats
         const auto& fp = measures.falsePositive;
         const auto& fn = measures.falseNegative;
 
+        if (tp + fn == 0)
+        {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+
         // Recall = TP/TP+FN
-        return (tp) / (tp + fn);
+        return static_cast<double>(tp) / static_cast<double>(tp + fn) * 100.0L;
     }
 
     MeasuresS Statistics::getMeasuresForClass(size_t index) const

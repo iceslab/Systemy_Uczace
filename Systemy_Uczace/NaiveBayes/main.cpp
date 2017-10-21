@@ -14,7 +14,7 @@ using stats::Statistics;
 
 int main(int argc, char** argv)
 {
-    DataSource dl("test.txt");
+    DataSource dl("data/iris.txt");
     Discretizer discretizer(dl, NUMBER_OF_BUCKETS);
     discretizer.discretize();
     Crossvalidator cv(dl);
@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     for (auto& description : std::get<2>(dl.getDataDescription().back()))
     {
         const auto className = std::get<std::string>(description);
-        printf("%s: accuracy: %lf precision: %lf recall: %lf\n",
+        printf("%s: accuracy: %3.2lf%% precision: %3.2lf%% recall: %3.2lf%%\n",
                className.c_str(),
                stats.getAccuracy(className),
                stats.getPrecision(className),
