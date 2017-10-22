@@ -32,6 +32,7 @@ int main(int argc, char** argv)
         Discretizer discretizer(dl, NUMBER_OF_BUCKETS);
         discretizer.discretize();
         Crossvalidator cv(dl);
+        std::vector<Statistics> allStats;
 
         while (cv.hasNext())
         {
@@ -45,19 +46,46 @@ int main(int argc, char** argv)
             auto stats = Statistics::calculateStatistics(dl.getDataDescription(),
                                                          testData,
                                                          testResult);
+            allStats.emplace_back(stats);
 
-            for (auto& description : std::get<2>(dl.getDataDescription().back()))
-            {
-                const auto className = std::get<std::string>(description);
-                printf("%s: accuracy: %3.2lf%% precision: %3.2lf%% recall: %3.2lf%%\n",
-                       className.c_str(),
-                       stats.getAccuracy(className),
-                       stats.getPrecision(className),
-                       stats.getRecall(className));
+            DEBUG_CALL(
+                for (auto& description : std::get<2>(dl.getDataDescription().back()))
+                {
+                    const auto className = std::get<std::string>(description);
+                    printf("%*s: accuracy: %6.2lf%% "
+                           "precision: %6.2lf%% "
+                           "recall: %6.2lf%% "
+                           "fscore: %6.2lf%%\n",
+                           -static_cast<int>(maxClassNameLenght),
+                           className.c_str(),
+                           stats.getAccuracy(className) * 100.0L,
+                           stats.getPrecision(className) * 100.0L,
+                           stats.getRecall(className) * 100.0L,
+                           stats.getFscore(className) * 100.0L);
 
-            }
+                }
             printf("\n");
+            );
         }
+
+        const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
+        auto stats = Statistics::calculateMean(allStats);
+        for (auto& description : std::get<2>(dl.getDataDescription().back()))
+        {
+            const auto className = std::get<std::string>(description);
+            printf("%*s: accuracy: %6.2lf%% "
+                   "precision: %6.2lf%% "
+                   "recall: %6.2lf%% "
+                   "fscore: %6.2lf%%\n",
+                   -static_cast<int>(maxClassNameLenght),
+                   className.c_str(),
+                   stats.getAccuracy(className) * 100.0L,
+                   stats.getPrecision(className) * 100.0L,
+                   stats.getRecall(className) * 100.0L,
+                   stats.getFscore(className) * 100.0L);
+
+        }
+        printf("\n");
     }
 
     system("pause");

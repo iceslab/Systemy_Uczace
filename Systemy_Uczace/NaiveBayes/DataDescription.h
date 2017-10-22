@@ -27,6 +27,8 @@ namespace source
     public:
         DataDescription() = default;
         ~DataDescription() = default;
+
+        size_t getLongestClassNameLength() const;
     };
 
     typedef DataDescription dataDescriptionT;

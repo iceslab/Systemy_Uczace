@@ -28,6 +28,8 @@ namespace stats
                                               const source::testDataT & testData,
                                               const source::testDataT & testResult);
 
+        static Statistics calculateMean(const std::vector<Statistics> & statistics);
+
         double getAccuracy(source::descriptionV des) const;
         double getAccuracy(std::string className) const;
         double getAccuracy(size_t index) const;
@@ -39,6 +41,10 @@ namespace stats
         double getRecall(source::descriptionV des) const;
         double getRecall(std::string className) const;
         double getRecall(size_t index) const;
+
+        double getFscore(source::descriptionV des) const;
+        double getFscore(std::string className) const;
+        double getFscore(size_t index) const;
 
     private:
         const source::dataDescriptionT description;

@@ -48,6 +48,39 @@ namespace stats
         return retVal;
     }
 
+    Statistics Statistics::calculateMean(const std::vector<Statistics>& statistics)
+    {
+
+        ASSERT(!statistics.empty());
+        const auto matrixSize = statistics.front().matrix.size();
+        const auto description = statistics.front().description;
+        const auto classIndices = statistics.front().classIndices;
+
+        for (const auto& stat : statistics)
+        {
+            ASSERT(matrixSize == stat.matrix.size());
+            ASSERT(description == stat.description);
+            ASSERT(classIndices == stat.classIndices);
+        }
+
+        auto retVal = Statistics(matrixSize, description, classIndices);
+
+        for (const auto& stat : statistics)
+        {
+            for (size_t row = 0; row < matrixSize; row++)
+            {
+                for (size_t column = 0; column < matrixSize; column++)
+                {
+                    auto& retValCell = retVal.matrix[row][column];
+                    const auto& statCell = stat.matrix[row][column];
+                    retValCell += statCell;
+                }
+            }
+        }
+
+        return retVal;
+    }
+
     double Statistics::getAccuracy(source::descriptionV des) const
     {
         return getAccuracy(std::get<std::string>(des));
@@ -72,14 +105,14 @@ namespace stats
         const auto& tn = measures.trueNegative;
         const auto& fp = measures.falsePositive;
         const auto& fn = measures.falseNegative;
-        
+
         if (tp + fp + fn + tn == 0)
         {
             return std::numeric_limits<double>::quiet_NaN();
         }
 
         // Accuracy = TP+TN/TP+FP+FN+TN
-        return static_cast<double>(tp + tn) / static_cast<double>(tp + fp + fn + tn) * 100.0L;
+        return static_cast<double>(tp + tn) / static_cast<double>(tp + fp + fn + tn);
     }
 
     double Statistics::getPrecision(source::descriptionV des) const
@@ -113,7 +146,7 @@ namespace stats
         }
 
         // Precision = TP/TP+FP
-        return static_cast<double>(tp) / static_cast<double>(tp + fp) * 100.0L;
+        return static_cast<double>(tp) / static_cast<double>(tp + fp);
     }
 
     double Statistics::getRecall(source::descriptionV des) const
@@ -147,7 +180,41 @@ namespace stats
         }
 
         // Recall = TP/TP+FN
-        return static_cast<double>(tp) / static_cast<double>(tp + fn) * 100.0L;
+        return static_cast<double>(tp) / static_cast<double>(tp + fn);
+    }
+
+    double Statistics::getFscore(source::descriptionV des) const
+    {
+        return getFscore(std::get<std::string>(des));
+    }
+
+    double Statistics::getFscore(std::string className) const
+    {
+        const auto it = classIndices.find(className);
+        if (it == classIndices.end())
+        {
+            DEBUG_PRINTLN("Class with given name does not exist");
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+
+        return getFscore(it->second);
+    }
+
+    double Statistics::getFscore(size_t index) const
+    {
+        auto measures = getMeasuresForClass(index);
+        const auto& tp = measures.truePositive;
+        const auto& tn = measures.trueNegative;
+        const auto& fp = measures.falsePositive;
+        const auto& fn = measures.falseNegative;
+
+        if (2 * tp + fp + fn == 0)
+        {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+
+        // Fscore = 2*TP / (2*TP + FP + FN)
+        return static_cast<double>(2 * tp) / static_cast<double>(2 * tp + fp + fn);
     }
 
     MeasuresS Statistics::getMeasuresForClass(size_t index) const
