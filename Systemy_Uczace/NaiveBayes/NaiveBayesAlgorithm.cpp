@@ -27,10 +27,6 @@ namespace algorithm
         }
 
         return p_xc;
-
-
-
-        return p_xc;
     }
 
     const distributionsT & NaiveBayesAlgorithm::getDistributions() const
@@ -47,6 +43,7 @@ namespace algorithm
     {
         calculateClassProbability();
         calculateAttributesProbability();
+        modelBuilt = true;
     }
 
     void NaiveBayesAlgorithm::calculateClassProbability() const

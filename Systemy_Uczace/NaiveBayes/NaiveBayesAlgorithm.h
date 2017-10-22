@@ -25,7 +25,7 @@ namespace algorithm
         const attributesProbabilitiesT& getAttributesProbability() const;
         const distributionsT& getDistributions() const;
     private:
-        bool modelBuilt;
+        mutable bool modelBuilt;
         mutable classProbabilitiesT p_c;
         mutable attributesProbabilitiesT p_xc;
         mutable distributionsT distributions;
