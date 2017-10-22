@@ -24,7 +24,7 @@ namespace discretizer
         const auto rowsCount = matrix.size();
         const auto columnsCount = descriptions.size() - 1; // Last column ommited
         const auto classDescription = descriptions.back();
-        std::vector<source::dataColumnT> columnData(columnsCount);
+        std::vector<source::dataColumnRefT> columnData(columnsCount);
 
         // Create column references
         for (size_t row = 0; row < rowsCount; row++)
@@ -44,7 +44,7 @@ namespace discretizer
     }
 
     void Discretizer::discretize(source::dataDescriptionElementT & description,
-                                 source::dataColumnT & data)
+                                 source::dataColumnRefT & data)
     {
         const auto type = std::get<0>(description);
         switch (type)
@@ -61,7 +61,7 @@ namespace discretizer
         }
     }
 
-    void Discretizer::discretizeData(source::dataDescriptionElementT & description, source::dataColumnT & data)
+    void Discretizer::discretizeData(source::dataDescriptionElementT & description, source::dataColumnRefT & data)
     {
         const auto type = std::get<0>(description);
         switch (type)
@@ -80,7 +80,7 @@ namespace discretizer
 
     template<typename T>
     void Discretizer::discretizeDataTemplate(source::dataDescriptionElementT & description,
-                                             source::dataColumnT & data)
+                                             source::dataColumnRefT & data)
     {
         static_assert(source::is_int<T>::value ||
                       source::is_double<T>::value,

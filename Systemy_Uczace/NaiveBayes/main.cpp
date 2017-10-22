@@ -52,6 +52,7 @@ int main(int argc, char** argv)
             allStats.emplace_back(stats);
 
             DEBUG_CALL(
+                const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
                 for (auto& description : std::get<2>(dl.getDataDescription().back()))
                 {
                     const auto className = std::get<std::string>(description);

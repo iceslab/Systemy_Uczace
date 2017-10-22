@@ -26,23 +26,23 @@ namespace discretizer
 
         // General discretization method
         void discretize(source::dataDescriptionElementT &description,
-                        source::dataColumnT &data);
+                        source::dataColumnRefT &data);
 
         // Integer discretization
         virtual void discretizeInteger(source::dataDescriptionElementT &description,
-                                       source::dataColumnT &data) = 0;
+                                       source::dataColumnRefT &data) = 0;
         // Real discretization
         virtual void discretizeReal(source::dataDescriptionElementT &description,
-                                    source::dataColumnT &data) = 0;
+                                    source::dataColumnRefT &data) = 0;
 
         /// Discretizer methods for data
 
         // General data discretization method
         void discretizeData(source::dataDescriptionElementT &description,
-                            source::dataColumnT &data);
+                            source::dataColumnRefT &data);
         // Template data discretization
         template<typename T>
         void discretizeDataTemplate(source::dataDescriptionElementT &description,
-                                    source::dataColumnT &data);
+                                    source::dataColumnRefT &data);
     };
 }

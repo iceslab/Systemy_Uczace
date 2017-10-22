@@ -18,7 +18,7 @@ namespace discretizer
     }
 
     void ClassicDiscretizer::discretizeInteger(source::dataDescriptionElementT & description,
-                                        source::dataColumnT & data)
+                                        source::dataColumnRefT & data)
     {
         std::get<0>(description) = source::INTEGER_DISCRETE;
         auto minMax = source::minMax<int>(data);
@@ -60,7 +60,7 @@ namespace discretizer
     }
 
     void ClassicDiscretizer::discretizeReal(source::dataDescriptionElementT & description,
-                                     source::dataColumnT & data)
+                                     source::dataColumnRefT & data)
     {
         std::get<0>(description) = source::REAL_DISCRETE;
         auto minMax = source::minMax<double>(data);

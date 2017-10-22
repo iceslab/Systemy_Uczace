@@ -15,9 +15,13 @@ namespace discretizer
 
         // Integer discretization
         virtual void discretizeInteger(source::dataDescriptionElementT &description,
-                                       source::dataColumnT &data) override;
+                                       source::dataColumnRefT &data) override;
         // Real discretization
         virtual void discretizeReal(source::dataDescriptionElementT &description,
-                                    source::dataColumnT &data) override;
+                                    source::dataColumnRefT &data) override;
+    private:
+        template<typename T>
+        void discretizeTemplate(source::dataDescriptionElementT &description,
+                                source::dataColumnRefT &data);
     };
 }
