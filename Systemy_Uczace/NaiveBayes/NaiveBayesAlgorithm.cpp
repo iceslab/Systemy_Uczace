@@ -4,12 +4,52 @@ namespace algorithm
 {
     NaiveBayesAlgorithm::NaiveBayesAlgorithm(const source::dataDescriptionT & descriptions,
                                              const source::trainingDataT & trainingData) :
-        abstracts::Algorithm(descriptions, trainingData)
+        abstracts::Algorithm(descriptions, trainingData), modelBuilt(false)
     {
         // Nothing to do
     }
 
-    classProbabilitiesT NaiveBayesAlgorithm::getClassProbability() const
+    const classProbabilitiesT& NaiveBayesAlgorithm::getClassProbability() const
+    {
+        if (!modelBuilt)
+        {
+            calculateModel();
+        }
+
+        return p_c;
+    }
+
+    const attributesProbabilitiesT & NaiveBayesAlgorithm::getAttributesProbability() const
+    {
+        if (!modelBuilt)
+        {
+            calculateModel();
+        }
+
+        return p_xc;
+
+
+
+        return p_xc;
+    }
+
+    const distributionsT & NaiveBayesAlgorithm::getDistributions() const
+    {
+        if (!modelBuilt)
+        {
+            calculateModel();
+        }
+
+        return distributions;
+    }
+
+    void NaiveBayesAlgorithm::calculateModel() const
+    {
+        calculateClassProbability();
+        calculateAttributesProbability();
+    }
+
+    void NaiveBayesAlgorithm::calculateClassProbability() const
     {
         // Vector of names for all classifiers
         const auto& classNames = descriptions.back();
@@ -17,7 +57,7 @@ namespace algorithm
         const auto allClassesCount = trainingData.size();
 
         // Class probability - return value
-        classProbabilitiesT p_c(classCount);
+        p_c.resize(classCount);
 
         for (size_t i = 0; i < classCount; i++)
         {
@@ -37,11 +77,9 @@ namespace algorithm
             p_c[i] = static_cast<double>(processedClassCount) /
                 static_cast<double>(allClassesCount);
         }
-
-        return p_c;
     }
 
-    attributesProbabilitiesT NaiveBayesAlgorithm::getAttributesProbability() const
+    void NaiveBayesAlgorithm::calculateAttributesProbability() const
     {
         const auto rowsCount = trainingData.size();
         const auto columnsCount = descriptions.size();
@@ -57,20 +95,23 @@ namespace algorithm
         }
 
         const auto classData = columnData.back();
-        attributesProbabilitiesT p_xc(columnsCount - 1);
+        p_xc.resize(columnsCount - 1);
+        distributions.resize(columnsCount - 1);
         for (size_t i = 0; i < columnsCount - 1; i++)
         {
-            p_xc[i] = getElementProbability(descriptions[i],
-                                            columnData[i],
-                                            classDescription,
-                                            classData);
+            p_xc[i] = getDiscreteElementProbability(descriptions[i],
+                                                    columnData[i],
+                                                    classDescription,
+                                                    classData);
+            distributions[i] = getContinuousElementProbability(descriptions[i],
+                                                               columnData[i],
+                                                               classDescription,
+                                                               classData);
         }
-
-        return p_xc;
     }
 
     elementProbabilitiesT
-        NaiveBayesAlgorithm::getElementProbability(
+        NaiveBayesAlgorithm::getDiscreteElementProbability(
             const source::dataDescriptionElementT & description,
             const source::trainingColumnT & trainingData,
             const source::dataDescriptionElementT &classDescription,
@@ -99,8 +140,7 @@ namespace algorithm
                     classData);
             case source::INTEGER:
             case source::REAL:
-                DEBUG_PRINTLN("Normal distribution not implemented yet. "
-                              "Use discretized values. "
+                DEBUG_PRINTLN("For continuous attributes use continuous version of function. "
                               "Returning empty array");
                 break;
             default:
@@ -110,12 +150,43 @@ namespace algorithm
         return elementProbabilitiesT();
     }
 
+    distributionsElementT NaiveBayesAlgorithm::getContinuousElementProbability(const source::dataDescriptionElementT & description, const source::trainingColumnT & trainingData, const source::dataDescriptionElementT & classDescription, const source::trainingColumnT & classData) const
+    {
+        const auto attributeType = std::get<0>(description);
+        switch (attributeType)
+        {
+            case source::CATEGORY:
+            case source::INTEGER_DISCRETE:
+            case source::REAL_DISCRETE:
+                DEBUG_PRINTLN("For discrete attributes use discrete version of function. "
+                              "Returning empty array");
+                break;
+            case source::INTEGER:
+                return numberProbability<int>(
+                    description,
+                    trainingData,
+                    classDescription,
+                    classData);
+            case source::REAL:
+                return numberProbability<double>(
+                    description,
+                    trainingData,
+                    classDescription,
+                    classData);
+            default:
+                FATAL_ERROR();
+                break;
+        }
+        return distributionsElementT();
+    }
+
     template <typename T>
     elementProbabilitiesT
-        NaiveBayesAlgorithm::categoryProbability(const source::dataDescriptionElementT & description,
-                                                 const source::trainingColumnT & trainingData,
-                                                 const source::dataDescriptionElementT &classDescription,
-                                                 const source::trainingColumnT &classData) const
+        NaiveBayesAlgorithm::categoryProbability(
+            const source::dataDescriptionElementT & description,
+            const source::trainingColumnT & trainingData,
+            const source::dataDescriptionElementT &classDescription,
+            const source::trainingColumnT &classData) const
     {
         static_assert(std::is_base_of<std::string, T>::value ||
                       std::is_base_of<std::pair<int, int>, T>::value ||
@@ -186,5 +257,59 @@ namespace algorithm
         }
 
         return p_xc;
+    }
+
+    template<typename T>
+    distributionsElementT
+        NaiveBayesAlgorithm::numberProbability(
+            const source::dataDescriptionElementT & description,
+            const source::trainingColumnT & trainingData,
+            const source::dataDescriptionElementT & classDescription,
+            const source::trainingColumnT & classData) const
+    {
+        static_assert(source::is_int<T>::value ||
+                      source::is_double<T>::value,
+                      "");
+
+        const auto attributesCount = std::get<2>(description).size();
+        const auto classNames = std::get<2>(classDescription);
+        const auto allClassesCount = classNames.size();
+        std::unordered_map<std::string, source::dataColumnT> attributesWithClass;
+        std::vector<source::dataColumnT> attributesWithClassVector(allClassesCount);
+
+        for (size_t i = 0; i < allClassesCount; i++)
+        {
+            attributesWithClass.emplace(std::get<std::string>(classNames[i]), source::dataColumnT());
+        }
+
+        // Map for attributes
+        for (size_t row = 0; row < trainingData.size(); row++)
+        {
+            const auto value = trainingData[row].get();
+
+            const auto desiredClassName = std::get<std::string>(classData[row].get());
+            auto it = std::find_if(
+                classNames.begin(),
+                classNames.end(),
+                [desiredClassName](source::descriptionV el)->bool
+            {
+                return std::get<std::string>(el) == desiredClassName;
+            });
+
+            ASSERT(it != classNames.end());
+            const auto classIndex = it - classNames.begin();
+
+            attributesWithClassVector[classIndex].emplace_back(value);
+        }
+
+        // Map for distributions
+        distributionsElementT classDistribution;
+        for (const auto& el : attributesWithClassVector)
+        {
+            auto distribution = NormalDistribution::getNormalDistribution<T>(el);
+            classDistribution.emplace_back(distribution);
+        }
+
+        return classDistribution;
     }
 }

@@ -20,7 +20,8 @@ namespace source
     };
 
     typedef std::variant<std::string, std::pair<int, int>, std::pair<double, double>> descriptionV;
-    typedef std::tuple<DataTypeE, std::string, std::vector<descriptionV>> dataDescriptionElementT;
+    typedef std::vector<descriptionV> descriptionVectorT;
+    typedef std::tuple<DataTypeE, std::string, descriptionVectorT> dataDescriptionElementT;
 
     class DataDescription : public std::vector<dataDescriptionElementT>
     {

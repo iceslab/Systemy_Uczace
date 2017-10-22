@@ -14,7 +14,8 @@ namespace model
         NaiveBayesModel(const source::testDataT & testData,
                         const algorithm::attributesProbabilitiesT & p_xc,
                         const algorithm::classProbabilitiesT & p_c,
-                        const source::dataDescriptionT & descriptions);
+                        const source::dataDescriptionT & descriptions,
+                        const algorithm::distributionsT & distributions);
         ~NaiveBayesModel() = default;
 
         source::testDataT classify();
@@ -25,6 +26,12 @@ namespace model
         const algorithm::attributesProbabilitiesT p_xc;
         const algorithm::classProbabilitiesT p_c;
         const source::dataDescriptionT descriptions;
+        const algorithm::distributionsT distributions;
+
+        double getAttributeProbability(size_t attributeIndex,
+                                       size_t elementIndex,
+                                       size_t classIndex,
+                                       const source::dataVectorT & data);
     };
 
 }

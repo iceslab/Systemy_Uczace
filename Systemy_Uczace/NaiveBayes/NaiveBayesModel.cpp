@@ -7,7 +7,8 @@ namespace model
         NaiveBayesModel(testData,
                         algorithm.getAttributesProbability(),
                         algorithm.getClassProbability(),
-                        algorithm.getDescriptions())
+                        algorithm.getDescriptions(),
+                        algorithm.getDistributions())
     {
         // Nothing to do
     }
@@ -15,8 +16,13 @@ namespace model
     NaiveBayesModel::NaiveBayesModel(const source::testDataT & testData,
                                      const algorithm::attributesProbabilitiesT & p_xc,
                                      const algorithm::classProbabilitiesT & p_c,
-                                     const source::dataDescriptionT & descriptions) :
-        testData(testData), p_xc(p_xc), p_c(p_c), descriptions(descriptions)
+                                     const source::dataDescriptionT & descriptions,
+                                     const algorithm::distributionsT & distributions) :
+        testData(testData),
+        p_xc(p_xc),
+        p_c(p_c),
+        descriptions(descriptions),
+        distributions(distributions)
     {
         // Nothing to do
     }
@@ -53,9 +59,10 @@ namespace model
         for (size_t attributeIndex = 0; attributeIndex < attributesCount; attributeIndex++)
         {
             auto type = std::get<0>(descriptions[attributeIndex]);
-            auto elementIndex = source::DataSource::getElementIndex(type,
-                                                data[attributeIndex],
-                                                descriptions[attributeIndex]);
+            auto elementIndex = source::DataSource::getElementIndex(
+                type,
+                data[attributeIndex],
+                descriptions[attributeIndex]);
 
 
             for (size_t classIndex = 0; classIndex < classesCount; classIndex++)
@@ -78,5 +85,32 @@ namespace model
         retVal.back() = className;
         return retVal;
     }
-    
+
+    double NaiveBayesModel::getAttributeProbability(size_t attributeIndex,
+                                                    size_t elementIndex,
+                                                    size_t classIndex,
+                                                    const source::dataVectorT & data)
+    {
+
+        const auto attributeType = std::get<0>(descriptions.back());
+        double x = 0.0;
+        switch (attributeType)
+        {
+            case source::CATEGORY:
+            case source::INTEGER_DISCRETE:
+            case source::REAL_DISCRETE:
+                return p_xc[attributeIndex][elementIndex][classIndex];;
+            case source::INTEGER:
+                x = std::get<int>(data[elementIndex]);
+                return distributions[attributeIndex][classIndex].getProbabilityDenisty(x);
+            case source::REAL:
+                x = std::get<double>(data[elementIndex]);
+                return distributions[attributeIndex][classIndex].getProbabilityDenisty(x);
+            default:
+                FATAL_ERROR();
+                break;
+        }
+        return 0.0;
+    }
+
 }

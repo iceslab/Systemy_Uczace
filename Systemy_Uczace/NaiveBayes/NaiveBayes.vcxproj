@@ -127,6 +127,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="NaiveBayesAlgorithm.cpp" />
     <ClCompile Include="NaiveBayesModel.cpp" />
+    <ClCompile Include="NormalDistribution.cpp" />
     <ClCompile Include="Statistics.cpp" />
     <ClCompile Include="UniformDiscretizer.cpp" />
   </ItemGroup>
@@ -143,6 +144,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="NaiveBayesAlgorithm.h" />
     <ClInclude Include="NaiveBayesModel.h" />
+    <ClInclude Include="NormalDistribution.h" />
     <ClInclude Include="Statistics.h" />
     <ClInclude Include="UniformDiscretizer.h" />
   </ItemGroup>
