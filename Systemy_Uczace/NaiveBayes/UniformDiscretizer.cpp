@@ -42,13 +42,18 @@ namespace discretizer
         auto minVal = minMax.first;
         auto maxVal = minMax.second;
 
-        const auto diff = static_cast<size_t>(maxVal - minVal);
         auto effectiveBuckets = buckets;
-        // For integers make sure that buckets ranges are different
-        if (diff < effectiveBuckets)
+        // Restrict buckets count only when dealing with ints
+        if (source::is_int<T>::value)
         {
-            DEBUG_PRINTLN("Changing bucket size from %zu to %zu", buckets, diff);
-            effectiveBuckets = diff;
+            const auto diff = static_cast<size_t>(maxVal - minVal);
+
+            // For integers make sure that buckets ranges are different
+            if (diff < effectiveBuckets)
+            {
+                DEBUG_PRINTLN("Changing bucket size from %zu to %zu", buckets, diff);
+                effectiveBuckets = diff;
+            }
         }
 
         const auto fullBuckets = data.size() % effectiveBuckets;
