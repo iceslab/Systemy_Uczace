@@ -19,6 +19,9 @@ namespace source
         DataVector() = default;
         DataVector(size_t size) : std::vector<dataV>(size) {};
         ~DataVector() = default;
+
+        //template<typename T>
+        //static auto minMax(const dataColumnT& column);
     };
 
     typedef DataVector dataVectorT;
@@ -30,4 +33,41 @@ namespace source
     typedef constDataColumnT trainingColumnT;
 
     typedef dataMatrixT testDataT;
+
+    template<typename T>
+    struct is_int : std::false_type {};
+    template<>
+    struct is_int<int> : std::true_type {};
+
+    template<typename T>
+    struct is_double : std::false_type {};
+    template<>
+    struct is_double<double> : std::true_type {};
+
+    template<typename T>
+    inline auto minMax(const dataColumnT & column)
+    {
+        static_assert(is_int<T>::value ||
+                      is_double<T>::value,
+                      "");
+
+        auto minVal = std::numeric_limits<T>::max();
+        auto maxVal = std::numeric_limits<T>::min();
+
+        for (const auto& elV : column)
+        {
+            auto el = std::get<T>(elV.get());
+            if (el < minVal)
+            {
+                minVal = el;
+            }
+
+            if (el > maxVal)
+            {
+                maxVal = el;
+            }
+        }
+
+        return std::make_pair(minVal, maxVal);
+    }
 };

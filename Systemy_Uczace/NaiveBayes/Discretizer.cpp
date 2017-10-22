@@ -61,108 +61,6 @@ namespace discretizer
         }
     }
 
-    void Discretizer::discretizeInteger(source::dataDescriptionElementT & description,
-                                        source::dataColumnT & data)
-    {
-        std::get<0>(description) = source::INTEGER_DISCRETE;
-
-        auto minVal = std::numeric_limits<int>::max();
-        auto maxVal = std::numeric_limits<int>::min();
-
-        for (const auto& elV : data)
-        {
-            auto el = std::get<int>(elV.get());
-            if (el < minVal)
-            {
-                minVal = el;
-            }
-
-            if (el > maxVal)
-            {
-                maxVal = el;
-            }
-        }
-
-        const auto diff = static_cast<size_t>(maxVal - minVal);
-        auto effectiveBuckets = buckets;
-        // For integers make sure that buckets ranges are different
-        if (diff < effectiveBuckets)
-        {
-            DEBUG_PRINTLN("Changing bucket size from %zu to %zu", buckets, diff);
-            effectiveBuckets = diff;
-        }
-
-        const auto delta = diff / static_cast<double>(effectiveBuckets);
-
-        auto lowerBound = minVal;
-        auto upperBoundD = minVal + delta;
-        auto upperBound = static_cast<int>(upperBoundD);
-
-        auto& bucketVector = std::get<2>(description);
-        bucketVector.clear();
-
-        for (size_t i = 0; i < effectiveBuckets - 1; i++)
-        {
-            auto bounds = std::make_pair(lowerBound, upperBound);
-            const source::descriptionV boundsV(bounds);
-            bucketVector.emplace_back(boundsV);
-            lowerBound = upperBound;
-            upperBoundD += delta;
-            upperBound = static_cast<int>(std::round(upperBoundD));
-        }
-
-        upperBound = maxVal;
-        auto bounds = std::make_pair(lowerBound, upperBound);
-        const source::descriptionV boundsV(bounds);
-        bucketVector.emplace_back(boundsV);
-    }
-
-    void Discretizer::discretizeReal(source::dataDescriptionElementT & description,
-                                     source::dataColumnT & data)
-    {
-        std::get<0>(description) = source::REAL_DISCRETE;
-
-        auto minVal = std::numeric_limits<double>::max();
-        auto maxVal = std::numeric_limits<double>::lowest();
-
-        for (const auto& elV : data)
-        {
-            auto el = std::get<double>(elV.get());
-            if (el < minVal)
-            {
-                minVal = el;
-            }
-
-            if (el > maxVal)
-            {
-                maxVal = el;
-            }
-        }
-
-        const auto diff = maxVal - minVal;
-        const auto delta = diff / static_cast<double>(buckets);
-
-        auto lowerBound = minVal;
-        auto upperBound = minVal + delta;
-
-        auto& bucketVector = std::get<2>(description);
-        bucketVector.clear();
-
-        for (size_t i = 0; i < buckets - 1; i++)
-        {
-            auto bounds = std::make_pair(lowerBound, upperBound);
-            const source::descriptionV boundsV(bounds);
-            bucketVector.emplace_back(boundsV);
-            lowerBound = upperBound;
-            upperBound += delta;
-        }
-
-        upperBound = maxVal;
-        auto bounds = std::make_pair(lowerBound, upperBound);
-        const source::descriptionV boundsV(bounds);
-        bucketVector.emplace_back(boundsV);
-    }
-
     void Discretizer::discretizeData(source::dataDescriptionElementT & description, source::dataColumnT & data)
     {
         const auto type = std::get<0>(description);
@@ -184,9 +82,8 @@ namespace discretizer
     void Discretizer::discretizeDataTemplate(source::dataDescriptionElementT & description,
                                              source::dataColumnT & data)
     {
-
-        static_assert(is_int<T>::value ||
-                      is_double<T>::value,
+        static_assert(source::is_int<T>::value ||
+                      source::is_double<T>::value,
                       "");
 
         const auto& buckets = std::get<2>(description);

@@ -12,5 +12,12 @@ namespace discretizer
                            source::dataMatrixT &matrix,
                            size_t buckets);
         virtual ~UniformDiscretizer() = default;
+
+        // Integer discretization
+        virtual void discretizeInteger(source::dataDescriptionElementT &description,
+                                       source::dataColumnT &data) override;
+        // Real discretization
+        virtual void discretizeReal(source::dataDescriptionElementT &description,
+                                    source::dataColumnT &data) override;
     };
 }

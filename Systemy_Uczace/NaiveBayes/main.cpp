@@ -1,5 +1,5 @@
 #include "DataSource.h"
-#include "Discretizer.h"
+#include "DiscretizerFactory.h"
 #include "Crossvalidator.h"
 #include "NaiveBayesAlgorithm.h"
 #include "NaiveBayesModel.h"
@@ -8,6 +8,7 @@
 #define NUMBER_OF_BUCKETS 10
 
 using source::DataSource;
+using discretizer::DiscretizerFactory;
 using crossvalidator::Crossvalidator;
 using algorithm::NaiveBayesAlgorithm;
 using model::NaiveBayesModel;
@@ -29,8 +30,10 @@ int main(int argc, char** argv)
     {
         printf("\n========== Path: %-20s ==========\n\n", path.c_str());
         DataSource dl(path);
-        Discretizer discretizer(dl, NUMBER_OF_BUCKETS);
-        discretizer.discretize();
+        auto discretizer = DiscretizerFactory::getDiscretizer(discretizer::CLASSIC,
+                                                              dl,
+                                                              NUMBER_OF_BUCKETS);
+        discretizer->discretize();
         Crossvalidator cv(dl);
         std::vector<Statistics> allStats;
 
