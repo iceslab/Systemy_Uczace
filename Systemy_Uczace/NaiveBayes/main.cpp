@@ -41,7 +41,7 @@ int main(int argc, char** argv)
         auto discretizer = DiscretizerFactory::getDiscretizer(discretizer::UNIFORM,
                                                               dl,
                                                               NUMBER_OF_BUCKETS);
-        discretizer->discretize();
+        //discretizer->discretize();
         Crossvalidator cv(dl);
         std::vector<Statistics> allStats;
 

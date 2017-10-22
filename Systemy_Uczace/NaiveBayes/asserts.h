@@ -8,6 +8,14 @@
 
 #define QUOTE(x) #x
 
+#define VERBOSITY_LEVEL_WARNING 0
+#define VERBOSITY_LEVEL_INFO 1
+#define VERBOSITY_LEVEL_DEBUG 2
+
+#ifndef VERBOSITY_LEVEL
+#define VERBOSITY_LEVEL VERBOSITY_LEVEL_WARNING
+#endif
+
 #ifdef _DEBUG
 #define DEBUG_PRINTLN_VERBOSE(format, ...) \
 do{ \
@@ -79,6 +87,32 @@ do \
     fprintf(stderr, "Fatal error occured. File %s, line %d\n", __FILE__, __LINE__); \
 } while (false);
 
+#ifdef VERBOSITY_LEVEL
+#if VERBOSITY_LEVEL >= VERBOSITY_LEVEL_WARNING
+#define DEBUG_PRINTLN_VERBOSE_WARNING(format, ...) DEBUG_PRINTLN_VERBOSE(format, __VA_ARGS__)
+#define DEBUG_PRINT_VERBOSE_WARNING(format, ...) DEBUG_PRINT_VERBOSE(format, __VA_ARGS__)
+#else
+#define DEBUG_PRINTLN_VERBOSE_WARNING(format, ...)
+#define DEBUG_PRINT_VERBOSE_WARNING(format, ...)
+#endif
+
+#if VERBOSITY_LEVEL >= VERBOSITY_LEVEL_INFO
+#define DEBUG_PRINTLN_VERBOSE_INFO(format, ...) DEBUG_PRINTLN_VERBOSE(format, __VA_ARGS__)
+#define DEBUG_PRINT_VERBOSE_INFO(format, ...) DEBUG_PRINT_VERBOSE(format, __VA_ARGS__)
+#else
+#define DEBUG_PRINTLN_VERBOSE_INFO(format, ...)
+#define DEBUG_PRINT_VERBOSE_INFO(format, ...)
+#endif
+
+#if VERBOSITY_LEVEL >= VERBOSITY_LEVEL_DEBUG
+#define DEBUG_PRINTLN_VERBOSE_DEBUG(format, ...) DEBUG_PRINTLN_VERBOSE(format, __VA_ARGS__)
+#define DEBUG_PRINT_VERBOSE_DEBUG(format, ...) DEBUG_PRINT_VERBOSE(format, __VA_ARGS__)
+#else
+#define DEBUG_PRINTLN_VERBOSE_DEBUG(format, ...)
+#define DEBUG_PRINT_VERBOSE_DEBUG(format, ...)
+#endif
+#endif
+
 #else
 #define DEBUG_PRINTLN_VERBOSE(format, ...)
 #define DEBUG_PRINT_VERBOSE(format, ...)
@@ -92,4 +126,13 @@ do \
 
 #define FATAL_ERROR_VERBOSE(format, ...)
 #define FATAL_ERROR()
+
+#define DEBUG_PRINTLN_VERBOSE_INFO(format, ...)
+#define DEBUG_PRINT_VERBOSE_INFO(format, ...)
+
+#define DEBUG_PRINTLN_VERBOSE_WARNING(format, ...)
+#define DEBUG_PRINT_VERBOSE_WARNING(format, ...)
+
+#define DEBUG_PRINTLN_VERBOSE_DEBUG(format, ...)
+#define DEBUG_PRINT_VERBOSE_DEBUG(format, ...)
 #endif

@@ -140,8 +140,9 @@ namespace algorithm
                     classData);
             case source::INTEGER:
             case source::REAL:
-                DEBUG_PRINTLN("For continuous attributes use continuous version of function. "
-                              "Returning empty array");
+                DEBUG_PRINTLN_VERBOSE_INFO(
+                    "For continuous attributes use continuous version of function. "
+                    "Returning empty array");
                 break;
             default:
                 FATAL_ERROR();
@@ -158,8 +159,9 @@ namespace algorithm
             case source::CATEGORY:
             case source::INTEGER_DISCRETE:
             case source::REAL_DISCRETE:
-                DEBUG_PRINTLN("For discrete attributes use discrete version of function. "
-                              "Returning empty array");
+                DEBUG_PRINTLN_VERBOSE_INFO(
+                    "For discrete attributes use discrete version of function. "
+                    "Returning empty array");
                 break;
             case source::INTEGER:
                 return numberProbability<int>(

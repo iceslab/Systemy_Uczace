@@ -68,7 +68,10 @@ namespace model
             for (size_t classIndex = 0; classIndex < classesCount; classIndex++)
             {
                 // P(x_j | C_i)
-                const auto xInClassProbability = p_xc[attributeIndex][elementIndex][classIndex];
+                const auto xInClassProbability = getAttributeProbability(attributeIndex,
+                                                                         elementIndex,
+                                                                         classIndex,
+                                                                         data);
                 // product_of{ j = 1 n }(P(x_j | C_i))
                 classAssignProbability[classIndex] *= xInClassProbability;
             }
@@ -92,7 +95,7 @@ namespace model
                                                     const source::dataVectorT & data)
     {
 
-        const auto attributeType = std::get<0>(descriptions.back());
+        const auto attributeType = std::get<0>(descriptions[attributeIndex]);
         double x = 0.0;
         switch (attributeType)
         {
@@ -101,10 +104,10 @@ namespace model
             case source::REAL_DISCRETE:
                 return p_xc[attributeIndex][elementIndex][classIndex];;
             case source::INTEGER:
-                x = std::get<int>(data[elementIndex]);
+                x = std::get<int>(data[attributeIndex]);
                 return distributions[attributeIndex][classIndex].getProbabilityDenisty(x);
             case source::REAL:
-                x = std::get<double>(data[elementIndex]);
+                x = std::get<double>(data[attributeIndex]);
                 return distributions[attributeIndex][classIndex].getProbabilityDenisty(x);
             default:
                 FATAL_ERROR();

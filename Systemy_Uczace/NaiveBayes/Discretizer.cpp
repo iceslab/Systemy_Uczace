@@ -56,7 +56,8 @@ namespace discretizer
                 discretizeReal(description, data);
                 break;
             default:
-                DEBUG_PRINTLN("Data types other than INTEGER or REAL are not discretizable");
+                DEBUG_PRINTLN_VERBOSE_INFO(
+                    "Data types other than INTEGER or REAL are not discretizable");
                 break;
         }
     }
@@ -73,7 +74,8 @@ namespace discretizer
                 discretizeDataTemplate<double>(description, data);
                 break;
             default:
-                DEBUG_PRINTLN("Data types other than INTEGER_DISCRETE or REAL_DISCRETE are not discretizable");
+                DEBUG_PRINTLN_VERBOSE_INFO(
+                    "Data types other than INTEGER_DISCRETE or REAL_DISCRETE are not discretizable");
                 break;
         }
     }

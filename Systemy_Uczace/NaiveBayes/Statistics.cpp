@@ -91,7 +91,7 @@ namespace stats
         const auto it = classIndices.find(className);
         if (it == classIndices.end())
         {
-            DEBUG_PRINTLN("Class with given name does not exist");
+            DEBUG_PRINTLN_VERBOSE_WARNING("Class with given name does not exist");
             return std::numeric_limits<double>::quiet_NaN();
         }
 
@@ -125,7 +125,7 @@ namespace stats
         const auto it = classIndices.find(className);
         if (it == classIndices.end())
         {
-            DEBUG_PRINTLN("Class with given name does not exist");
+            DEBUG_PRINTLN_VERBOSE_WARNING("Class with given name does not exist");
             return std::numeric_limits<double>::quiet_NaN();
         }
 
@@ -159,7 +159,7 @@ namespace stats
         const auto it = classIndices.find(className);
         if (it == classIndices.end())
         {
-            DEBUG_PRINTLN("Class with given name does not exist");
+            DEBUG_PRINTLN_VERBOSE_WARNING("Class with given name does not exist");
             return std::numeric_limits<double>::quiet_NaN();
         }
 
@@ -193,7 +193,7 @@ namespace stats
         const auto it = classIndices.find(className);
         if (it == classIndices.end())
         {
-            DEBUG_PRINTLN("Class with given name does not exist");
+            DEBUG_PRINTLN_VERBOSE_WARNING("Class with given name does not exist");
             return std::numeric_limits<double>::quiet_NaN();
         }
 

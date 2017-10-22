@@ -30,7 +30,7 @@ namespace discretizer
         // For integers make sure that buckets ranges are different
         if (diff < effectiveBuckets)
         {
-            DEBUG_PRINTLN("Changing bucket size from %zu to %zu", buckets, diff);
+            DEBUG_PRINTLN_VERBOSE_INFO("Changing bucket size from %zu to %zu", buckets, diff);
             effectiveBuckets = diff;
         }
 

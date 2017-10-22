@@ -95,9 +95,8 @@ namespace source
                 return getElementIndex<std::pair<double, double>>(data, description);
             case source::INTEGER:
             case source::REAL:
-                DEBUG_PRINTLN("Function %s() does not support values INTEGER or REAL. "
-                              "Returning max of size_t.",
-                              __FUNCTION__);
+                DEBUG_PRINTLN_VERBOSE_INFO("Function does not support values INTEGER or REAL. "
+                                           "Returning max of size_t.");
                 break;
             default:
                 FATAL_ERROR_VERBOSE("Function %s() does not support value provided (%d)",
@@ -112,19 +111,19 @@ namespace source
     size_t DataSource::getElementIndex(const source::dataV & data,
                                        const source::dataDescriptionElementT & description)
     {
-        auto desiredClassName = std::get<T>(data);
-        auto classes = std::get<2>(description);
+        auto desiredValue = std::get<T>(data);
+        auto values = std::get<2>(description);
         auto it = std::find_if(
-            classes.begin(),
-            classes.end(),
-            [desiredClassName](source::descriptionV el)->bool
+            values.begin(),
+            values.end(),
+            [desiredValue](source::descriptionV el)->bool
         {
-            return std::get<T>(el) == desiredClassName;
+            return std::get<T>(el) == desiredValue;
         });
 
-        ASSERT(it != classes.end());
-        const auto classIndex = it - classes.begin();
-        return classIndex;
+        ASSERT(it != values.end());
+        const auto valueIndex = it - values.begin();
+        return valueIndex;
     }
 
     void DataSource::loadDescription(std::ifstream &fileStream)

@@ -32,7 +32,10 @@ namespace distribution
                       source::is_double<T>::value,
                       "");
 
-        ASSERT(!data.empty());
+        if (data.empty())
+        {
+            return NormalDistribution(0.0, 0.0, 0.0);
+        }
 
         const auto dataSize = data.size();
         double dataSum = 0.0;
