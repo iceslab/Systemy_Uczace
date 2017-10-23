@@ -230,6 +230,7 @@ namespace stats
             return;
         }
 
+        fileStream << "accuracy precision recall fscore" << std::endl;
         std::ostream_iterator<std::string> out_it(fileStream, " ");
         const auto& classNames = std::get<2>(description.back());
         for (const auto& el : classNames)

@@ -69,11 +69,12 @@ int main(int argc, char** argv)
             const auto& discretizerType = discretizersTypes[i];
             printf("\n========== Path: %*s ==========\n\n", -maxPathLenght, (testDataDir + path).c_str());
             
+            auto description(dl.getDataDescription());
             auto matrix(dl.getDataMatrix());
             if (discretizerType != discretizer::NONE)
             {
                 auto discretizer = DiscretizerFactory::getDiscretizer(discretizerType,
-                                                                      dl.getDataDescription(),
+                                                                      description,
                                                                       matrix,
                                                                       NUMBER_OF_BUCKETS);
                 discretizer->discretize();
@@ -87,7 +88,7 @@ int main(int argc, char** argv)
                 auto data = cv.getNextData();
                 auto testData = data.first;
                 auto trainingData = data.second;
-                NaiveBayesAlgorithm nba(dl.getDataDescription(), trainingData);
+                NaiveBayesAlgorithm nba(description, trainingData);
                 NaiveBayesModel nbm(testData, nba);
                 auto testResult = nbm.classify();
 
