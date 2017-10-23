@@ -1,6 +1,9 @@
 #pragma once
 #include "DataSource.h"
+#include <iostream>
+#include <iterator>
 #include <unordered_map>
+#include <array>
 
 namespace stats
 {
@@ -45,6 +48,9 @@ namespace stats
         double getFscore(source::descriptionV des) const;
         double getFscore(std::string className) const;
         double getFscore(size_t index) const;
+
+        void saveToFile(const std::string & path) const;
+        void saveToFile(std::ofstream& fileStream) const;
 
     private:
         const source::dataDescriptionT description;

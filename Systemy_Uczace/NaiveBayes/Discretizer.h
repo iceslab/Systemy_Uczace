@@ -4,7 +4,6 @@
 
 namespace discretizer
 {
-
     class Discretizer
     {
     public:

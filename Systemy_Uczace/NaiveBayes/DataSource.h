@@ -6,6 +6,7 @@
 #include <sstream>
 #include <tuple>
 #include <algorithm>
+#include <random>
 
 #include "DataDescription.h"
 #include "DataVector.h"
@@ -40,6 +41,8 @@ namespace source
         template<typename T>
         static size_t getElementIndex(const source::dataV & data,
                                       const source::dataDescriptionElementT & description);
+
+        void shuffleData();
 
     private:
         dataDescriptionT description;

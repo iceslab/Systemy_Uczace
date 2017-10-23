@@ -13,10 +13,7 @@ namespace crossvalidator
     Crossvalidator::Crossvalidator(const source::dataMatrixT & matrix) :
         matrix(matrix), currentPart(0U)
     {
-        // In C++17 std::random_shuffle is removed
-        std::random_device rd;
-        std::default_random_engine re(rd());
-        std::shuffle(this->matrix.begin(), this->matrix.end(), re);
+        // Nothing to do
     }
 
     crossvalidatorPairT Crossvalidator::getNextData()

@@ -217,6 +217,36 @@ namespace stats
         return static_cast<double>(2 * tp) / static_cast<double>(2 * tp + fp + fn);
     }
 
+    void Statistics::saveToFile(const std::string & path) const
+    {
+        saveToFile(std::ofstream(path));
+    }
+
+    void Statistics::saveToFile(std::ofstream & fileStream) const
+    {
+        if (!fileStream.is_open())
+        {
+            DEBUG_PRINTLN_VERBOSE_WARNING("File is not open. Exiting function");
+            return;
+        }
+
+        std::ostream_iterator<std::string> out_it(fileStream, " ");
+        const auto& classNames = std::get<2>(description.back());
+        for (const auto& el : classNames)
+        {
+            const auto& className = std::get<std::string>(el);
+            std::array<std::string, 5> row = {
+                className,
+                std::to_string(getAccuracy(className)),
+                std::to_string(getPrecision(className)),
+                std::to_string(getRecall(className)),
+                std::to_string(getFscore(className))
+            };
+            std::copy(row.begin(), row.end(), out_it);
+            fileStream << std::endl;
+        }
+    }
+
     MeasuresS Statistics::getMeasuresForClass(size_t index) const
     {
         const auto classesCount = matrix.size();

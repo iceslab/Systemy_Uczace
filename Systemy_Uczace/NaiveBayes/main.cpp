@@ -4,8 +4,11 @@
 #include "NaiveBayesAlgorithm.h"
 #include "NaiveBayesModel.h"
 #include "Statistics.h"
+#include <filesystem>
 
+#define FINAL_TESTS
 #define NUMBER_OF_BUCKETS 10
+#define DISCRETIZATIONS 3U
 
 using source::DataSource;
 using discretizer::DiscretizerFactory;
@@ -16,51 +19,109 @@ using stats::Statistics;
 
 int main(int argc, char** argv)
 {
+    const std::string testDataDir = "data/";
+    const std::string resultsDataDir = "results/";
     const std::vector<std::string> names =
     {
-        "data/iris.txt",
-        "data/glass.txt",
-        "data/wine.txt",
-        "data/diabetes.txt",
-        "data/car.txt",
-        "data/transfusion.txt"
+        "glass_test.txt",
+        "car_test.txt",
+        "vertrebal_column_test.txt"
+#ifndef FINAL_TESTS        
+        ,
+        "iris.txt",
+        "wine.txt",
+        "diabetes.txt",
+        "transfusion.txt",
+        "seeds.txt"
+#endif
     };
+
+    const std::vector<discretizer::DiscretizerTypeE> discretizersTypes =
+    {
+        discretizer::CLASSIC,
+        discretizer::UNIFORM,
+        discretizer::NONE
+    };
+
+    const std::vector<std::string> discretizersNames =
+    {
+        "CLASSIC",
+        "UNIFORM",
+        "NONE"
+    };
+
+    std::experimental::filesystem::create_directory(resultsDataDir);
 
     std::vector<size_t> namesLenghts;
     for (auto& path : names)
     {
-        namesLenghts.emplace_back(path.size());
+        namesLenghts.emplace_back(testDataDir.size() + path.size());
     }
     const auto maxPathLenght = static_cast<int>(*std::max_element(namesLenghts.begin(),
                                                                   namesLenghts.end()));
 
     for (const auto& path : names)
     {
-        printf("\n========== Path: %*s ==========\n\n", -maxPathLenght, path.c_str());
-        DataSource dl(path);
-        auto discretizer = DiscretizerFactory::getDiscretizer(discretizer::UNIFORM,
-                                                              dl,
-                                                              NUMBER_OF_BUCKETS);
-        //discretizer->discretize();
-        Crossvalidator cv(dl);
-        std::vector<Statistics> allStats;
-
-        while (cv.hasNext())
+        DataSource dl(testDataDir + path);
+        dl.shuffleData();
+        for (size_t i = 0; i < discretizersTypes.size(); i++)
         {
-            auto data = cv.getNextData();
-            auto testData = data.first;
-            auto trainingData = data.second;
-            NaiveBayesAlgorithm nba(dl.getDataDescription(), trainingData);
-            NaiveBayesModel nbm(testData, nba);
-            auto testResult = nbm.classify();
+            const auto& discretizerType = discretizersTypes[i];
+            printf("\n========== Path: %*s ==========\n\n", -maxPathLenght, (testDataDir + path).c_str());
+            
+            auto matrix(dl.getDataMatrix());
+            if (discretizerType != discretizer::NONE)
+            {
+                auto discretizer = DiscretizerFactory::getDiscretizer(discretizerType,
+                                                                      dl.getDataDescription(),
+                                                                      matrix,
+                                                                      NUMBER_OF_BUCKETS);
+                discretizer->discretize();
+            }
 
-            auto stats = Statistics::calculateStatistics(dl.getDataDescription(),
-                                                         testData,
-                                                         testResult);
-            allStats.emplace_back(stats);
+            Crossvalidator cv(matrix);
+            std::vector<Statistics> allStats;
 
-            DEBUG_CALL(
-                const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
+            while (cv.hasNext())
+            {
+                auto data = cv.getNextData();
+                auto testData = data.first;
+                auto trainingData = data.second;
+                NaiveBayesAlgorithm nba(dl.getDataDescription(), trainingData);
+                NaiveBayesModel nbm(testData, nba);
+                auto testResult = nbm.classify();
+
+                auto stats = Statistics::calculateStatistics(dl.getDataDescription(),
+                                                             testData,
+                                                             testResult);
+                allStats.emplace_back(stats);
+
+                DEBUG_CALL(
+                    const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
+                for (auto& description : std::get<2>(dl.getDataDescription().back()))
+                {
+                    const auto className = std::get<std::string>(description);
+                    printf("%*s: accuracy: %6.2lf%% "
+                           "precision: %6.2lf%% "
+                           "recall: %6.2lf%% "
+                           "fscore: %6.2lf%%\n",
+                           -static_cast<int>(maxClassNameLenght),
+                           className.c_str(),
+                           stats.getAccuracy(className) * 100.0L,
+                           stats.getPrecision(className) * 100.0L,
+                           stats.getRecall(className) * 100.0L,
+                           stats.getFscore(className) * 100.0L);
+
+                }
+                printf("\n");
+                );
+            }
+
+            const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
+            auto stats = Statistics::calculateMean(allStats);
+
+            const auto& discretizerName = discretizersNames[i];
+            stats.saveToFile(resultsDataDir + discretizerName + "_" + path);
             for (auto& description : std::get<2>(dl.getDataDescription().back()))
             {
                 const auto className = std::get<std::string>(description);
@@ -77,27 +138,7 @@ int main(int argc, char** argv)
 
             }
             printf("\n");
-            );
         }
-
-        const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
-        auto stats = Statistics::calculateMean(allStats);
-        for (auto& description : std::get<2>(dl.getDataDescription().back()))
-        {
-            const auto className = std::get<std::string>(description);
-            printf("%*s: accuracy: %6.2lf%% "
-                   "precision: %6.2lf%% "
-                   "recall: %6.2lf%% "
-                   "fscore: %6.2lf%%\n",
-                   -static_cast<int>(maxClassNameLenght),
-                   className.c_str(),
-                   stats.getAccuracy(className) * 100.0L,
-                   stats.getPrecision(className) * 100.0L,
-                   stats.getRecall(className) * 100.0L,
-                   stats.getFscore(className) * 100.0L);
-
-        }
-        printf("\n");
     }
 
     system("pause");

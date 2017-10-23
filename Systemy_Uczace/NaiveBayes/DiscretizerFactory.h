@@ -9,7 +9,8 @@ namespace discretizer
     enum DiscretizerTypeE
     {
         CLASSIC,
-        UNIFORM
+        UNIFORM,
+        NONE
     };
 
     class DiscretizerFactory

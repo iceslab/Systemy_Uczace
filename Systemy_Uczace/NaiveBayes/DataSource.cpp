@@ -2,7 +2,6 @@
 
 namespace source
 {
-
     DataSource::DataSource(std::string filePath) : DataSource(std::ifstream(filePath))
     {
         // Nothing to do
@@ -13,7 +12,8 @@ namespace source
         // If file is not open throw an exception
         if (!fileStream.is_open())
         {
-            throw std::ios_base::failure("Couldn't open file");
+            DEBUG_PRINTLN_VERBOSE_WARNING("File is not open. Exiting function");
+            return;
         }
 
         // File format:
@@ -74,7 +74,7 @@ namespace source
             case REAL_DISCRETE:
             case UNDEFINED:
             default:
-                FATAL_ERROR_VERBOSE("Illegal type in union costructor: %d", type);
+                FATAL_ERROR_VERBOSE("Illegal type in variant costructor: %d", type);
                 break;
         }
 
@@ -105,6 +105,14 @@ namespace source
                 break;
         }
         return std::numeric_limits<size_t>::max();
+    }
+
+    void DataSource::shuffleData()
+    {
+        // In C++17 std::random_shuffle is removed
+        std::random_device rd;
+        std::default_random_engine re(rd());
+        std::shuffle(this->matrix.begin(), this->matrix.end(), re);
     }
 
     template<typename T>
