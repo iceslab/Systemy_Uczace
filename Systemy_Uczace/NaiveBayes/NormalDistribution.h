@@ -40,17 +40,25 @@ namespace distribution
         const auto dataSize = data.size();
         double dataSum = 0.0;
 
+        // Sorting data for median calculation
+        std::vector<double> dataSorted;
+        for(const auto& el : data)
+        {
+            dataSorted.emplace_back(std::get<T>(el));
+        }
+        std::sort(dataSorted.begin(), dataSorted.end());
+
         // Calculating median
         double median = 0.0;
         if (dataSize & 1)
         {
-            median = static_cast<double>(std::get<T>(data[dataSize / 2]));
+            median = static_cast<double>(dataSorted[dataSize / 2]);
         }
         else
         {
-            auto firstElement = static_cast<double>(std::get<T>(data[dataSize / 2 - 1]));
-            auto secondElement = static_cast<double>(std::get<T>(data[dataSize / 2]));
-            median = static_cast<double>((firstElement + secondElement / 2.0));
+            auto firstElement = static_cast<double>(dataSorted[dataSize / 2 - 1]);
+            auto secondElement = static_cast<double>(dataSorted[dataSize / 2]);
+            median = static_cast<double>((firstElement + secondElement) / 2.0);
         }
 
         // Calculating mean
