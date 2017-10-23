@@ -2,8 +2,8 @@
 
 namespace distribution
 {
-    NormalDistribution::NormalDistribution(double mean, double median, double stddev) :
-        mean(mean), median(median), stddev(stddev), variance(stddev * stddev)
+    NormalDistribution::NormalDistribution(double mean, double stddev) :
+        mean(mean), stddev(stddev), variance(stddev * stddev)
     {
         // Nohing to do
     }
@@ -13,6 +13,4 @@ namespace distribution
         const double exponent = -(((x - mean) * (x - mean)) / (2.0L * variance));
         return 1.0L / sqrt(2.0L * M_PI * variance) * pow(M_E, exponent);
     }
-
-    
 }
