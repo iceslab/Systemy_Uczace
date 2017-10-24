@@ -20,6 +20,7 @@ using stats::Statistics;
 int main(int argc, char** argv)
 {
     const std::string testDataDir = "data/";
+    //const std::string resultsDataDir = "../NaiveBayesTests/results/";
     const std::string resultsDataDir = "results/";
     const std::vector<std::string> names =
     {

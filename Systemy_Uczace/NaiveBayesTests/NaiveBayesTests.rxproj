@@ -11,6 +11,13 @@
   <PropertyGroup>
     <StartupFile>Script.R</StartupFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <ResetReplOnRun>False</ResetReplOnRun>
+    <CommandLineArgs />
+    <RemoteProjectPath>~/</RemoteProjectPath>
+    <TransferFilesFilter>*.r;*.rmd;*.sql;*.md;*.cpp</TransferFilesFilter>
+    <TransferProjectOnRun>True</TransferProjectOnRun>
+  </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties />
