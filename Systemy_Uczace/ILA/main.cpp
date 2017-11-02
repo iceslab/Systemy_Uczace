@@ -1,8 +1,8 @@
 #include "DataSource.h"
 #include "DiscretizerFactory.h"
 #include "Crossvalidator.h"
-#include "NaiveBayesAlgorithm.h"
-#include "NaiveBayesModel.h"
+#include "ILAAlgorithm.h"
+#include "ILAModel.h"
 #include "Statistics.h"
 #include <filesystem>
 
@@ -13,8 +13,8 @@
 using source::DataSource;
 using discretizer::DiscretizerFactory;
 using crossvalidator::Crossvalidator;
-using algorithm::NaiveBayesAlgorithm;
-using model::NaiveBayesModel;
+using algorithm::ILAAlgorithm;
+using model::ILAModel;
 using stats::Statistics;
 
 int main(int argc, char** argv)
@@ -68,7 +68,7 @@ int main(int argc, char** argv)
         {
             const auto& discretizerType = discretizersTypes[i];
             printf("\n========== Path: %*s ==========\n\n", -maxPathLenght, (testDataDir + path).c_str());
-            
+
             auto description(dl.getDataDescription());
             auto matrix(dl.getDataMatrix());
             if (discretizerType != discretizer::NONE)
@@ -88,9 +88,9 @@ int main(int argc, char** argv)
                 auto data = cv.getNextData();
                 auto testData = data.first;
                 auto trainingData = data.second;
-                NaiveBayesAlgorithm nba(description, trainingData);
-                NaiveBayesModel nbm(testData, nba);
-                auto testResult = nbm.classify();
+                ILAAlgorithm ilaa(description, trainingData);
+                ILAModel ilam(testData, ilaa);
+                auto testResult = ilam.classify();
 
                 auto stats = Statistics::calculateStatistics(dl.getDataDescription(),
                                                              testData,

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Discretizer.h"
 
 namespace discretizer

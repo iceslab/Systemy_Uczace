@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "DataDescription.h"
 
 namespace source

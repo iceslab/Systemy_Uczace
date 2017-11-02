@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include "Discretizer.h"
 #include "ClassicDiscretizer.h"
 #include "UniformDiscretizer.h"

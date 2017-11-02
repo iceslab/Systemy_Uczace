@@ -1,6 +1,5 @@
 #pragma once
 #include "DataSource.h"
-#include <algorithm>
 
 namespace discretizer
 {

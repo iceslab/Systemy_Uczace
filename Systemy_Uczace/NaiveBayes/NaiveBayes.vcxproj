@@ -76,7 +76,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Repos\Systemy_Uczace\Systemy_Uczace\UtilitiesStatic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link />
+    <ProjectReference />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -84,7 +87,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Repos\Systemy_Uczace\Systemy_Uczace\UtilitiesStatic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link />
+    <ProjectReference />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -94,11 +100,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Repos\Systemy_Uczace\Systemy_Uczace\UtilitiesStatic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <ProjectReference />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -108,45 +116,27 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Repos\Systemy_Uczace\Systemy_Uczace\UtilitiesStatic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <ProjectReference />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Algorithm.cpp" />
-    <ClCompile Include="ClassicDiscretizer.cpp" />
-    <ClCompile Include="Crossvalidator.cpp" />
-    <ClCompile Include="DataDescription.cpp" />
-    <ClCompile Include="DataSource.cpp" />
-    <ClCompile Include="DataVector.cpp" />
-    <ClCompile Include="Discretizer.cpp" />
-    <ClCompile Include="DiscretizerFactory.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Model.cpp" />
     <ClCompile Include="NaiveBayesAlgorithm.cpp" />
     <ClCompile Include="NaiveBayesModel.cpp" />
-    <ClCompile Include="NormalDistribution.cpp" />
-    <ClCompile Include="Statistics.cpp" />
-    <ClCompile Include="UniformDiscretizer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Algorithm.h" />
-    <ClInclude Include="ClassicDiscretizer.h" />
-    <ClInclude Include="Crossvalidator.h" />
-    <ClInclude Include="DataDescription.h" />
-    <ClInclude Include="DataSource.h" />
-    <ClInclude Include="DataVector.h" />
-    <ClInclude Include="asserts.h" />
-    <ClInclude Include="Discretizer.h" />
-    <ClInclude Include="DiscretizerFactory.h" />
-    <ClInclude Include="Model.h" />
     <ClInclude Include="NaiveBayesAlgorithm.h" />
     <ClInclude Include="NaiveBayesModel.h" />
-    <ClInclude Include="NormalDistribution.h" />
-    <ClInclude Include="Statistics.h" />
-    <ClInclude Include="UniformDiscretizer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UtilitiesStatic\UtilitiesStatic.vcxproj">
+      <Project>{696a4f5c-db68-4243-b192-71e7a44abc94}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,5 @@
 #pragma once
 #include "Model.h"
-#include "DataVector.h"
 #include "NaiveBayesAlgorithm.h"
 
 namespace model
@@ -18,7 +17,7 @@ namespace model
                         const algorithm::distributionsT & distributions);
         ~NaiveBayesModel() = default;
 
-        source::testDataT classify();
+        virtual source::testDataT classify() override;
 
     private:
         source::dataVectorT classify(const source::dataVectorT & data);

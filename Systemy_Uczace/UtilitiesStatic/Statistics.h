@@ -1,9 +1,5 @@
 #pragma once
 #include "DataSource.h"
-#include <iostream>
-#include <iterator>
-#include <unordered_map>
-#include <array>
 
 namespace stats
 {

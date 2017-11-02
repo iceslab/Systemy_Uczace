@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "UniformDiscretizer.h"
 
 namespace discretizer

@@ -1,11 +1,5 @@
 #pragma once
-#include <string>
-#include <fstream>
-#include <vector>
-#include <exception>
-#include <sstream>
-#include <tuple>
-#include <variant>
+#include "stdafx.h"
 
 namespace source
 {

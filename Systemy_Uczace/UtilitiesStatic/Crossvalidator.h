@@ -1,7 +1,5 @@
 #pragma once
 #include "DataSource.h"
-#include <algorithm>
-#include <random>
 
 typedef std::pair<source::testDataT, source::trainingDataT> crossvalidatorPairT;
 namespace crossvalidator

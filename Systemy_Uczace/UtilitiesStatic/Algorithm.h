@@ -1,8 +1,6 @@
 #pragma once
 #include "DataSource.h"
 #include "Model.h"
-#include <memory>
-#include <algorithm>
 
 namespace abstracts
 {
