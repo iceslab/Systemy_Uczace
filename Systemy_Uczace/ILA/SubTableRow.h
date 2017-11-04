@@ -21,6 +21,7 @@ namespace algorithm
 
         static source::dataColumnRefT getAttributeColumn(std::vector<SubTableRow>& str,
                                                          size_t attributeIndex);
+        static bool allRowsClassified(const subTableT & subTable);
     };
 
 

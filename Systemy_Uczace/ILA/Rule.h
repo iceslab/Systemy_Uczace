@@ -9,18 +9,28 @@ namespace algorithm
     class Rule
     {
     public:
-        Rule(size_t attributeIndex, source::dataV attributeValue, std::string classValue);
-        Rule(attributesIndicesT attributesIndices,
-             attributesValuesT attributesValues,
-             std::string classValue);
+        Rule(size_t attributeIndex,
+             const source::dataV & attributeValue,
+             const std::string & classValue);
+        Rule(const attributesIndicesT & attributesIndices,
+             const attributesValuesT & attributesValues,
+             const std::string & classValue);
+        Rule(const Rule & rule);
         ~Rule() = default;
+
+        bool classify(const source::dataVectorT & data, std::string & outClassValue) const;
+        static bool classify(const std::vector<Rule> & rules,
+                             const source::dataVectorT & data,
+                             std::string & outClassValue);
 
         static void concatenateRules(std::vector<Rule> & r1, const std::vector<Rule> & r2);
         static void concatenateRules(std::vector<Rule> & r1, const Rule & r2);
+
+        Rule& operator=(const Rule& other);
     private:
-        attributesIndicesT attributesIndices;
-        attributesValuesT attributesValues;
-        std::string classValue;
+        const attributesIndicesT attributesIndices;
+        const attributesValuesT attributesValues;
+        const std::string classValue;
     };
 
     typedef Rule ruleT;

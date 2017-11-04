@@ -14,21 +14,23 @@ namespace algorithm
     {
         createSubTables();
 
-        rules = getUniqueRules();
-
+        for (size_t i = 1; !allClassified() && i <= allAttributesSize; i++)
+        {
+            Rule::concatenateRules(rules, getRulesForAttributes(i));
+        }
 
         // Indicate that model is built
         modelBuilt = true;
     }
 
-    void ILAAlgorithm::getRules() const
+    const rulesVectorT & ILAAlgorithm::getRules() const
     {
         if (!modelBuilt)
         {
             createRules();
         }
 
-        return;
+        return rules;
     }
 
     void ILAAlgorithm::createSubTables() const
@@ -41,64 +43,6 @@ namespace algorithm
             const auto subTableIndex = classNameToIndex(el.getClassName());
             subTables[subTableIndex].emplace_back(el);
         }
-    }
-
-    rulesVectorT ILAAlgorithm::getUniqueRules() const
-    {
-        rulesVectorT retVal;
-
-        // For each sub table...
-        for (size_t subTableIndex = 0; subTableIndex < subTables.size(); subTableIndex++)
-        {
-            auto maxOccurencesPair = std::make_pair(source::dataV(),
-                                                    std::numeric_limits<size_t>::min());
-            auto maxAttributeIndex = std::numeric_limits<size_t>::max();
-            // ...and for each attriute...
-            for (size_t attributeIndex = 0; attributeIndex < allAttributesSize; attributeIndex++)
-            {
-                auto uniqueValues = SubTableRow::getUniqueValuesForAttribute(subTables,
-                                                                             subTableIndex,
-                                                                             attributeIndex);
-                for (const auto& value : uniqueValues)
-                {
-                    // Column reference
-                    auto column = SubTableRow::getAttributeColumn(subTables[subTableIndex],
-                                                                  attributeIndex);
-                    // Count value appereances
-                    const size_t count = std::count_if(column.begin(),
-                                                       column.end(),
-                                                       [value](auto el)->bool
-                    {
-                        return el.get() == source::dataV(value);
-                    });
-
-                    // If count is greater replace values
-                    if (count > maxOccurencesPair.second)
-                    {
-                        maxOccurencesPair = std::make_pair(value, count);
-                    }
-                }
-            }
-
-            // Mark classified rows
-            if (maxAttributeIndex != std::numeric_limits<decltype(maxAttributeIndex)>::max())
-            {
-                for (auto& subRow : subTables[subTableIndex])
-                {
-                    if (subRow[maxAttributeIndex] == maxOccurencesPair.first)
-                    {
-                        subRow.isClassified = true;
-                    }
-                }
-            }
-
-            // Add rule
-            retVal.emplace_back(maxAttributeIndex,
-                                maxOccurencesPair.first,
-                                subTables[subTableIndex].front().getClassName());
-        }
-
-        return retVal;
     }
 
     rulesVectorT ILAAlgorithm::getRulesForValues(const attributesIndicesT & indices,
@@ -350,5 +294,16 @@ namespace algorithm
         } while (combinationsMask < finishMask);
         std::reverse(retVal.begin(), retVal.end());
         return retVal;
+    }
+    
+    bool ILAAlgorithm::allClassified() const
+    {
+        for (const auto el : subTables)
+        {
+            if (SubTableRow::allRowsClassified(el) == false)
+                return false;
+        }
+
+        return true;
     }
 }

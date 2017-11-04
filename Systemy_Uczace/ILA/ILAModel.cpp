@@ -2,14 +2,32 @@
 
 namespace model
 {
-    ILAModel::ILAModel(const source::testDataT & testData, const algorithm::ILAAlgorithm & algorithm)
+    ILAModel::ILAModel(const source::testDataT & testData, 
+                       const algorithm::ILAAlgorithm & algorithm) :
+        ILAModel(testData, algorithm.getRules())
     {
-        FATAL_ERROR_VERBOSE("%s not implemented yet", __FUNCSIG__);
+        // Nothing to do
+    }
+
+    ILAModel::ILAModel(const source::testDataT & testData, 
+                       const algorithm::rulesVectorT & rules) :
+        testData(testData), rules(rules)
+    {
+        // Nothing to do
     }
 
     source::testDataT ILAModel::classify()
     {
-        FATAL_ERROR_VERBOSE("%s not implemented yet", __FUNCSIG__);
-        return source::testDataT();
+        source::testDataT retVal(testData);
+
+        for (auto& row : retVal)
+        {
+            std::string className;
+            auto classifyResult = algorithm::Rule::classify(rules, row, className);
+            ASSERT_VERBOSE(classifyResult == true, "Data row was not classified");
+            row.back() = className;
+        }
+
+        return retVal;
     }
 }

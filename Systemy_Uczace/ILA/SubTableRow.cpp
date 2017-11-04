@@ -58,4 +58,15 @@ namespace algorithm
 
         return retVal;
     }
+
+    bool SubTableRow::allRowsClassified(const subTableT & subTable)
+    {
+        for (const auto el : subTable)
+        {
+            if (el.isClassified == false)
+                return false;
+        }
+
+        return true;
+    }
 }

@@ -10,8 +10,13 @@ namespace model
     public:
         ILAModel(const source::testDataT & testData,
                  const algorithm::ILAAlgorithm & algorithm);
+        ILAModel(const source::testDataT & testData,
+                 const algorithm::rulesVectorT & rules);
         ~ILAModel() = default;
 
         virtual source::testDataT classify() override;
+    private:
+        const source::testDataT testData;
+        const algorithm::rulesVectorT rules;
     };
 }

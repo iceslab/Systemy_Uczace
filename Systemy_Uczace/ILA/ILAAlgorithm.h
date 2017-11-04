@@ -18,7 +18,7 @@ namespace algorithm
         ~ILAAlgorithm() = default;
 
         void createRules() const;
-        void getRules() const;
+        const rulesVectorT & getRules() const;
     private:
         mutable bool modelBuilt;
         mutable SubTableRow::subTableVectorT subTables;
@@ -28,7 +28,6 @@ namespace algorithm
 
         // Creates sub tables basing on training data
         void createSubTables() const;
-        rulesVectorT getUniqueRules() const;
 
         rulesVectorT getRulesForValues(const attributesIndicesT & indices,
                                        const dataCombinationT & combination,
@@ -58,5 +57,7 @@ namespace algorithm
 
         // Generates all bit permutations
         std::vector<size_t> allLexographicPermutations(size_t attributesSize) const;
+
+        bool allClassified() const;
     };
 }

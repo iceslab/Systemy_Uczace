@@ -19,6 +19,10 @@ using stats::Statistics;
 
 int main(int argc, char** argv)
 {
+    // Disable warnings
+    UNREFERENCED_PARAMETER(argc);
+    UNREFERENCED_PARAMETER(argv);
+
     const std::string testDataDir = "../data/";
     const std::string resultsDataDir = "../results/";
     const std::vector<std::string> names =
