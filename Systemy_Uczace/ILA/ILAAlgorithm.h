@@ -1,8 +1,14 @@
 #pragma once
 #include "Algorithm.h"
 #include "asserts.h"
-#include "SubTableRow.h"
+#include "SubTable.h"
 #include "Rule.h"
+
+#ifdef _WIN64
+typedef __int64 signed_size_t;
+#else
+typedef int     signed_size_t;
+#endif
 
 namespace algorithm
 {
@@ -21,7 +27,7 @@ namespace algorithm
         const rulesVectorT & getRules() const;
     private:
         mutable bool modelBuilt;
-        mutable SubTableRow::subTableVectorT subTables;
+        mutable subTableVectorT subTables;
         mutable rulesVectorT rules;
 
         size_t allAttributesSize;

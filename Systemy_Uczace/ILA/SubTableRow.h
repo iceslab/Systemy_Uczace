@@ -6,23 +6,16 @@ namespace algorithm
 {
     class SubTableRow : public source::dataVectorT
     {
+        friend class SubTable;
     public:
-        typedef std::vector<SubTableRow> subTableT;
-        typedef std::vector<subTableT> subTableVectorT;
-
         SubTableRow() = default;
         SubTableRow(const source::dataVectorT & data);
         ~SubTableRow() = default;
-        bool isClassified;
 
-        static source::dataColumnT getUniqueValuesForAttribute(const subTableVectorT & subTables,
-                                                               size_t subTableIndex,
-                                                               size_t attributeIndex);
-
-        static source::dataColumnRefT getAttributeColumn(std::vector<SubTableRow>& str,
-                                                         size_t attributeIndex);
-        static bool allRowsClassified(const subTableT & subTable);
+        bool isClassified() const;
+    private:
+        bool classified;
     };
 
-
+    
 }

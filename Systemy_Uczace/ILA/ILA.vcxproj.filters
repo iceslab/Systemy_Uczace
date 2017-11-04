@@ -30,6 +30,9 @@
     <ClCompile Include="SubTableRow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SubTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ILAModel.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SubTableRow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SubTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

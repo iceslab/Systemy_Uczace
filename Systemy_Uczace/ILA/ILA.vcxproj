@@ -125,12 +125,14 @@
     <ClCompile Include="ILAModel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Rule.cpp" />
+    <ClCompile Include="SubTable.cpp" />
     <ClCompile Include="SubTableRow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ILAAlgorithm.h" />
     <ClInclude Include="ILAModel.h" />
     <ClInclude Include="Rule.h" />
+    <ClInclude Include="SubTable.h" />
     <ClInclude Include="SubTableRow.h" />
   </ItemGroup>
   <ItemGroup>

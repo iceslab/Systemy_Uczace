@@ -4,7 +4,7 @@ namespace algorithm
 {
     ILAAlgorithm::ILAAlgorithm(const source::dataDescriptionT & description,
                                const source::trainingDataT & trainingData) :
-        abstracts::Algorithm(descriptions, trainingData),
+        abstracts::Algorithm(description, trainingData),
         allAttributesSize(description.size() - 1)
     {
         // Nothing to do
@@ -18,6 +18,18 @@ namespace algorithm
         {
             Rule::concatenateRules(rules, getRulesForAttributes(i));
         }
+
+        DEBUG_CALL(
+        if (!allClassified())
+        {
+            for (size_t j = 0; j < subTables.size(); j++)
+            {
+                printf("\n\nSub table no. %3d\n", j);
+                subTables[j].printClassified();
+            }
+        }
+        )
+        ASSERT(allClassified());
 
         // Indicate that model is built
         modelBuilt = true;
@@ -52,8 +64,15 @@ namespace algorithm
         rulesVectorT retVal;
         std::string className;
         // For each sub table row...
-        for (auto& subRow : subTables[currentSubTableIndex])
+        for(size_t subRowIndex = 0; subRowIndex < subTables[currentSubTableIndex].size(); subRowIndex++)
         {
+            auto& subRow = subTables[currentSubTableIndex][subRowIndex];
+            // Skip already classified rows
+            if (subRow.isClassified())
+            {
+                continue;
+            }
+
             // ...create data combination...
             dataCombinationT rowData;
             for (const auto& index : indices)
@@ -61,10 +80,9 @@ namespace algorithm
                 rowData.push_back(subRow[index]);
             }
 
-            subRow.isClassified = rowData == combination;
-
-            if (subRow.isClassified)
+            if (rowData == combination)
             {
+                subTables[currentSubTableIndex].setClassified(subRowIndex);
                 className = subRow.getClassName();
             }
         }
@@ -86,18 +104,32 @@ namespace algorithm
         {
             for (const auto& indicesCombination : indicesCombinations)
             {
-                const auto valueCombination = getSubTableValueCombination(subTableIndex,
-                                                                          indicesCombination);
-                const auto combinations = getUniqueSubTableValueCombination(subTableIndex,
-                                                                            valueCombination,
-                                                                            indicesCombination);
-                const auto combination = getMaxUniqueSubTableValueCombination(subTableIndex,
-                                                                              combinations,
-                                                                              indicesCombination);
-                const auto rule = getRulesForValues(indicesCombination,
-                                                     combination,
-                                                     subTableIndex);
-                Rule::concatenateRules(retVal, rule);
+                // Skip table if already classified (can change in inner loop)
+                if (subTables[subTableIndex].allRowsClassified())
+                {
+                    continue;
+                }
+
+                const auto valueCombination =
+                    getSubTableValueCombination(subTableIndex,
+                                                indicesCombination);
+                const auto combinations =
+                    getUniqueSubTableValueCombination(subTableIndex,
+                                                      valueCombination,
+                                                      indicesCombination);
+                if (!combinations.empty())
+                {
+                    const auto combination =
+                        getMaxUniqueSubTableValueCombination(subTableIndex,
+                                                             combinations,
+                                                             indicesCombination);
+
+                    const auto rule =
+                        getRulesForValues(indicesCombination,
+                                          combination,
+                                          subTableIndex);
+                    Rule::concatenateRules(retVal, rule);
+                }
             }
         }
 
@@ -114,7 +146,7 @@ namespace algorithm
 
         for (const auto& subRow : subTable)
         {
-            for (size_t i = 0; !subRow.isClassified && i < combinations.size(); i++)
+            for (size_t i = 0; !subRow.isClassified() && i < combinations.size(); i++)
             {
                 uniqueValues[i].insert(subRow[combinations[i]]);
             }
@@ -124,6 +156,11 @@ namespace algorithm
         std::vector<std::set<source::dataV>::iterator> setIterators;
         for (auto& set : uniqueValues)
         {
+            if (set.empty())
+            {
+                subTable.printClassified();
+            }
+            ASSERT(!set.empty());
             setIterators.push_back(set.begin());
         }
 
@@ -176,7 +213,7 @@ namespace algorithm
             const valuesCombinationsT & valuesCombinations,
             const attributesIndicesT & combinations) const
     {
-        auto retVal(valuesCombinations);
+        auto valuesCopy(valuesCombinations);
         // For each sub table...
         for (size_t subTableIndex = 0; subTableIndex < subTables.size(); subTableIndex++)
         {
@@ -196,11 +233,19 @@ namespace algorithm
                 }
 
                 // ... and remove it from all combinations if exist
-                std::remove_if(retVal.begin(), retVal.end(),
+                std::remove_if(valuesCopy.begin(), valuesCopy.end(),
                                [rowData](dataCombinationT data)->bool
                 {
                     return rowData == data;
                 });
+            }
+        }
+        valuesCombinationsT retVal;
+        for (const auto& el : valuesCopy)
+        {
+            if (!el.empty())
+            {
+                retVal.push_back(el);
             }
         }
 
@@ -213,7 +258,15 @@ namespace algorithm
             const valuesCombinationsT & valuesCombinations,
             const attributesIndicesT & combinations) const
     {
-        ASSERT(valuesCombinations.size() == combinations.size());
+        if (!valuesCombinations.empty())
+        {
+            ASSERT(valuesCombinations.front().size() == combinations.size());
+        }
+        else
+        {
+            return dataCombinationT();
+        }
+
         std::vector<size_t> occurences(valuesCombinations.size(), 0);
 
         // For each row in sub table...
@@ -271,12 +324,12 @@ namespace algorithm
 
     size_t ILAAlgorithm::nextLexographicPermutation(size_t v) const
     {
-        size_t t = v | (v - 1); // t gets v's least significant 0 bits set to 1
+        signed_size_t t = v | (v - 1); // t gets v's least significant 0 bits set to 1
                                 // Next set to 1 the most significant bit to change, 
                                 // set to 0 the least significant ones, and add the necessary 1 bits.
         DWORD bsfRet;
         _BitScanForward(&bsfRet, v);
-        size_t w = (t + 1) | (((~t & (~t + 1)) - 1) >> (bsfRet + 1));
+        auto w = (t + 1) | (((~t & -~t) - 1) >> (bsfRet + 1));
         return w;
     }
 
@@ -291,17 +344,19 @@ namespace algorithm
         {
             retVal.push_back(combinationsMask);
             combinationsMask = nextLexographicPermutation(combinationsMask);
-        } while (combinationsMask < finishMask);
-        std::reverse(retVal.begin(), retVal.end());
+        } while (combinationsMask <= finishMask);
+        //std::reverse(retVal.begin(), retVal.end());
         return retVal;
     }
-    
+
     bool ILAAlgorithm::allClassified() const
     {
         for (const auto el : subTables)
         {
-            if (SubTableRow::allRowsClassified(el) == false)
+            if (el.allRowsClassified() == false)
+            {
                 return false;
+            }
         }
 
         return true;
