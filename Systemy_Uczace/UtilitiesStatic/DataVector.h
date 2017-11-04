@@ -6,23 +6,33 @@ namespace source
 {
     typedef std::variant<std::string, int, double, std::pair<int, int>, std::pair<double, double>> dataV;
 
+    typedef std::vector<std::reference_wrapper<const dataV>> constDataColumnRefT;
+    typedef std::vector<std::reference_wrapper<dataV>> dataColumnRefT;
+    typedef std::vector<dataV> dataColumnT;
+    typedef constDataColumnRefT trainingColumnT;
+    typedef std::vector<std::string> classAsStringColumnT;
+
     class DataVector : public std::vector<dataV>
     {
     public:
         DataVector() = default;
         DataVector(size_t size) : std::vector<dataV>(size) {};
         ~DataVector() = default;
+
+        const dataV& getClass() const;
+        std::string getClassName() const;
+
+        static dataColumnRefT getAttributeColumn(std::vector<DataVector> & dc,
+                                                 size_t attributeIndex);
+
+        static dataColumnRefT getClassColumn(std::vector<DataVector> & dc);
+        static classAsStringColumnT getClassColumnAsString(const std::vector<DataVector> & dc);
     };
 
     typedef DataVector dataVectorT;
     typedef std::vector<dataVectorT> dataMatrixT;
 
     typedef dataMatrixT trainingDataT;
-    typedef std::vector<std::reference_wrapper<const dataV>> constDataColumnRefT;
-    typedef std::vector<std::reference_wrapper<dataV>> dataColumnRefT;
-    typedef std::vector<dataV> dataColumnT;
-    typedef constDataColumnRefT trainingColumnT;
-
     typedef dataMatrixT testDataT;
 
     template<typename T>

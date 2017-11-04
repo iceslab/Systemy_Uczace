@@ -6,9 +6,9 @@
 #include "Statistics.h"
 #include <filesystem>
 
+#define IRIS_ONLY
 #define FINAL_TESTS
 #define NUMBER_OF_BUCKETS 10
-#define DISCRETIZATIONS 3U
 
 using source::DataSource;
 using discretizer::DiscretizerFactory;
@@ -23,6 +23,9 @@ int main(int argc, char** argv)
     const std::string resultsDataDir = "../results/";
     const std::vector<std::string> names =
     {
+#ifdef IRIS_ONLY
+        "iris.txt"
+#else
         "glass_test.txt",
         "car_test.txt",
         "vertrebal_column_test.txt"
@@ -34,20 +37,19 @@ int main(int argc, char** argv)
         "transfusion.txt",
         "seeds.txt"
 #endif
+#endif
     };
 
     const std::vector<discretizer::DiscretizerTypeE> discretizersTypes =
     {
         discretizer::CLASSIC,
         discretizer::UNIFORM,
-        discretizer::NONE
     };
 
     const std::vector<std::string> discretizersNames =
     {
         "CLASSIC",
         "UNIFORM",
-        "NONE"
     };
 
     std::experimental::filesystem::create_directory(resultsDataDir);
@@ -99,9 +101,9 @@ int main(int argc, char** argv)
 
                 DEBUG_CALL(
                     const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
-                for (auto& description : std::get<2>(dl.getDataDescription().back()))
+                for (auto& dataDescription : std::get<2>(dl.getDataDescription().back()))
                 {
-                    const auto className = std::get<std::string>(description);
+                    const auto className = std::get<std::string>(dataDescription);
                     printf("%*s: accuracy: %6.2lf%% "
                            "precision: %6.2lf%% "
                            "recall: %6.2lf%% "
@@ -123,9 +125,9 @@ int main(int argc, char** argv)
 
             const auto& discretizerName = discretizersNames[i];
             stats.saveToFile(resultsDataDir + discretizerName + "_" + path);
-            for (auto& description : std::get<2>(dl.getDataDescription().back()))
+            for (auto& dataDescription : std::get<2>(dl.getDataDescription().back()))
             {
-                const auto className = std::get<std::string>(description);
+                const auto className = std::get<std::string>(dataDescription);
                 printf("%*s: accuracy: %6.2lf%% "
                        "precision: %6.2lf%% "
                        "recall: %6.2lf%% "

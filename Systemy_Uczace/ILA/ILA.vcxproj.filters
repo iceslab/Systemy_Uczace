@@ -24,12 +24,24 @@
     <ClCompile Include="ILAAlgorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Rule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SubTableRow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ILAModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ILAAlgorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SubTableRow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
