@@ -65,5 +65,10 @@ namespace algorithm
         std::vector<size_t> allLexographicPermutations(size_t attributesSize) const;
 
         bool allClassified() const;
+
+
+        static std::string toStringDataCombination(const dataCombinationT & dc);
+        static std::string toStringValueCombinations(const valuesCombinationsT & vc);
+        static std::string toStringAttributesIndices(const attributesIndicesT &ai);
     };
 }

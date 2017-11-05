@@ -22,11 +22,14 @@ namespace source
         const dataV& getClass() const;
         std::string getClassName() const;
 
+        std::string toString() const;
+
         static dataColumnRefT getAttributeColumn(std::vector<DataVector> & dc,
                                                  size_t attributeIndex);
 
         static dataColumnRefT getClassColumn(std::vector<DataVector> & dc);
         static classAsStringColumnT getClassColumnAsString(const std::vector<DataVector> & dc);
+        static std::string toString(const dataV & data);
     };
 
     typedef DataVector dataVectorT;

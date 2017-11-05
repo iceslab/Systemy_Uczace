@@ -17,8 +17,13 @@ namespace algorithm
         source::dataColumnRefT getAttributeColumn(size_t attributeIndex);
 
         bool allRowsClassified() const;
-        void printClassified() const;
+        void printClassifiedStatus() const;
+        void printValues() const;
+        void printNotClassifiedValues() const;
         void setClassified(size_t index);
+
+        size_t getClassifiedCount() const;
+        size_t getNotClassifiedCount() const;
     private:
         size_t classifiedRows;
     };

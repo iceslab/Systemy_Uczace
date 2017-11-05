@@ -288,8 +288,6 @@ __pycache__/
 *.xsd.cs
 
 # Results directory
-Systemy_Uczace/NaiveBayes/results/
-Systemy_Uczace/NaiveBayesTests/.Rhistory
-Systemy_Uczace/NaiveBayesTests/results/
+Systemy_Uczace/results/
 
 

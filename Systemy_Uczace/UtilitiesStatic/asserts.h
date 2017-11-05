@@ -17,6 +17,12 @@
 #endif
 
 #ifdef _DEBUG
+#define PRINT_SEPARATOR() \
+do \
+{ \
+        fprintf(stderr, "===========================================================\n"); \
+} while (false);
+
 #define DEBUG_PRINTLN_VERBOSE(format, ...) \
 do{ \
     fprintf(stderr, format, __VA_ARGS__); \
@@ -50,6 +56,8 @@ do \
     if ((expr) == false) \
     { \
         fprintf(stderr, "Assertion failed: " QUOTE(expr) ", file %s, line %d\n", __FILE__, __LINE__); \
+        fflush(stderr); \
+        fflush(stdout); \
         if (IsDebuggerPresent()) \
         { \
             DebugBreak(); \
@@ -65,6 +73,8 @@ do{ \
         fprintf(stderr, "Assertion failed: " QUOTE(expr) ", "); \
         fprintf(stderr, format, __VA_ARGS__); \
         fprintf(stderr, ", file %s, line %d\n", __FILE__, __LINE__); \
+        fflush(stderr); \
+        fflush(stdout); \
         if(IsDebuggerPresent()) \
         { \
             DebugBreak(); \
@@ -114,6 +124,8 @@ do \
 #endif
 
 #else
+#define PRINT_SEPARATOR()
+
 #define DEBUG_PRINTLN_VERBOSE(format, ...)
 #define DEBUG_PRINT_VERBOSE(format, ...)
 

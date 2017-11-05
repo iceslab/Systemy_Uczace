@@ -1,4 +1,5 @@
 #include "ILAAlgorithm.h"
+#define ALTERNATE_IMPLEMENTATION
 
 namespace algorithm
 {
@@ -16,20 +17,49 @@ namespace algorithm
 
         for (size_t i = 1; !allClassified() && i <= allAttributesSize; i++)
         {
+            DEBUG_CALL(
+                for (size_t j = 0; j < subTables.size(); j++)
+                {
+                    fprintf(stderr,
+                            "\n\nSub table no. %3d, not classified: %zu\n",
+                            j,
+                            subTables[j].getNotClassifiedCount());
+                    subTables[j].printNotClassifiedValues();
+                }
+            );
+
             Rule::concatenateRules(rules, getRulesForAttributes(i));
+
+            DEBUG_CALL(
+                fprintf(stderr, "\nRules: \n");
+            //for(const auto& el : rules)
+            for (size_t j = 0; j < rules.size(); j++)
+            {
+                fprintf(stderr, "%3d: %s\n", j, rules[j].toString().c_str());
+            }
+            );
         }
 
         DEBUG_CALL(
-        if (!allClassified())
-        {
-            for (size_t j = 0; j < subTables.size(); j++)
+            if (!allClassified())
             {
-                printf("\n\nSub table no. %3d\n", j);
-                subTables[j].printClassified();
+                for (size_t j = 0; j < subTables.size(); j++)
+                {
+                    fprintf(stderr,
+                            "\n\nSub table no. %3d, not classified: %zu\n",
+                            j,
+                            subTables[j].getNotClassifiedCount());
+                    subTables[j].printNotClassifiedValues();
+                }
+
+                fprintf(stderr, "\nRules: \n");
+                //for(const auto& el : rules)
+                for (size_t j = 0; j < rules.size(); j++)
+                {
+                    fprintf(stderr, "%3d: %s\n", j, rules[j].toString().c_str());
+                }
             }
-        }
-        )
-        ASSERT(allClassified());
+        );
 
         // Indicate that model is built
         modelBuilt = true;
@@ -61,10 +91,16 @@ namespace algorithm
                                                  const dataCombinationT & combination,
                                                  const size_t currentSubTableIndex) const
     {
+        // If there is no combination to check, return empty vector
+        if (combination.empty())
+        {
+            return rulesVectorT();
+        }
+
         rulesVectorT retVal;
         std::string className;
         // For each sub table row...
-        for(size_t subRowIndex = 0; subRowIndex < subTables[currentSubTableIndex].size(); subRowIndex++)
+        for (size_t subRowIndex = 0; subRowIndex < subTables[currentSubTableIndex].size(); subRowIndex++)
         {
             auto& subRow = subTables[currentSubTableIndex][subRowIndex];
             // Skip already classified rows
@@ -87,6 +123,7 @@ namespace algorithm
             }
         }
 
+        ASSERT(!className.empty());
         // Add rule
         retVal.emplace_back(indices,
                             combination,
@@ -102,39 +139,85 @@ namespace algorithm
         rulesVectorT retVal;
         for (size_t subTableIndex = 0; subTableIndex < subTables.size(); subTableIndex++)
         {
+            // Skip table if already classified
+            if (subTables[subTableIndex].allRowsClassified())
+            {
+                DEBUG_PRINTLN("All rows in subTable[%zu] classified. Skipping...", subTableIndex);
+                continue;
+            }
+
             for (const auto& indicesCombination : indicesCombinations)
             {
-                // Skip table if already classified (can change in inner loop)
-                if (subTables[subTableIndex].allRowsClassified())
-                {
-                    continue;
-                }
 
+                PRINT_SEPARATOR();
+                DEBUG_PRINTLN("subTableIndex: %zu", subTableIndex);
+                DEBUG_PRINTLN("indicesCombination:\n%s",
+                              toStringAttributesIndices(indicesCombination).c_str());
                 const auto valueCombination =
                     getSubTableValueCombination(subTableIndex,
                                                 indicesCombination);
+                DEBUG_PRINTLN("\ngetSubTableValueCombination:\n%s",
+                              toStringValueCombinations(valueCombination).c_str());
                 const auto combinations =
                     getUniqueSubTableValueCombination(subTableIndex,
                                                       valueCombination,
                                                       indicesCombination);
-                if (!combinations.empty())
-                {
-                    const auto combination =
-                        getMaxUniqueSubTableValueCombination(subTableIndex,
-                                                             combinations,
-                                                             indicesCombination);
+                DEBUG_PRINTLN("\ngetUniqueSubTableValueCombination:\n%s",
+                              toStringValueCombinations(combinations).c_str());
+                const auto combination =
+                    getMaxUniqueSubTableValueCombination(subTableIndex,
+                                                         combinations,
+                                                         indicesCombination);
+                DEBUG_PRINTLN("\ngetMaxUniqueSubTableValueCombination:\n%s",
+                              toStringDataCombination(combination).c_str());
+                const auto rule =
+                    getRulesForValues(indicesCombination,
+                                      combination,
+                                      subTableIndex);
+                Rule::concatenateRules(retVal, rule);
 
-                    const auto rule =
-                        getRulesForValues(indicesCombination,
-                                          combination,
-                                          subTableIndex);
-                    Rule::concatenateRules(retVal, rule);
+                // Break looop if already classified
+                if (subTables[subTableIndex].allRowsClassified())
+                {
+                    DEBUG_PRINTLN("All rows in subTable[%zu] classified. Breaking loop.", subTableIndex);
+                    PRINT_SEPARATOR();
+                    break;
                 }
+                PRINT_SEPARATOR();
             }
         }
 
         return retVal;
     }
+
+#ifdef ALTERNATE_IMPLEMENTATION
+    valuesCombinationsT
+        ILAAlgorithm::getSubTableValueCombination(
+            size_t subTableIndex,
+            const attributesIndicesT & combinations) const
+    {
+        const auto& subTable = subTables[subTableIndex];
+        std::set<dataCombinationT> retValSet;
+
+        for (size_t subRowIndex = 0; subRowIndex < subTable.size(); subRowIndex++)
+        {
+            dataCombinationT combination;
+            combination.reserve(combinations.size());
+            const auto& subRow = subTable[subRowIndex];
+            for (size_t i = 0; !subRow.isClassified() && i < combinations.size(); i++)
+            {
+                combination.push_back(subRow[combinations[i]]);
+            }
+
+            if (!combination.empty())
+            {
+                retValSet.insert(combination);
+            }
+        }
+        return valuesCombinationsT(retValSet.begin(), retValSet.end());
+    }
+
+#else
 
     valuesCombinationsT
         ILAAlgorithm::getSubTableValueCombination(
@@ -144,8 +227,9 @@ namespace algorithm
         const auto& subTable = subTables[subTableIndex];
         std::vector<std::set<source::dataV>> uniqueValues(combinations.size());
 
-        for (const auto& subRow : subTable)
+        for (size_t subRowIndex = 0; subRowIndex < subTable.size(); subRowIndex++)
         {
+            const auto& subRow = subTable[subRowIndex];
             for (size_t i = 0; !subRow.isClassified() && i < combinations.size(); i++)
             {
                 uniqueValues[i].insert(subRow[combinations[i]]);
@@ -156,11 +240,12 @@ namespace algorithm
         std::vector<std::set<source::dataV>::iterator> setIterators;
         for (auto& set : uniqueValues)
         {
+            // It means that there are no valid combinations for given indices
             if (set.empty())
             {
-                subTable.printClassified();
+                return valuesCombinationsT();
             }
-            ASSERT(!set.empty());
+
             setIterators.push_back(set.begin());
         }
 
@@ -203,9 +288,9 @@ namespace algorithm
             // Insert generated combination
             retVal.emplace_back(combination);
         } while (!generatedAll);
-
         return retVal;
     }
+#endif // ALTERNATE_IMPLEMENTATION
 
     valuesCombinationsT
         ILAAlgorithm::getUniqueSubTableValueCombination(
@@ -213,6 +298,12 @@ namespace algorithm
             const valuesCombinationsT & valuesCombinations,
             const attributesIndicesT & combinations) const
     {
+        // There is not use to go further
+        if (valuesCombinations.empty())
+        {
+            return valuesCombinationsT();
+        }
+
         auto valuesCopy(valuesCombinations);
         // For each sub table...
         for (size_t subTableIndex = 0; subTableIndex < subTables.size(); subTableIndex++)
@@ -273,6 +364,12 @@ namespace algorithm
         //for (size_t subRow = 0; subRow < subTables[currentSubTableIndex].size(); subRow++)
         for (const auto& subRow : subTables[currentSubTableIndex])
         {
+            // Skip classified rows in counting
+            if (subRow.isClassified())
+            {
+                continue;
+            }
+
             // ...create data combination...
             dataCombinationT rowData;
             for (const auto& index : combinations)
@@ -293,9 +390,17 @@ namespace algorithm
 
         const auto it = std::max_element(occurences.begin(), occurences.end());
         ASSERT(it != occurences.end());
+        DEBUG_PRINT("max occurences: %zu", *it);
 
-        const auto index = it - occurences.begin();
-        return valuesCombinations[index];
+        if (*it > 0)
+        {
+            const auto index = it - occurences.begin();
+            return valuesCombinations[index];
+        }
+        else
+        {
+            return dataCombinationT();
+        }
     }
 
     indicesCombinationsT
@@ -360,5 +465,53 @@ namespace algorithm
         }
 
         return true;
+    }
+
+    std::string ILAAlgorithm::toStringDataCombination(const dataCombinationT & dc)
+    {
+        std::stringstream ss;
+        ss << "{";
+        for (size_t i = 0; i < dc.size(); i++)
+        {
+            ss << source::DataVector::toString(dc[i]);
+            if (i < dc.size() - 1)
+            {
+                ss << ", ";
+            }
+        }
+        ss << "} ";
+        return ss.str();
+    }
+
+    std::string ILAAlgorithm::toStringValueCombinations(const valuesCombinationsT & vc)
+    {
+        std::stringstream ss;
+        ss << "<";
+        for (size_t i = 0; i < vc.size(); i++)
+        {
+            ss << toStringDataCombination(vc[i]);
+            if (i < vc.size() - 1)
+            {
+                ss << "\n";
+            }
+        }
+        ss << "> ";
+        return ss.str();
+    }
+
+    std::string ILAAlgorithm::toStringAttributesIndices(const attributesIndicesT & ai)
+    {
+        std::stringstream ss;
+        ss << "<";
+        for (size_t i = 0; i < ai.size(); i++)
+        {
+            ss << ai[i];
+            if (i < ai.size() - 1)
+            {
+                ss << ", ";
+            }
+        }
+        ss << "> ";
+        return ss.str();
     }
 }

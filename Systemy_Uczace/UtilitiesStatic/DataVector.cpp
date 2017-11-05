@@ -7,11 +7,23 @@ namespace source
     {
         return back();
     }
-    
+
     std::string DataVector::getClassName() const
     {
         const auto& clazz = getClass();
         return std::get<std::string>(clazz);
+    }
+
+    std::string DataVector::toString() const
+    {
+        std::stringstream ss;
+        for (const auto& el : *this)
+        {
+            ss << toString(el);
+            ss << " ";
+        }
+
+        return ss.str();
     }
 
     dataColumnRefT DataVector::getAttributeColumn(std::vector<DataVector>& dc, size_t attributeIndex)
@@ -44,5 +56,42 @@ namespace source
         }
 
         return retVal;
+    }
+
+    std::string DataVector::toString(const dataV & data)
+    {
+        std::stringstream ss;
+        switch (data.index())
+        {
+            // std::string
+            case 0:
+                ss << std::get<std::string>(data);
+                break;
+                // int
+            case 1:
+                ss << std::get<int>(data);
+                break;
+                // double
+            case 2:
+                ss << std::get<double>(data);
+                break;
+                // std::pair<int, int>
+            case 3:
+                ss << "["
+                    << std::get<std::pair<int, int>>(data).first
+                    << ", "
+                    << std::get<std::pair<int, int>>(data).second
+                    << "]";
+                break;
+                // std::pair<double, double>
+            case 4:
+                ss << "["
+                    << std::get<std::pair<double, double>>(data).first
+                    << ", "
+                    << std::get<std::pair<double, double>>(data).second
+                    << "]";
+                break;
+        }
+        return ss.str();
     }
 };

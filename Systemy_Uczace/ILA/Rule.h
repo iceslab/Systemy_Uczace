@@ -1,5 +1,6 @@
 #pragma once
 #include "DataVector.h"
+#include <unordered_map>
 
 namespace algorithm
 {
@@ -19,15 +20,22 @@ namespace algorithm
         ~Rule() = default;
 
         bool classify(const source::dataVectorT & data, std::string & outClassValue) const;
-        static bool classify(const std::vector<Rule> & rules,
-                             const source::dataVectorT & data,
-                             std::string & outClassValue);
+        static bool classifySimple(const std::vector<Rule> & rules,
+                                   const source::dataVectorT & data,
+                                   std::string & outClassValue);
+        static bool classifyVote(const std::vector<Rule> & rules,
+                                 const source::dataVectorT & data,
+                                 std::string & outClassValue);
+        static void classifyOccurences(const source::dataMatrixT & allData,
+                                       std::string & outClassValue);
 
         static void concatenateRules(std::vector<Rule> & r1, const std::vector<Rule> & r2);
         static void concatenateRules(std::vector<Rule> & r1, const Rule & r2);
 
-        Rule& operator=(const Rule& other);
+        std::string toString() const;
     private:
+        bool simpleClassification;
+
         const attributesIndicesT attributesIndices;
         const attributesValuesT attributesValues;
         const std::string classValue;

@@ -8,7 +8,7 @@
 
 #define IRIS_ONLY
 #define FINAL_TESTS
-#define NUMBER_OF_BUCKETS 10
+#define NUMBER_OF_BUCKETS 5
 
 using source::DataSource;
 using discretizer::DiscretizerFactory;
@@ -47,13 +47,19 @@ int main(int argc, char** argv)
     const std::vector<discretizer::DiscretizerTypeE> discretizersTypes =
     {
         discretizer::CLASSIC,
-        discretizer::UNIFORM,
+        discretizer::UNIFORM
     };
 
     const std::vector<std::string> discretizersNames =
     {
         "CLASSIC",
-        "UNIFORM",
+        "UNIFORM"
+    };
+
+    const std::vector<bool> classificationType =
+    {
+        true,
+        false
     };
 
     std::experimental::filesystem::create_directory(resultsDataDir);
@@ -73,8 +79,8 @@ int main(int argc, char** argv)
         for (size_t i = 0; i < discretizersTypes.size(); i++)
         {
             const auto& discretizerType = discretizersTypes[i];
-            printf("\n========== Path: %*s ==========\n\n", -maxPathLenght, (testDataDir + path).c_str());
-
+            printf("\n========== Path: %*s ==========\n", -maxPathLenght, (testDataDir + path).c_str());
+            printf("===== %s =====\n\n", discretizersNames[i].c_str());
             auto description(dl.getDataDescription());
             auto matrix(dl.getDataMatrix());
             if (discretizerType != discretizer::NONE)
@@ -87,7 +93,7 @@ int main(int argc, char** argv)
             }
 
             Crossvalidator cv(matrix);
-            std::vector<Statistics> allStats;
+            std::vector<std::vector<Statistics>> allStats(classificationType.size());
 
             while (cv.hasNext())
             {
@@ -95,16 +101,65 @@ int main(int argc, char** argv)
                 auto testData = data.first;
                 auto trainingData = data.second;
                 ILAAlgorithm ilaa(description, trainingData);
-                ILAModel ilam(testData, ilaa);
-                auto testResult = ilam.classify();
 
-                auto stats = Statistics::calculateStatistics(dl.getDataDescription(),
-                                                             testData,
-                                                             testResult);
-                allStats.emplace_back(stats);
+                for (size_t classificationIndex = 0;
+                     classificationIndex < classificationType.size();
+                     classificationIndex++)
+                {
 
-                DEBUG_CALL(
-                    const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
+                    const auto& simpleClassification = classificationType[classificationIndex];
+                    DEBUG_CALL(
+                        if (simpleClassification)
+                            printf("===== Simple classification =====\n");
+                        else
+                            printf("=====  Vote classification  =====\n");
+                    )
+                        ILAModel ilam(testData, ilaa, simpleClassification);
+                    auto testResult = ilam.classify();
+
+                    auto stats = Statistics::calculateStatistics(dl.getDataDescription(),
+                                                                 testData,
+                                                                 testResult);
+                    allStats[classificationIndex].emplace_back(stats);
+
+                    DEBUG_CALL(
+                        const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
+                    for (auto& dataDescription : std::get<2>(dl.getDataDescription().back()))
+                    {
+                        const auto className = std::get<std::string>(dataDescription);
+                        printf("%*s: accuracy: %6.2lf%% "
+                               "precision: %6.2lf%% "
+                               "recall: %6.2lf%% "
+                               "fscore: %6.2lf%%\n",
+                               -static_cast<int>(maxClassNameLenght),
+                               className.c_str(),
+                               stats.getAccuracy(className) * 100.0L,
+                               stats.getPrecision(className) * 100.0L,
+                               stats.getRecall(className) * 100.0L,
+                               stats.getFscore(className) * 100.0L);
+
+                    }
+                    printf("\n");
+                    );
+                }
+            }
+
+
+            const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
+            for (size_t classificationIndex = 0;
+                 classificationIndex < classificationType.size();
+                 classificationIndex++)
+            {
+                const auto& simpleClassification = classificationType[classificationIndex];
+                if (simpleClassification)
+                    printf("===== Simple classification =====\n");
+                else
+                    printf("=====  Vote classification  =====\n");
+
+                auto stats = Statistics::calculateMean(allStats[classificationIndex]);
+
+                const auto& discretizerName = discretizersNames[i];
+                stats.saveToFile(resultsDataDir + discretizerName + "_" + path);
                 for (auto& dataDescription : std::get<2>(dl.getDataDescription().back()))
                 {
                     const auto className = std::get<std::string>(dataDescription);
@@ -121,33 +176,10 @@ int main(int argc, char** argv)
 
                 }
                 printf("\n");
-                );
             }
-
-            const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
-            auto stats = Statistics::calculateMean(allStats);
-
-            const auto& discretizerName = discretizersNames[i];
-            stats.saveToFile(resultsDataDir + discretizerName + "_" + path);
-            for (auto& dataDescription : std::get<2>(dl.getDataDescription().back()))
-            {
-                const auto className = std::get<std::string>(dataDescription);
-                printf("%*s: accuracy: %6.2lf%% "
-                       "precision: %6.2lf%% "
-                       "recall: %6.2lf%% "
-                       "fscore: %6.2lf%%\n",
-                       -static_cast<int>(maxClassNameLenght),
-                       className.c_str(),
-                       stats.getAccuracy(className) * 100.0L,
-                       stats.getPrecision(className) * 100.0L,
-                       stats.getRecall(className) * 100.0L,
-                       stats.getFscore(className) * 100.0L);
-
-            }
-            printf("\n");
         }
-    }
 
-    system("pause");
-    return 0;
+        system("pause");
+        return 0;
+    }
 }

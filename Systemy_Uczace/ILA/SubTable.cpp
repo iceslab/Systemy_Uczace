@@ -58,11 +58,32 @@ namespace algorithm
         return classifiedRows == size();
     }
 
-    void SubTable::printClassified() const
+    void SubTable::printClassifiedStatus() const
     {
         for (size_t i = 0; i < size(); i++)
         {
-            printf("%4d: %d\t", i, (*this)[i].isClassified());
+            fprintf(stderr, "%4d: %d\t", i, (*this)[i].isClassified());
+        }
+    }
+
+    void SubTable::printValues() const
+    {
+        for (size_t i = 0; i < size(); i++)
+        {
+            const auto& row = (*this)[i];
+            fprintf(stderr, "%4zu: %s\n", i, row.toString().c_str());
+        }
+    }
+
+    void SubTable::printNotClassifiedValues() const
+    {
+        for (size_t i = 0; i < size(); i++)
+        {
+            const auto& row = (*this)[i];
+            if (!row.isClassified())
+            {
+                fprintf(stderr, "%4zu: %s\n", i, row.toString().c_str());
+            }
         }
     }
 
@@ -75,5 +96,15 @@ namespace algorithm
             classifiedRows++;
         }
 
+    }
+
+    size_t SubTable::getClassifiedCount() const
+    {
+        return classifiedRows;
+    }
+
+    size_t SubTable::getNotClassifiedCount() const
+    {
+        return size() - classifiedRows;
     }
 }
