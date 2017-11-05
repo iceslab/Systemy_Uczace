@@ -6,7 +6,7 @@
 #include "Statistics.h"
 #include <filesystem>
 
-#define IRIS_ONLY
+//#define IRIS_ONLY
 #define FINAL_TESTS
 #define NUMBER_OF_BUCKETS 5
 
@@ -158,8 +158,13 @@ int main(int argc, char** argv)
 
                 auto stats = Statistics::calculateMean(allStats[classificationIndex]);
 
+                std::string classificationName = simpleClassification ? "true" : "false";
                 const auto& discretizerName = discretizersNames[i];
-                stats.saveToFile(resultsDataDir + discretizerName + "_" + path);
+                stats.saveToFile(resultsDataDir +
+                                 discretizerName +
+                                 "_" +
+                                 classificationName +
+                                 "_" + path);
                 for (auto& dataDescription : std::get<2>(dl.getDataDescription().back()))
                 {
                     const auto className = std::get<std::string>(dataDescription);
@@ -178,8 +183,7 @@ int main(int argc, char** argv)
                 printf("\n");
             }
         }
-
-        system("pause");
-        return 0;
     }
+    system("pause");
+    return 0;
 }
