@@ -433,7 +433,7 @@ namespace algorithm
                                 // Next set to 1 the most significant bit to change, 
                                 // set to 0 the least significant ones, and add the necessary 1 bits.
         DWORD bsfRet;
-        _BitScanForward(&bsfRet, v);
+        BitScanForwardT(&bsfRet, v);
         auto w = (t + 1) | (((~t & -~t) - 1) >> (bsfRet + 1));
         return w;
     }

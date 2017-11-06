@@ -6,8 +6,10 @@
 
 #ifdef _WIN64
 typedef __int64 signed_size_t;
+#define BitScanForwardT(Index, Mask) _BitScanForward64(Index, Mask)
 #else
 typedef int     signed_size_t;
+#define BitScanForwardT(Index, Mask) _BitScanForward(Index, Mask)
 #endif
 
 namespace algorithm
