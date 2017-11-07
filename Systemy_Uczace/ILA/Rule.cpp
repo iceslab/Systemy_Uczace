@@ -79,12 +79,12 @@ namespace algorithm
                 }
                 else
                 {
-                    classNameOccurences.insert(std::make_pair(outClassValue, 0));
+                    classNameOccurences.insert(std::make_pair(outClassValue, std::numeric_limits<size_t>::min()));
                 }
             }
         }
 
-        auto maxElement = std::make_pair(std::string(), 0U);
+        auto maxElement = std::make_pair(std::string(), std::numeric_limits<size_t>::min());
         for (const auto& el : classNameOccurences)
         {
             if (el.second > maxElement.second)
@@ -118,11 +118,11 @@ namespace algorithm
             }
             else
             {
-                classNameOccurences.insert(std::make_pair(outClassValue, 0));
+                classNameOccurences.insert(std::make_pair(outClassValue, std::numeric_limits<size_t>::min()));
             }
         }
 
-        auto maxElement = std::make_pair(classNames.front(), 0U);
+        auto maxElement = std::make_pair(classNames.front(), std::numeric_limits<size_t>::min());
         for (const auto& el : classNameOccurences)
         {
             if (el.second > maxElement.second)

@@ -21,7 +21,7 @@ namespace algorithm
                 for (size_t j = 0; j < subTables.size(); j++)
                 {
                     fprintf(stderr,
-                            "\n\nSub table no. %3d, not classified: %zu\n",
+                            "\n\nSub table no. %3zu, not classified: %zu\n",
                             j,
                             subTables[j].getNotClassifiedCount());
                     subTables[j].printNotClassifiedValues();
@@ -35,7 +35,7 @@ namespace algorithm
             //for(const auto& el : rules)
             for (size_t j = 0; j < rules.size(); j++)
             {
-                fprintf(stderr, "%3d: %s\n", j, rules[j].toString().c_str());
+                fprintf(stderr, "%3zu: %s\n", j, rules[j].toString().c_str());
             }
             );
         }
@@ -46,7 +46,7 @@ namespace algorithm
                 for (size_t j = 0; j < subTables.size(); j++)
                 {
                     fprintf(stderr,
-                            "\n\nSub table no. %3d, not classified: %zu\n",
+                            "\n\nSub table no. %3zu, not classified: %zu\n",
                             j,
                             subTables[j].getNotClassifiedCount());
                     subTables[j].printNotClassifiedValues();
@@ -56,7 +56,7 @@ namespace algorithm
                 //for(const auto& el : rules)
                 for (size_t j = 0; j < rules.size(); j++)
                 {
-                    fprintf(stderr, "%3d: %s\n", j, rules[j].toString().c_str());
+                    fprintf(stderr, "%3zu: %s\n", j, rules[j].toString().c_str());
                 }
             }
         );

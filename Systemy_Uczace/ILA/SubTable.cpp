@@ -62,7 +62,7 @@ namespace algorithm
     {
         for (size_t i = 0; i < size(); i++)
         {
-            fprintf(stderr, "%4d: %d\t", i, (*this)[i].isClassified());
+            fprintf(stderr, "%4zu: %d\t", i, (*this)[i].isClassified());
         }
     }
 
