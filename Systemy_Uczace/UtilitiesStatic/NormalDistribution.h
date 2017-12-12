@@ -25,6 +25,10 @@ namespace distribution
         static double calculateStddev(const source::dataColumnRefT & data);
         static double calculateVariance(const source::dataColumnRefT & data);
 
+        static void normalize(source::dataVectorT & vector);
+        static void normalize(source::dataMatrixT & data);
+        static void standardize(source::dataMatrixT & data);
+
     private:
         const double mean;
         const double stddev;

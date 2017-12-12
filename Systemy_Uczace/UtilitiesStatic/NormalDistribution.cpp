@@ -124,4 +124,53 @@ namespace distribution
         const double stddev = calculateStddev(data);
         return stddev * stddev;
     }
+
+    void NormalDistribution::normalize(source::dataVectorT & vector)
+    {
+        const auto length = source::DataVector::vectorLength(vector);
+        if (length != 0.0)
+        {
+            for (auto &el : vector)
+            {
+                auto currentValue = source::DataVector::getNumericValue(el);
+                if (currentValue == source::DataVector::invalidNumericValue)
+                {
+                    DEBUG_PRINTLN("Cannot normalize non numeric element. Skipping...");
+                }
+                else
+                {
+                    el = source::dataV(currentValue / length);
+                }
+            }
+        }
+        else
+        {
+            DEBUG_PRINTLN("Cannot normalize vector. Length is 0");
+        }
+    }
+
+    void NormalDistribution::normalize(source::dataMatrixT & data)
+    {
+        for (auto& el : data)
+        {
+            normalize(el);
+        }
+    }
+
+    void NormalDistribution::standardize(source::dataMatrixT & data)
+    {
+        const auto attributesSize = data.size() - 1;
+        for (size_t columnIdx = 0; columnIdx < attributesSize; columnIdx++)
+        {
+            auto column = source::DataVector::getAttributeColumn(data, columnIdx);
+            const auto mean = distribution::NormalDistribution::calculateMean(column);
+            const auto stddev = distribution::NormalDistribution::calculateStddev(column);
+
+            for (auto& el : column)
+            {
+                const auto val = source::DataVector::getNumericValue(el.get());
+                el.get() = (val - mean) / stddev;
+            }
+        }
+    }
 }

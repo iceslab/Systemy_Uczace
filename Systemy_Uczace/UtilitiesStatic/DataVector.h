@@ -1,7 +1,6 @@
 #pragma once
 #include "asserts.h"
 #include "DataDescription.h"
-#include "NormalDistribution.h"
 
 namespace source
 {
@@ -38,13 +37,9 @@ namespace source
         static double getNumericValue(const dataV & element);
         static double vectorLength(const DataVector & vector);
 
-        static void normalize(DataVector & vector);
-        static void normalize(std::vector<DataVector> & data);
-        static void standardize(std::vector<DataVector> & data);
-
-        static double euclideanDistance(const source::dataVectorT & v1, const source::dataVectorT & v2);
-        static double manhattanDistance(const source::dataVectorT & v1, const source::dataVectorT & v2);
-        static double minkowskiDistance(const source::dataVectorT & v1, const source::dataVectorT & v2, const double p);
+        static double euclideanDistance(const DataVector & v1, const DataVector & v2);
+        static double manhattanDistance(const DataVector & v1, const DataVector & v2);
+        static double minkowskiDistance(const DataVector & v1, const DataVector & v2, const double p);
     };
 
     typedef DataVector dataVectorT;

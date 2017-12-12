@@ -134,68 +134,20 @@ namespace source
         return std::sqrt(retVal);
     }
 
-    void DataVector::normalize(DataVector & vector)
-    {
-        const auto length = vectorLength(vector);
-        if (length != 0.0)
-        {
-            for (auto &el : vector)
-            {
-                auto currentValue = getNumericValue(el);
-                if (currentValue == invalidNumericValue)
-                {
-                    DEBUG_PRINTLN("Cannot normalize non numeric element. Skipping...");
-                }
-                else
-                {
-                    el = source::dataV(currentValue / length);
-                }
-            }
-        }
-        else
-        {
-            DEBUG_PRINTLN("Cannot normalize vector. Length is 0");
-        }
-    }
-
-    void DataVector::normalize(std::vector<DataVector>& data)
-    {
-        for (auto& el : data)
-        {
-            source::DataVector::normalize(el);
-        }
-    }
-
-    void DataVector::standardize(std::vector<DataVector>& data)
-    {
-        const auto attributesSize = data.size() - 1;
-        for (size_t columnIdx = 0; columnIdx < attributesSize; columnIdx++)
-        {
-            auto column = source::DataVector::getAttributeColumn(data, columnIdx);
-            const auto mean = distribution::NormalDistribution::calculateMean(column);
-            const auto stddev = distribution::NormalDistribution::calculateStddev(column);
-
-            for (auto& el : column)
-            {
-                const auto val = source::DataVector::getNumericValue(el.get());
-                el.get() = (val - mean) / stddev;
-            }
-        }
-    }
-
-    double DataVector::euclideanDistance(const source::dataVectorT & v1,
-                                         const source::dataVectorT & v2)
+    double DataVector::euclideanDistance(const DataVector & v1,
+                                         const DataVector & v2)
     {
         return minkowskiDistance(v1, v2, 2.0);
     }
 
-    double DataVector::manhattanDistance(const source::dataVectorT & v1,
-                                         const source::dataVectorT & v2)
+    double DataVector::manhattanDistance(const DataVector & v1,
+                                         const DataVector & v2)
     {
         return minkowskiDistance(v1, v2, 1.0);
     }
-    double DataVector::minkowskiDistance(const source::dataVectorT & v1,
-                                         const source::dataVectorT & v2, const double p)
+    double DataVector::minkowskiDistance(const DataVector & v1,
+                                         const DataVector & v2,
+                                         const double p)
     {
         ASSERT(v1.size() == v2.size());
         auto retVal = 0.0;
