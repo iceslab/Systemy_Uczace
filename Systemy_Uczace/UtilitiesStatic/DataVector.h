@@ -24,6 +24,8 @@ namespace source
 
         std::string toString() const;
 
+        static const double invalidNumericValue;
+
         static dataColumnRefT getAttributeColumn(std::vector<DataVector> & dc,
                                                  size_t attributeIndex);
 
@@ -32,8 +34,8 @@ namespace source
         static std::string toString(const dataV & data);
 
         static double getNumericValue(const dataV & element);
-
-        static const double invalidNumericValue;
+        static double vectorLength(const DataVector & vector);
+        static void normalize(DataVector & vector);
     };
 
     typedef DataVector dataVectorT;

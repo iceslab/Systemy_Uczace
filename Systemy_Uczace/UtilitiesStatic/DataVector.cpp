@@ -115,4 +115,46 @@ namespace source
 
         return retVal;
     }
+
+    double DataVector::vectorLength(const DataVector & vector)
+    {
+        auto retVal = 0.0;
+        for (const auto& el : vector)
+        {
+            auto currentValue = source::DataVector::getNumericValue(el);
+            if (currentValue == source::DataVector::invalidNumericValue)
+            {
+                DEBUG_PRINTLN("Cannot calculate vector length. Vector is not numeric.");
+                retVal = 0.0;
+                break;
+            }
+
+            retVal += currentValue * currentValue;
+        }
+        return std::sqrt(retVal);
+    }
+
+    void DataVector::normalize(DataVector & vector)
+    {
+        const auto length = vectorLength(vector);
+        if (length != 0.0)
+        {
+            for (auto &el : vector)
+            {
+                auto currentValue = getNumericValue(el);
+                if (currentValue == invalidNumericValue)
+                {
+                    DEBUG_PRINTLN("Cannot normalize non numeric element. Skipping...");
+                }
+                else
+                {
+                    el = source::dataV(currentValue / length);
+                }
+            }
+        }
+        else
+        {
+            DEBUG_PRINTLN("Cannot normalize vector. Length is 0");
+        }
+    }
 };

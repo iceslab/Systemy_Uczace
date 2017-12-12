@@ -12,9 +12,6 @@ namespace algorithm
         ~KNNAlgorithm() = default;
 
         void normalize();
-
-
-        static double vectorLength(const source::dataVectorT & vector);
-        static void normalize(source::dataVectorT & vector);
+        void standardize();
     };
 }
