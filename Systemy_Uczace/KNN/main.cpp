@@ -1,8 +1,8 @@
 #include "DataSource.h"
 #include "DiscretizerFactory.h"
 #include "Crossvalidator.h"
-#include "ILAAlgorithm.h"
-#include "ILAModel.h"
+#include "KNNAlgorithm.h"
+#include "KNNModel.h"
 #include "Statistics.h"
 #include <filesystem>
 
@@ -13,8 +13,8 @@
 using source::DataSource;
 using discretizer::DiscretizerFactory;
 using crossvalidator::Crossvalidator;
-using algorithm::ILAAlgorithm;
-using model::ILAModel;
+using algorithm::KNNAlgorithm;
+using model::KNNModel;
 using stats::Statistics;
 
 int main(int argc, char** argv)
@@ -100,7 +100,7 @@ int main(int argc, char** argv)
                 auto data = cv.getNextData();
                 auto testData = data.first;
                 auto trainingData = data.second;
-                ILAAlgorithm ilaa(description, trainingData);
+                KNNAlgorithm knna(description, trainingData);
 
                 for (size_t classificationIndex = 0;
                      classificationIndex < classificationType.size();
@@ -113,9 +113,9 @@ int main(int argc, char** argv)
                             printf("===== Simple classification =====\n");
                         else
                             printf("=====  Vote classification  =====\n");
-                    )
-                        ILAModel ilam(testData, ilaa, simpleClassification);
-                    auto testResult = ilam.classify();
+                    );
+                    KNNModel knnm(testData, knna);
+                    auto testResult = knnm.classify();
 
                     auto stats = Statistics::calculateStatistics(dl.getDataDescription(),
                                                                  testData,

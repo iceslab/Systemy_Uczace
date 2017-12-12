@@ -6,5 +6,10 @@ namespace model
                        const algorithm::KNNAlgorithm & algorithm)
     {}
 
+    source::testDataT KNNModel::classify()
+    {
+        return source::testDataT();
+    }
+
 
 }
