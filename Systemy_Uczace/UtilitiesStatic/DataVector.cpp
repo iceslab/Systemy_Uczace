@@ -162,6 +162,6 @@ namespace source
             retVal += diff;
         }
 
-        return retVal;
+        return std::pow(retVal, 1.0 / p);
     }
 };
