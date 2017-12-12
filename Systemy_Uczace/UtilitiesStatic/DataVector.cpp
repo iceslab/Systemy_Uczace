@@ -157,4 +157,59 @@ namespace source
             DEBUG_PRINTLN("Cannot normalize vector. Length is 0");
         }
     }
+
+    void DataVector::normalize(std::vector<DataVector>& data)
+    {
+        for (auto& el : data)
+        {
+            source::DataVector::normalize(el);
+        }
+    }
+
+    void DataVector::standardize(std::vector<DataVector>& data)
+    {
+        const auto attributesSize = data.size() - 1;
+        for (size_t columnIdx = 0; columnIdx < attributesSize; columnIdx++)
+        {
+            auto column = source::DataVector::getAttributeColumn(data, columnIdx);
+            const auto mean = distribution::NormalDistribution::calculateMean(column);
+            const auto stddev = distribution::NormalDistribution::calculateStddev(column);
+
+            for (auto& el : column)
+            {
+                const auto val = source::DataVector::getNumericValue(el.get());
+                el.get() = (val - mean) / stddev;
+            }
+        }
+    }
+
+    double DataVector::euclideanDistance(const source::dataVectorT & v1,
+                                         const source::dataVectorT & v2)
+    {
+        return minkowskiDistance(v1, v2, 2.0);
+    }
+
+    double DataVector::manhattanDistance(const source::dataVectorT & v1,
+                                         const source::dataVectorT & v2)
+    {
+        return minkowskiDistance(v1, v2, 1.0);
+    }
+    double DataVector::minkowskiDistance(const source::dataVectorT & v1,
+                                         const source::dataVectorT & v2, const double p)
+    {
+        ASSERT(v1.size() == v2.size());
+        auto retVal = 0.0;
+        const auto vectorSize = v1.size();
+
+        for (size_t i = 0; i < vectorSize; i++)
+        {
+            const auto v1Value = getNumericValue(v1[i]);
+            const auto v2Value = getNumericValue(v2[i]);
+            const auto diff = std::pow(std::abs(v1Value - v2Value), p);
+
+            retVal += diff;
+        }
+
+        return retVal;
+    }
 };

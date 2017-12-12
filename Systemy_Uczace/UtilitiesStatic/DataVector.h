@@ -1,6 +1,7 @@
 #pragma once
 #include "asserts.h"
 #include "DataDescription.h"
+#include "NormalDistribution.h"
 
 namespace source
 {
@@ -16,7 +17,8 @@ namespace source
     {
     public:
         DataVector() = default;
-        DataVector(size_t size) : std::vector<dataV>(size) {};
+        DataVector(size_t size) : std::vector<dataV>(size)
+        {};
         ~DataVector() = default;
 
         const dataV& getClass() const;
@@ -35,7 +37,14 @@ namespace source
 
         static double getNumericValue(const dataV & element);
         static double vectorLength(const DataVector & vector);
+
         static void normalize(DataVector & vector);
+        static void normalize(std::vector<DataVector> & data);
+        static void standardize(std::vector<DataVector> & data);
+
+        static double euclideanDistance(const source::dataVectorT & v1, const source::dataVectorT & v2);
+        static double manhattanDistance(const source::dataVectorT & v1, const source::dataVectorT & v2);
+        static double minkowskiDistance(const source::dataVectorT & v1, const source::dataVectorT & v2, const double p);
     };
 
     typedef DataVector dataVectorT;
@@ -45,14 +54,18 @@ namespace source
     typedef dataMatrixT testDataT;
 
     template<typename T>
-    struct is_int : std::false_type {};
+    struct is_int : std::false_type
+    {};
     template<>
-    struct is_int<int> : std::true_type {};
+    struct is_int<int> : std::true_type
+    {};
 
     template<typename T>
-    struct is_double : std::false_type {};
+    struct is_double : std::false_type
+    {};
     template<>
-    struct is_double<double> : std::true_type {};
+    struct is_double<double> : std::true_type
+    {};
 
     template<typename T>
     inline auto minMax(const dataColumnRefT & column)

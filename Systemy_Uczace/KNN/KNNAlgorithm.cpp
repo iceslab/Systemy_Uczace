@@ -14,31 +14,4 @@ namespace algorithm
             }
         }
     }
-
-    void KNNAlgorithm::normalize()
-    {
-        for (auto& el : trainingData)
-        {
-            source::DataVector::normalize(el);
-        }
-    }
-
-    void KNNAlgorithm::standardize()
-    {
-        const auto attributesSize = trainingData.size() - 1;
-        for (size_t columnIdx = 0; columnIdx < attributesSize; columnIdx++)
-        {
-            auto column = source::DataVector::getAttributeColumn(trainingData, columnIdx);
-            const auto mean = distribution::NormalDistribution::calculateMean(column);
-            const auto stddev = distribution::NormalDistribution::calculateStddev(column);
-
-            for (auto& el : column)
-            {
-                const auto val = source::DataVector::getNumericValue(el.get());
-                el.get() = (val - mean) / stddev;
-            }
-        }
-    }
-
-
 }
