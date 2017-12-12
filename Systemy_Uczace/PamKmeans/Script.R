@@ -96,7 +96,7 @@ for (path in paths) {
                     algorithmName = "Kmeans"
                     for (algorithmParam in c("Hartigan-Wong", "Forgy", "MacQueen")) {
                         result <- crossValidationKmeans(inData, columns, clusters, algorithmParam)
-                        resultRows <- rbind(resultRows, sprintf("%s,%s,%1.0f,%1.0f,%f,%f,%f,%f", path, algorithmName, columns, clusters, result["davies_bouldin"], result["silhouette"], result["dunn"], result["purity"]))
+                        resultRows <- rbind(resultRows, sprintf("%s,%s,%1.0f,%1.0f,%s,%f,%f,%f,%f", path, algorithmName, columns, clusters, algorithmParam, result["davies_bouldin"], result["silhouette"], result["dunn"], result["purity"]))
                     }
                 }
                 # PAM
@@ -104,7 +104,7 @@ for (path in paths) {
                     algorithmName = "PAM"
                     for (algorithmParam in c("euclidean", "manhattan")) {
                         result <- crossValidationPam(inData, columns, clusters, algorithmParam)
-                        resultRows <- rbind(resultRows, sprintf("%s,%s,%1.0f,%1.0f,%f,%f,%f,%f", path, algorithmName, columns, clusters, result["davies_bouldin"], result["silhouette"], result["dunn"], result["purity"]))
+                        resultRows <- rbind(resultRows, sprintf("%s,%s,%1.0f,%1.0f,%s,%f,%f,%f,%f", path, algorithmName, columns, clusters, algorithmParam, result["davies_bouldin"], result["silhouette"], result["dunn"], result["purity"]))
                     }
                 }
             }

@@ -3,6 +3,7 @@
 #include "Crossvalidator.h"
 #include "KNNAlgorithm.h"
 #include "KNNModel.h"
+#include "KNNFactory.h"
 #include "Statistics.h"
 #include <filesystem>
 
@@ -15,6 +16,7 @@ using discretizer::DiscretizerFactory;
 using crossvalidator::Crossvalidator;
 using algorithm::KNNAlgorithm;
 using model::KNNModel;
+using model::KNNFactory;
 using stats::Statistics;
 
 int main(int argc, char** argv)
@@ -114,8 +116,9 @@ int main(int argc, char** argv)
                         else
                             printf("=====  Vote classification  =====\n");
                     );
-                    KNNModel knnm(testData, knna);
-                    auto testResult = knnm.classify();
+
+                    auto knnm_p = KNNFactory::getKNNModel(testData, knna, model::EUCLIDEAN);
+                    auto testResult = knnm_p->classify();
 
                     auto stats = Statistics::calculateStatistics(dl.getDataDescription(),
                                                                  testData,

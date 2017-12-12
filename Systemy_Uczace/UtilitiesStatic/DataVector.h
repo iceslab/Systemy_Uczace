@@ -1,6 +1,7 @@
 #pragma once
 #include "asserts.h"
 #include "DataDescription.h"
+#include <functional>
 
 namespace source
 {
@@ -47,6 +48,8 @@ namespace source
 
     typedef dataMatrixT trainingDataT;
     typedef dataMatrixT testDataT;
+
+    typedef std::function<double(const DataVector &, const DataVector &)> distanceFn;
 
     template<typename T>
     struct is_int : std::false_type

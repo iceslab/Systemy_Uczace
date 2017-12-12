@@ -24,12 +24,18 @@
     <ClCompile Include="KNNAlgorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="KNNFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KNNModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KNNAlgorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KNNFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
