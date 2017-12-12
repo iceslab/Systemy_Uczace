@@ -30,6 +30,10 @@ namespace source
         static dataColumnRefT getClassColumn(std::vector<DataVector> & dc);
         static classAsStringColumnT getClassColumnAsString(const std::vector<DataVector> & dc);
         static std::string toString(const dataV & data);
+
+        static double getNumericValue(const dataV & element);
+
+        static const double invalidNumericValue;
     };
 
     typedef DataVector dataVectorT;

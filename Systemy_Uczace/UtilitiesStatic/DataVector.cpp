@@ -3,6 +3,8 @@
 
 namespace source
 {
+    const double DataVector::invalidNumericValue = std::numeric_limits<double>::lowest();
+
     const dataV& DataVector::getClass() const
     {
         return back();
@@ -93,5 +95,24 @@ namespace source
                 break;
         }
         return ss.str();
+    }
+    double DataVector::getNumericValue(const dataV & element)
+    {
+        auto retVal = invalidNumericValue;
+        const auto idx = element.index();
+        if (idx == 1)
+        {
+            retVal = std::get<1>(element);
+        }
+        else if (idx == 2)
+        {
+            retVal = std::get<2>(element);
+        }
+        else
+        {
+            DEBUG_PRINTLN("Cannot get numeric value. Element is not numeric.");
+        }
+
+        return retVal;
     }
 };
