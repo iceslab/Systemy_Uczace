@@ -15,14 +15,15 @@ namespace distribution
         template<typename T>
         static NormalDistribution getNormalDistribution(const source::dataColumnT & data);
 
-        template<typename T>
         static double calculateMean(const source::dataColumnT & data);
-        template<typename T>
         static double calculateStddev(const source::dataColumnT & data, const double calculatedMean);
-        template<typename T>
         static double calculateStddev(const source::dataColumnT & data);
-        template<typename T>
         static double calculateVariance(const source::dataColumnT & data);
+
+        static double calculateMean(const source::dataColumnRefT & data);
+        static double calculateStddev(const source::dataColumnRefT & data, const double calculatedMean);
+        static double calculateStddev(const source::dataColumnRefT & data);
+        static double calculateVariance(const source::dataColumnRefT & data);
 
     private:
         const double mean;
@@ -42,66 +43,9 @@ namespace distribution
             return NormalDistribution(0.0, 0.0);
         }
 
-        const auto mean = calculateMean<T>(data);
-        const auto stddev = calculateStddev<T>(data, mean);
+        const auto mean = calculateMean(data);
+        const auto stddev = calculateStddev(data, mean);
 
         return NormalDistribution(mean, stddev);
-    }
-
-    template<typename T>
-    inline double NormalDistribution::calculateMean(const source::dataColumnT & data)
-    {
-        static_assert(source::is_int<T>::value ||
-                      source::is_double<T>::value,
-                      "");
-        const auto dataSize = data.size();
-        double dataSum = 0.0;
-
-        // Calculating mean
-        for (const auto& element : data)
-        {
-            dataSum += std::get<T>(element);
-        }
-        return static_cast<double>(dataSum) / static_cast<double>(dataSize);
-    }
-
-    template<typename T>
-    inline double NormalDistribution::calculateStddev(const source::dataColumnT & data,
-                                                      const double calculatedMean)
-    {
-        static_assert(source::is_int<T>::value ||
-                      source::is_double<T>::value,
-                      "");
-        const auto dataSize = data.size();
-        double dataSum = 0.0;
-
-        // Calculating stddev
-        for (const auto& element : data)
-        {
-            dataSum += std::pow(std::abs(std::get<T>(element) - calculatedMean), 2.0);
-        }
-        return sqrt(dataSum / static_cast<double>(dataSize));
-    }
-
-    template<typename T>
-    inline double NormalDistribution::calculateStddev(const source::dataColumnT & data)
-    {
-        static_assert(source::is_int<T>::value ||
-                      source::is_double<T>::value,
-                      "");
-        const auto dataSize = data.size();
-        double dataSum = 0.0;
-        const double calculatedMean = calculateMean<T>(data);
-        return calculateStddev<T>(data, calculatedMean);
-    }
-
-    template<typename T>
-    inline double NormalDistribution::calculateVariance(const source::dataColumnT & data)
-    {
-        static_assert(source::is_int<T>::value ||
-                      source::is_double<T>::value,
-                      "");
-        const double stddev = calculateStddev<T>(data);
-        return stddev * stddev;
     }
 }

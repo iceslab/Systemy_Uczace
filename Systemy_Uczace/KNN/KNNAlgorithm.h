@@ -1,6 +1,7 @@
 #pragma once
 #include "Algorithm.h"
 #include "asserts.h"
+#include "NormalDistribution.h"
 
 namespace algorithm
 {
