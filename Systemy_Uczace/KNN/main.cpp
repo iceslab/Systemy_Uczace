@@ -9,7 +9,7 @@
 
 //#define IRIS_ONLY
 #define FINAL_TESTS
-#define NUMBER_OF_BUCKETS 5
+#define OUT_FILE_NAME "allStats.txt"
 
 using source::DataSource;
 using discretizer::DiscretizerFactory;
@@ -46,22 +46,37 @@ int main(int argc, char** argv)
 #endif
     };
 
-    const std::vector<discretizer::DiscretizerTypeE> discretizersTypes =
+    const std::vector<model::DistanceFunctionE> distanceType =
     {
-        discretizer::CLASSIC,
-        discretizer::UNIFORM
+        model::MANHATTAN,
+        model::EUCLIDEAN,
+        model::MINKOWSKI
     };
 
-    const std::vector<std::string> discretizersNames =
+    const std::vector<std::string> distanceNames =
     {
-        "CLASSIC",
-        "UNIFORM"
+        "MANHATTAN",
+        "EUCLIDEAN",
+        "MINKOWSKI"
     };
 
-    const std::vector<bool> classificationType =
+    const std::vector<model::VotingMethodE> votingType =
     {
-        true,
-        false
+        model::WEIGHTED,
+        model::MAJORITY,
+    };
+
+    const std::vector<std::string> votingNames =
+    {
+        "WEIGHTED",
+        "MAJORITY"
+    };
+
+    const std::vector<size_t> kValue =
+    {
+        2,
+        5,
+        10
     };
 
     std::experimental::filesystem::create_directory(resultsDataDir);
@@ -71,120 +86,79 @@ int main(int argc, char** argv)
     {
         namesLenghts.emplace_back(testDataDir.size() + path.size());
     }
-    const auto maxPathLenght = static_cast<int>(*std::max_element(namesLenghts.begin(),
+    const auto maxPathLength = static_cast<int>(*std::max_element(namesLenghts.begin(),
                                                                   namesLenghts.end()));
+
+    FILE* outFile = nullptr;
+    fopen_s(&outFile, OUT_FILE_NAME, "w");
+    if (outFile == nullptr)
+    {
+        printf("Couldn't open file \"%s\" for writing. Exiting...", OUT_FILE_NAME);
+    }
 
     for (const auto& path : names)
     {
         DataSource dl(testDataDir + path);
         dl.shuffleData();
-        for (size_t i = 0; i < discretizersTypes.size(); i++)
+
+        printf("\n========== Path: %*s ==========\n", -maxPathLength, (testDataDir + path).c_str());
+        auto description(dl.getDataDescription());
+        auto matrix(dl.getDataMatrix());
+
+        Crossvalidator cv(matrix);
+        size_t fold = 1;
+
+        fprintf(outFile, "path distance voting k fold className accuracy precision recall fscore\n");
+        while (cv.hasNext())
         {
-            const auto& discretizerType = discretizersTypes[i];
-            printf("\n========== Path: %*s ==========\n", -maxPathLenght, (testDataDir + path).c_str());
-            printf("===== %s =====\n\n", discretizersNames[i].c_str());
-            auto description(dl.getDataDescription());
-            auto matrix(dl.getDataMatrix());
-            if (discretizerType != discretizer::NONE)
+            auto data = cv.getNextData();
+            auto testData = data.first;
+            auto trainingData = data.second;
+
+            for (size_t i = 0; i < distanceType.size(); i++)
             {
-                auto discretizer = DiscretizerFactory::getDiscretizer(discretizerType,
-                                                                      description,
-                                                                      matrix,
-                                                                      NUMBER_OF_BUCKETS);
-                discretizer->discretize();
-            }
-
-            Crossvalidator cv(matrix);
-            std::vector<std::vector<Statistics>> allStats(classificationType.size());
-
-            while (cv.hasNext())
-            {
-                auto data = cv.getNextData();
-                auto testData = data.first;
-                auto trainingData = data.second;
-                KNNAlgorithm knna(description, trainingData);
-
-                for (size_t classificationIndex = 0;
-                     classificationIndex < classificationType.size();
-                     classificationIndex++)
+                for (size_t j = 0; j < votingType.size(); j++)
                 {
-
-                    const auto& simpleClassification = classificationType[classificationIndex];
-                    DEBUG_CALL(
-                        if (simpleClassification)
-                            printf("===== Simple classification =====\n");
-                        else
-                            printf("=====  Vote classification  =====\n");
-                    );
-
-                    auto knnm_p = KNNFactory::getKNNModel(testData, knna, model::EUCLIDEAN, model::WEIGHTED, 5);
-                    auto testResult = knnm_p->classify();
-
-                    auto stats = Statistics::calculateStatistics(dl.getDataDescription(),
-                                                                 testData,
-                                                                 testResult);
-                    allStats[classificationIndex].emplace_back(stats);
-
-                    DEBUG_CALL(
-                        const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
-                    for (auto& dataDescription : std::get<2>(dl.getDataDescription().back()))
+                    for (size_t k = 0; k < kValue.size(); k++)
                     {
-                        const auto className = std::get<std::string>(dataDescription);
-                        printf("%*s: accuracy: %6.2lf%% "
-                               "precision: %6.2lf%% "
-                               "recall: %6.2lf%% "
-                               "fscore: %6.2lf%%\n",
-                               -static_cast<int>(maxClassNameLenght),
-                               className.c_str(),
-                               stats.getAccuracy(className) * 100.0L,
-                               stats.getPrecision(className) * 100.0L,
-                               stats.getRecall(className) * 100.0L,
-                               stats.getFscore(className) * 100.0L);
+                        KNNAlgorithm knna(description, trainingData);
+                        auto knnm_p = KNNFactory::getKNNModel(testData, knna, distanceType[i], votingType[j], kValue[k]);
+                        auto testResult = knnm_p->classify();
 
+                        auto stats = Statistics::calculateStatistics(dl.getDataDescription(),
+                                                                     testData,
+                                                                     testResult);
+
+                        for (auto& dataDescription : std::get<2>(dl.getDataDescription().back()))
+                        {
+                            const auto className = std::get<std::string>(dataDescription);
+                            fprintf(outFile, "%s %s %s %zu %zu %s %f %f %f %f\n",
+                                    path.c_str(),
+                                    distanceNames[i].c_str(),
+                                    votingNames[j].c_str(),
+                                    kValue[k],
+                                    fold,
+                                    className.c_str(),
+                                    stats.getAccuracy(className),
+                                    stats.getPrecision(className),
+                                    stats.getRecall(className),
+                                    stats.getFscore(className));
+                            DEBUG_CALL(fprintf(stderr, "%s %s %s %zu %zu %s %f %f %f %f\n",
+                                               path.c_str(),
+                                               distanceNames[i].c_str(),
+                                               votingNames[j].c_str(),
+                                               kValue[k],
+                                               fold,
+                                               className.c_str(),
+                                               stats.getAccuracy(className),
+                                               stats.getPrecision(className),
+                                               stats.getRecall(className),
+                                               stats.getFscore(className)););
+                        }
                     }
-                    printf("\n");
-                    );
                 }
             }
-
-
-            const auto maxClassNameLenght = dl.getDataDescription().getLongestClassNameLength();
-            for (size_t classificationIndex = 0;
-                 classificationIndex < classificationType.size();
-                 classificationIndex++)
-            {
-                const auto& simpleClassification = classificationType[classificationIndex];
-                if (simpleClassification)
-                    printf("===== Simple classification =====\n");
-                else
-                    printf("=====  Vote classification  =====\n");
-
-                auto stats = Statistics::calculateMean(allStats[classificationIndex]);
-
-                std::string classificationName = simpleClassification ? "true" : "false";
-                const auto& discretizerName = discretizersNames[i];
-                stats.saveToFile(resultsDataDir +
-                                 discretizerName +
-                                 "_" +
-                                 classificationName +
-                                 "_" + path);
-                for (auto& dataDescription : std::get<2>(dl.getDataDescription().back()))
-                {
-                    const auto className = std::get<std::string>(dataDescription);
-                    printf("%*s: accuracy: %6.2lf%% "
-                           "precision: %6.2lf%% "
-                           "recall: %6.2lf%% "
-                           "fscore: %6.2lf%%\n",
-                           -static_cast<int>(maxClassNameLenght),
-                           className.c_str(),
-                           stats.getAccuracy(className) * 100.0L,
-                           stats.getPrecision(className) * 100.0L,
-                           stats.getRecall(className) * 100.0L,
-                           stats.getFscore(className) * 100.0L);
-
-                }
-                printf("\n");
-            }
+            fold++;
         }
     }
     // system("pause");

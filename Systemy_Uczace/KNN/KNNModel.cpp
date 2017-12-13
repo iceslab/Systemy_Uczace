@@ -76,7 +76,16 @@ namespace model
             return p1.second < p2.second;
         });
 
-        return source::dataMatrixT();
+        ASSERT(rowDistancePairs.size() >= k);
+        source::dataMatrixT retVal;
+        retVal.reserve(k);
+
+        for (size_t i = 0; i < k; i++)
+        {
+            retVal.emplace_back(rowDistancePairs[i].first);
+        }
+
+        return retVal;
     }
 
     source::dataVectorT KNNModel::majorityVoting(const source::dataVectorT & row,

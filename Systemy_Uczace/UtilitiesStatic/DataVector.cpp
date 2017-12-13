@@ -151,7 +151,7 @@ namespace source
     {
         ASSERT(v1.size() == v2.size());
         auto retVal = 0.0;
-        const auto vectorSize = v1.size();
+        const auto vectorSize = v1.size() - 1; // Assuming that last one is category
 
         for (size_t i = 0; i < vectorSize; i++)
         {
