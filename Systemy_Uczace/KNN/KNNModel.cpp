@@ -44,10 +44,20 @@ namespace model
 
     source::testDataT KNNModel::classify()
     {
-        return source::testDataT();
+        source::testDataT retVal;
+        retVal.reserve(testData.size());
+
+        for (const auto& testRow : testData)
+        {
+            const auto neighbours = closestNeighbours(testRow);
+            const auto votingResult = (this->*votingFunction)(testRow, neighbours);
+            retVal.emplace_back(votingResult);
+        }
+
+        return retVal;
     }
 
-    source::dataMatrixT KNNModel::closestNeighbours(const source::dataVectorT & row)
+    source::dataMatrixT KNNModel::closestNeighbours(const source::dataVectorT & row) const
     {
         std::vector<rowDistancePairT> rowDistancePairs;
         rowDistancePairs.reserve(trainingData.size());
@@ -70,7 +80,7 @@ namespace model
     }
 
     source::dataVectorT KNNModel::majorityVoting(const source::dataVectorT & row,
-                                                 const source::dataMatrixT & neighbours)
+                                                 const source::dataMatrixT & neighbours) const
     {
         std::unordered_map<std::string, size_t> classNamesMap;
         const auto classNames = source::DataVector::getClassColumnAsString(neighbours);
@@ -94,7 +104,7 @@ namespace model
     }
 
     source::dataVectorT KNNModel::weightedVoting(const source::dataVectorT & row,
-                                                 const source::dataMatrixT & neighbours)
+                                                 const source::dataMatrixT & neighbours) const
     {
         std::unordered_map<std::string, double> classNamesMap;
         const auto classNames = source::DataVector::getClassColumnAsString(neighbours);

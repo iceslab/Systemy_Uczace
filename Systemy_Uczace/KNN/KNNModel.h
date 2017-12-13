@@ -31,18 +31,18 @@ namespace model
         virtual source::testDataT classify() override;
 
     private:
-        typedef source::dataVectorT(KNNModel::*votingFn)(const source::dataVectorT & v1, const source::dataMatrixT & v2);
+        typedef source::dataVectorT(KNNModel::*votingFn)(const source::dataVectorT &, const source::dataMatrixT &) const;
         const source::testDataT testData;
         const source::trainingDataT trainingData;
         const source::distanceFn distanceFunction;
         votingFn votingFunction;
         const size_t k;
 
-        source::dataMatrixT closestNeighbours(const source::dataVectorT & row);
+        source::dataMatrixT closestNeighbours(const source::dataVectorT & row) const;
 
         source::dataVectorT majorityVoting(const source::dataVectorT & row,
-                                           const source::dataMatrixT & neighbours);
+                                           const source::dataMatrixT & neighbours) const;
         source::dataVectorT weightedVoting(const source::dataVectorT & row,
-                                           const source::dataMatrixT & neighbours);
+                                           const source::dataMatrixT & neighbours) const;
     };
 }
