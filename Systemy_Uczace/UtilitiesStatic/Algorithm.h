@@ -15,6 +15,7 @@ namespace abstracts
         ~Algorithm() = default;
 
         const source::dataDescriptionT& getDescriptions() const;
+        const source::trainingDataT& getTrainingData() const;
 
     protected:
         source::dataDescriptionT descriptions;

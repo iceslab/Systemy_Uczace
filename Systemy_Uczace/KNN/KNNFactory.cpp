@@ -6,6 +6,8 @@ namespace model
     std::unique_ptr<KNNModel> KNNFactory::getKNNModel(const source::testDataT & testData,
                                                       const algorithm::KNNAlgorithm & algorithm,
                                                       const DistanceFunctionE functionType,
+                                                      const VotingMethodE votingType,
+                                                      const size_t k,
                                                       const double power)
     {
         using namespace std::placeholders;
@@ -33,6 +35,6 @@ namespace model
             break;
         }
 
-        return std::make_unique<KNNModel>(testData, algorithm, function);
+        return std::make_unique<KNNModel>(testData, algorithm, function, votingType, k);
     }
 }

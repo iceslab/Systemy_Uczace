@@ -21,6 +21,11 @@ namespace abstracts
         return descriptions;
     }
 
+    const source::trainingDataT & Algorithm::getTrainingData() const
+    {
+        return trainingData;
+    }
+
     size_t Algorithm::classNameToIndex(std::string name) const
     {
         const auto it = classNameToIndexMap.find(name);

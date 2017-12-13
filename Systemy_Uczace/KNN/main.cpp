@@ -117,7 +117,7 @@ int main(int argc, char** argv)
                             printf("=====  Vote classification  =====\n");
                     );
 
-                    auto knnm_p = KNNFactory::getKNNModel(testData, knna, model::EUCLIDEAN);
+                    auto knnm_p = KNNFactory::getKNNModel(testData, knna, model::EUCLIDEAN, model::WEIGHTED, 5);
                     auto testResult = knnm_p->classify();
 
                     auto stats = Statistics::calculateStatistics(dl.getDataDescription(),

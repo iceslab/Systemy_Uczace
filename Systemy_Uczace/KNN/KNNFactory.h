@@ -20,6 +20,8 @@ namespace model
         static std::unique_ptr<KNNModel> getKNNModel(const source::testDataT & testData,
                                                      const algorithm::KNNAlgorithm & algorithm,
                                                      const DistanceFunctionE functionType,
+                                                     const VotingMethodE votingType,
+                                                     const size_t k,
                                                      const double power = 1.0);
     };
 }
