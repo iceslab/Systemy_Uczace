@@ -12,6 +12,7 @@ namespace algorithm
     typedef std::vector<elementProbabilitiesT> attributesProbabilitiesT;
     typedef std::vector<NormalDistribution> distributionsElementT;
     typedef std::vector<distributionsElementT> distributionsT;
+    typedef std::vector<double> weightsVectorT;
 
     class NaiveBayesAlgorithm :
         public abstracts::Algorithm
@@ -24,11 +25,13 @@ namespace algorithm
         const classProbabilitiesT& getClassProbability() const;
         const attributesProbabilitiesT& getAttributesProbability() const;
         const distributionsT& getDistributions() const;
+        void setDataWeights(const weightsVectorT _dataWeights);
     private:
         mutable bool modelBuilt;
         mutable classProbabilitiesT p_c;
         mutable attributesProbabilitiesT p_xc;
         mutable distributionsT distributions;
+        weightsVectorT dataWeights;
 
         void calculateModel() const;
         void calculateClassProbability() const;

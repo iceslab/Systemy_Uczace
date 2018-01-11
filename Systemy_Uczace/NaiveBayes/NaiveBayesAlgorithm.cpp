@@ -4,7 +4,7 @@ namespace algorithm
 {
     NaiveBayesAlgorithm::NaiveBayesAlgorithm(const source::dataDescriptionT & descriptions,
                                              const source::trainingDataT & trainingData) :
-        abstracts::Algorithm(descriptions, trainingData), modelBuilt(false)
+        abstracts::Algorithm(descriptions, trainingData), modelBuilt(false), dataWeights(trainingData.size(), 1.0)
     {
         // Nothing to do
     }
@@ -39,6 +39,12 @@ namespace algorithm
         return distributions;
     }
 
+    void NaiveBayesAlgorithm::setDataWeights(const weightsVectorT _dataWeights)
+    {
+        const auto copySize = std::min(dataWeights.size(), _dataWeights.size());
+        std::copy(_dataWeights.begin(), _dataWeights.begin() + copySize, dataWeights.begin());
+    }
+
     void NaiveBayesAlgorithm::calculateModel() const
     {
         calculateClassProbability();
@@ -51,7 +57,11 @@ namespace algorithm
         // Vector of names for all classifiers
         const auto& classNames = descriptions.back();
         const auto classCount = std::get<2>(classNames).size();
-        const auto allClassesCount = trainingData.size();
+        double allClassesCount = 0.0;
+        for (const auto& el : dataWeights)
+        {
+            allClassesCount += el;
+        }
 
         // Class probability - return value
         p_c.resize(classCount);
@@ -60,19 +70,20 @@ namespace algorithm
         {
             // Name of currently processed classifier
             const auto& processedClassName = std::get<std::string>(std::get<2>(classNames)[i]);
-            size_t processedClassCount = 0;
-            for (auto& dataRow : trainingData)
+            double processedClassCount = 0.0;
+            for (size_t idx = 0; idx < trainingData.size(); idx++)
             {
+                const auto& dataRow = trainingData[idx];
+                const auto& weight = dataWeights[idx];
                 // Class name in training data
                 const auto& classValue = std::get<std::string>(dataRow.back());
                 if (classValue == processedClassName)
                 {
-                    ++processedClassCount;
+                    processedClassCount += weight;
                 }
             }
 
-            p_c[i] = static_cast<double>(processedClassCount) /
-                static_cast<double>(allClassesCount);
+            p_c[i] = processedClassCount / allClassesCount;
         }
     }
 
@@ -117,64 +128,68 @@ namespace algorithm
         const auto attributeType = std::get<0>(description);
         switch (attributeType)
         {
-            case source::CATEGORY:
-                return categoryProbability<std::string>(
-                    description,
-                    trainingData,
-                    classDescription,
-                    classData);
-            case source::INTEGER_DISCRETE:
-                return categoryProbability<std::pair<int, int>>(
-                    description,
-                    trainingData,
-                    classDescription,
-                    classData);
-            case source::REAL_DISCRETE:
-                return categoryProbability<std::pair<double, double>>(
-                    description,
-                    trainingData,
-                    classDescription,
-                    classData);
-            case source::INTEGER:
-            case source::REAL:
-                DEBUG_PRINTLN_VERBOSE_INFO(
-                    "For continuous attributes use continuous version of function. "
-                    "Returning empty array");
-                break;
-            default:
-                FATAL_ERROR();
-                break;
+        case source::CATEGORY:
+            return categoryProbability<std::string>(
+                description,
+                trainingData,
+                classDescription,
+                classData);
+        case source::INTEGER_DISCRETE:
+            return categoryProbability<std::pair<int, int>>(
+                description,
+                trainingData,
+                classDescription,
+                classData);
+        case source::REAL_DISCRETE:
+            return categoryProbability<std::pair<double, double>>(
+                description,
+                trainingData,
+                classDescription,
+                classData);
+        case source::INTEGER:
+        case source::REAL:
+            DEBUG_PRINTLN_VERBOSE_INFO(
+                "For continuous attributes use continuous version of function. "
+                "Returning empty array");
+            break;
+        default:
+            FATAL_ERROR();
+            break;
         }
         return elementProbabilitiesT();
     }
 
-    distributionsElementT NaiveBayesAlgorithm::getContinuousElementProbability(const source::dataDescriptionElementT & description, const source::trainingColumnT & trainingData, const source::dataDescriptionElementT & classDescription, const source::trainingColumnT & classData) const
+    distributionsElementT NaiveBayesAlgorithm::getContinuousElementProbability(
+        const source::dataDescriptionElementT & description,
+        const source::trainingColumnT & trainingData,
+        const source::dataDescriptionElementT & classDescription,
+        const source::trainingColumnT & classData) const
     {
         const auto attributeType = std::get<0>(description);
         switch (attributeType)
         {
-            case source::CATEGORY:
-            case source::INTEGER_DISCRETE:
-            case source::REAL_DISCRETE:
-                DEBUG_PRINTLN_VERBOSE_INFO(
-                    "For discrete attributes use discrete version of function. "
-                    "Returning empty array");
-                break;
-            case source::INTEGER:
-                return numberProbability<int>(
-                    description,
-                    trainingData,
-                    classDescription,
-                    classData);
-            case source::REAL:
-                return numberProbability<double>(
-                    description,
-                    trainingData,
-                    classDescription,
-                    classData);
-            default:
-                FATAL_ERROR();
-                break;
+        case source::CATEGORY:
+        case source::INTEGER_DISCRETE:
+        case source::REAL_DISCRETE:
+            DEBUG_PRINTLN_VERBOSE_INFO(
+                "For discrete attributes use discrete version of function. "
+                "Returning empty array");
+            break;
+        case source::INTEGER:
+            return numberProbability<int>(
+                description,
+                trainingData,
+                classDescription,
+                classData);
+        case source::REAL:
+            return numberProbability<double>(
+                description,
+                trainingData,
+                classDescription,
+                classData);
+        default:
+            FATAL_ERROR();
+            break;
         }
         return distributionsElementT();
     }
@@ -195,17 +210,22 @@ namespace algorithm
         const auto attributesCount = std::get<2>(description).size();
         const auto classNames = std::get<2>(classDescription);
         const auto allClassesCount = classNames.size();
-        std::unordered_map<std::string, size_t> classInstancesCount;
+        std::unordered_map<std::string, double> classInstancesCount;
 
         for (size_t i = 0; i < allClassesCount; i++)
         {
-            classInstancesCount.emplace(std::get<std::string>(classNames[i]), 0);
+            classInstancesCount.emplace(std::get<std::string>(classNames[i]), 0.0);
         }
 
         // 1.0L added according to Laplace estimator
         elementProbabilitiesT p_xc(attributesCount, classProbabilitiesT(allClassesCount, 1.0L));
 
         const auto allVectorsCount = trainingData.size();
+        double allVectorsWeightsCount = 0.0;
+        for (const auto& el : dataWeights)
+        {
+            allVectorsWeightsCount += el;
+        }
 
         // For every data in trainingData and ClassData
         for (size_t row = 0; row < allVectorsCount; row++)
@@ -226,7 +246,7 @@ namespace algorithm
             // Count specific class instances
             auto mapIt = classInstancesCount.find(std::get<std::string>(*it));
             ASSERT(mapIt != classInstancesCount.end());
-            mapIt->second++;
+            mapIt->second += dataWeights[row];
 
             // For every value of attribute
             for (size_t i = 0; i < attributesCount; i++)
@@ -236,7 +256,7 @@ namespace algorithm
                 // Count which attribute it is
                 if (elementValue == processedElementName)
                 {
-                    p_xc[i][classIndex]++;
+                    p_xc[i][classIndex] += dataWeights[row];
                     break;
                 }
             }
@@ -251,7 +271,7 @@ namespace algorithm
                 auto& probability = elements[j];
                 auto mapIt = classInstancesCount.find(std::get<std::string>(classData[j].get()));
                 ASSERT(mapIt != classInstancesCount.end());
-                probability /= static_cast<double>(mapIt->second);
+                probability /= mapIt->second;
             }
         }
 
