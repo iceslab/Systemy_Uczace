@@ -12,7 +12,7 @@ namespace ensembles
         Bagger(const source::dataMatrixT & matrix, size_t numberOfExamples = 0);
         ~Bagger() = default;
 
-        algorithm::weightsVectorT drawWeights() const;
+        source::testDataPairT drawWeights(algorithm::weightsVectorT & weights) const;
     private:
         source::dataMatrixT matrix;
         size_t drawExamplesSize;

@@ -138,6 +138,7 @@
     <ClCompile Include="Bagger.cpp" />
     <ClCompile Include="Booster.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VoteClassifier.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NaiveBayes\NaiveBayes.vcxproj">
@@ -150,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="Bagger.h" />
     <ClInclude Include="Booster.h" />
+    <ClInclude Include="VoteClassifier.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

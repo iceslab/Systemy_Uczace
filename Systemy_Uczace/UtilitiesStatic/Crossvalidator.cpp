@@ -17,10 +17,10 @@ namespace crossvalidator
         // Nothing to do
     }
 
-    crossvalidatorPairT Crossvalidator::getNextData()
+    source::testDataPairT Crossvalidator::getNextData()
     {
         if (currentPart >= parts)
-            return crossvalidatorPairT();
+            return source::testDataPairT();
 
         const size_t testDataSize = std::max(matrix.size() / parts, static_cast<size_t>(1));
 
@@ -42,7 +42,7 @@ namespace crossvalidator
                             trainingDataSecond.begin(),
                             trainingDataSecond.end());
         currentPart++;
-        return crossvalidatorPairT(testData, trainingData);
+        return source::testDataPairT(testData, trainingData);
     }
     bool Crossvalidator::hasNext()
     {

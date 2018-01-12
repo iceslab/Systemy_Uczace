@@ -1,7 +1,6 @@
 #pragma once
 #include "DataSource.h"
 
-typedef std::pair<source::testDataT, source::trainingDataT> crossvalidatorPairT;
 namespace crossvalidator
 {
     class Crossvalidator
@@ -11,7 +10,7 @@ namespace crossvalidator
         Crossvalidator(const source::dataMatrixT & matrix);
         ~Crossvalidator() = default;
 
-        crossvalidatorPairT getNextData();
+        source::testDataPairT getNextData();
         bool hasNext();
     private:
         source::dataMatrixT matrix;

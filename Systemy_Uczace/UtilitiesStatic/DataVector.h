@@ -48,6 +48,7 @@ namespace source
 
     typedef dataMatrixT trainingDataT;
     typedef dataMatrixT testDataT;
+    typedef std::pair<testDataT, trainingDataT> testDataPairT;
 
     typedef std::function<double(const DataVector &, const DataVector &)> distanceFn;
 

@@ -7,7 +7,11 @@ namespace ensembles
     class Booster
     {
     public:
-        Booster();
-        ~Booster();
+        Booster(const source::DataSource & dl, size_t numberOfExamples = 0);
+        Booster(const source::dataMatrixT & matrix, size_t numberOfExamples = 0);
+        ~Booster() = default;
+    private:
+        source::dataMatrixT matrix;
+        size_t drawExamplesSize;
     };
 }

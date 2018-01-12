@@ -24,12 +24,18 @@
     <ClCompile Include="Bagger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VoteClassifier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Booster.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Bagger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VoteClassifier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
