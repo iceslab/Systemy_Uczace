@@ -13,6 +13,7 @@ namespace algorithm
     typedef std::vector<NormalDistribution> distributionsElementT;
     typedef std::vector<distributionsElementT> distributionsT;
     typedef std::vector<double> weightsVectorT;
+    typedef std::vector<weightsVectorT> weightsMatrixT;
 
     class NaiveBayesAlgorithm :
         public abstracts::Algorithm

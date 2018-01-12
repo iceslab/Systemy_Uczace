@@ -2,20 +2,50 @@
 
 namespace ensembles
 {
-    Bagger::Bagger(const source::DataSource & dl, size_t numberOfExamples) :
-        Bagger(dl.getDataMatrix(), numberOfExamples)
+    Bagger::Bagger(const source::DataSource & dl,
+                   classifier::VotingTypeE votingType,
+                   size_t classifiersCount,
+                   size_t numberOfExamples) :
+        Bagger(dl.getDataMatrix(), dl.getDataDescription(), votingType, classifiersCount, numberOfExamples)
     {
         // Nothing to do
     }
 
-    Bagger::Bagger(const source::dataMatrixT & matrix, size_t numberOfExamples) :
+    Bagger::Bagger(const source::dataMatrixT & matrix,
+                   const source::dataDescriptionT & description,
+                   classifier::VotingTypeE votingType,
+                   size_t classifiersCount,
+                   size_t numberOfExamples) :
         matrix(matrix),
+        description(description),
+        votingType(votingType),
+        classifiersCount(classifiersCount),
         drawExamplesSize(numberOfExamples)
     {
         if (numberOfExamples == 0 || numberOfExamples >= matrix.size())
         {
             drawExamplesSize = static_cast<size_t>(std::floor(0.9 * static_cast<double>(matrix.size())));
         }
+    }
+
+    source::testDataT Bagger::classify()
+    {
+        classifier::partialResultsT partialResults;
+        partialResults.reserve(classifiersCount);
+        for (size_t i = 0; i < classifiersCount; i++)
+        {
+            algorithm::weightsVectorT weights;
+            const auto trainingData = drawWeights(weights).second;
+            algorithm::NaiveBayesAlgorithm nba(description, trainingData);
+            nba.setDataWeights(weights);
+
+            model::NaiveBayesModel nbm(matrix, nba);
+            partialResults.push_back(nbm.classify());
+        }
+
+
+
+        return source::testDataT();
     }
 
     source::testDataPairT Bagger::drawWeights(algorithm::weightsVectorT & weights) const
