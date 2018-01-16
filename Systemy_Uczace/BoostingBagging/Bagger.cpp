@@ -32,20 +32,42 @@ namespace ensembles
     {
         classifier::partialResultsT partialResults;
         partialResults.reserve(classifiersCount);
+        algorithm::weightsMatrixT weightsMatrix;
+        weightsMatrix.reserve(classifiersCount);
+        algorithm::weightsVectorT weights;
+        const auto trainingData = drawWeights(weights).second;
+        testData = trainingData;
         for (size_t i = 0; i < classifiersCount; i++)
         {
-            algorithm::weightsVectorT weights;
-            const auto trainingData = drawWeights(weights).second;
+            weightsMatrix.push_back(weights);
             algorithm::NaiveBayesAlgorithm nba(description, trainingData);
             nba.setDataWeights(weights);
 
-            model::NaiveBayesModel nbm(matrix, nba);
+            model::NaiveBayesModel nbm(testData, nba);
             partialResults.push_back(nbm.classify());
         }
 
 
+        source::testDataT retVal;
+        switch (votingType)
+        {
+        case classifier::WEIGHTED:
+            retVal = classifier::VoteClassifier::weightedVoting(partialResults, weightsMatrix);
+            break;
+        case classifier::NORMAL:
+            retVal = classifier::VoteClassifier::normalVoting(partialResults);
+            break;
+        default:
+            FATAL_ERROR_VERBOSE("Invalid voting type");
+            break;
+        }
 
-        return source::testDataT();
+        return retVal;
+    }
+
+    source::testDataT Bagger::getTestData() const
+    {
+        return testData;
     }
 
     source::testDataPairT Bagger::drawWeights(algorithm::weightsVectorT & weights) const
@@ -65,7 +87,7 @@ namespace ensembles
         for (size_t i = 0; i < drawExamplesSize; i++)
         {
             const auto& drawnNumber = distribution(re);
-            ++weights[drawnNumber];
+            ++tmpWeights[drawnNumber];
         }
 
         for (size_t i = 0; i < matrix.size(); i++)

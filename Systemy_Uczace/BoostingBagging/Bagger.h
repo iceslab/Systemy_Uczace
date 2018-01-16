@@ -22,13 +22,14 @@ namespace ensembles
         ~Bagger() = default;
 
         source::testDataT classify();
-
+        source::testDataT getTestData() const;
     private:
         const source::dataMatrixT matrix;
         const source::dataDescriptionT description;
         classifier::VotingTypeE votingType;
         size_t classifiersCount;
         size_t drawExamplesSize;
+        source::testDataT testData;
 
         source::testDataPairT drawWeights(algorithm::weightsVectorT & weights) const;
     };
